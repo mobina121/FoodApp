@@ -17,10 +17,10 @@ import com.examplepart.foodpart.ui.screens.whatotcook.WhatToCookScreen
 
 fun NavGraphBuilder.mainNavGraph(navController: NavController) {
     composable(AppScreens.FoodDetail.route) {
-        FoodDetailScreen()
+        FoodDetailScreen(navController)
     }
     composable(AppScreens.FullscreenImage.route) {
-        FullscreenImageScreen()
+        FullscreenImageScreen(navController)
     }
     composable(AppScreens.Login.route) {
         LoginScreen()

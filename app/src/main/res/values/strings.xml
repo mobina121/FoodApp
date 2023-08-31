@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">FoodPart</string>
+    <string name="food_details">اطلاعات غذا</string>
+    <string name="picture">عکس</string>
+    <string name="report">گزارش</string>
+    <string name="send">ارسال</string>
+    <string name="save">ذخیره</string>
+    <string name="abgoosht">آبگوشت</string>
+    <string name="forFourPerson">برای 4 نفر</string>
+    <string name="time">32 دقیقه</string>
 </resources>
