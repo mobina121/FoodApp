@@ -118,8 +118,8 @@ fun HeaderScreen() {
                 Text1(
                     modifier = Modifier,
                     text = "اطلاعات غذا",
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.colors.surface,
+                    style = MaterialTheme.typography.h2,
+                    color = MaterialTheme.colors.onBackground,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )

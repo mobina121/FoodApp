@@ -11,31 +11,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val darkColorPalette = darkColors(
+private val lightColorPalette = lightColors(
+
     onPrimary = Primary,
     secondary = Secondary,
     background = Background,
-    surface = Surface
-)
-
-private val lightColorPalette = lightColors(
-
-    primary = Primary,
-    secondary = Secondary,
-    background = Background,
+    onBackground = OnBackground,
     surface = Surface
 )
 
 @Composable
 fun FoodPartTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
-        darkColorPalette
-    } else {
-        lightColorPalette
-    }
+    val colors = lightColorPalette
 
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -43,9 +32,8 @@ fun FoodPartTheme(
             val window = (view.context as Activity).window
             window.statusBarColor = colors.background.toArgb()
             window.navigationBarColor = colors.background.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars =
-                !darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
+            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = true
         }
     }
 
@@ -55,5 +43,4 @@ fun FoodPartTheme(
         shapes = Shapes,
         content = content
     )
-
 }
