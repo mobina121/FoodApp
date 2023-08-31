@@ -14,17 +14,22 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.examplepart.foodpart.ui.core.AppScreens
+import com.examplepart.foodpart.ui.theme.FoodPartTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+
         setContent {
-            val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = AppScreens.Categories.route) {
-                mainNavGraph(navController)
+            FoodPartTheme{
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = AppScreens.Categories.route) {
+                    mainNavGraph(navController)
+                }
             }
         }
     }
+
 
 }
