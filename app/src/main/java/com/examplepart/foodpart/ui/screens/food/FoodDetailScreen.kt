@@ -1,8 +1,7 @@
 package com.examplepart.foodpart.ui.screens.food
 
-import androidx.compose.foundation.BorderStroke
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,24 +9,23 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
-import androidx.compose.material.Chip
 import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -35,10 +33,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -48,33 +44,27 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
+import com.examplepart.foodpart.ui.common.CustomChip
 import com.examplepart.foodpart.ui.common.CustomDropdownMenuItem
 import com.examplepart.foodpart.ui.common.FoodAppBar
-import com.examplepart.foodpart.ui.common.FoodAppBar
+import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.PhotoOfFood
+import com.examplepart.foodpart.ui.common.SubCategory
 import com.examplepart.foodpart.ui.core.AppScreens
+import com.examplepart.foodpart.ui.datamodels.fakeData
 import kotlinx.coroutines.launch
 import androidx.compose.material.Text as Text1
 
-class Food(name: String, time: String) {}
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FoodDetailScreen(navController: NavController) {
     var isDropDownMenuShowing: Boolean by remember {
@@ -97,7 +87,7 @@ fun FoodDetailScreen(navController: NavController) {
                         isDropDownMenuShowing = !isDropDownMenuShowing
                     }) {
                         Icon(
-                            painter = painterResource(id = R.drawable.more_horiz),
+                            painter = painterResource(id = R.drawable.icon_more),
                             contentDescription = "more icon",
                             tint = MaterialTheme.colors.onBackground
                         )
@@ -128,8 +118,7 @@ fun FoodDetailScreen(navController: NavController) {
 
                     }) {
                         Icon(
-                            modifier = Modifier.size(18.dp),
-                            painter = painterResource(id = R.drawable.arrow_back),
+                            painter = painterResource(id = R.drawable.arrow_right),
                             contentDescription = "arrow forward icon",
                             tint = MaterialTheme.colors.onBackground
                         )
@@ -154,26 +143,17 @@ fun FoodDetailScreen(navController: NavController) {
 }
 
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
-    val fakeData = listOf(
-        Food("سیبزمینی", "20 دقیقه"),
-        Food("سیبزمینی", "20 دقیقه"),
-        Food("سیبزمینی", "20 دقیقه"),
-        Food("سیبزمینی", "20 دقیقه"),
-        Food("سیبزمینی", "20 دقیقه"),
-        Food("سیبزمینی", "20 دقیقه"),
-        Food("سیبزمینی", "20 دقیقه"),
-        Food("سیبزمینی", "20 دقیقه"),
-        Food("سیبزمینی", "20 دقیقه"),
-        Food("سیبزمینی", "20 دقیقه"),
-    )
+
+    var showAllItems by remember { mutableStateOf(false) }
+    val itemsToDisplay = if (showAllItems) fakeData else fakeData.take(4)
     val pageState = rememberPagerState()
-    val paperPage = remember {
-        mutableStateOf(0)
-    }
-    val collectionTaps = arrayListOf("اطلاعات بیشتر", "طرز تهیه", "مواد اولیه")
+    val tabs = listOf("مواد اولیه", "طرز تهیه", "اطلاعات بیشتر")
+    var stateLazy = rememberLazyListState()
+
     val scope = rememberCoroutineScope()
     Column(
         modifier = modifier
@@ -182,304 +162,213 @@ fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
             .background(MaterialTheme.colors.background),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         PhotoOfFood(navController = navController, photoId = R.drawable.food_pic)
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp, horizontal = 15.dp)
-                .padding(horizontal = 15.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-
+                .padding(horizontal = 30.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text1(
-                    text = stringResource(id = R.string.abgoosht),
-                    textAlign = TextAlign.Start,
-                    style = MaterialTheme.typography.h1,
-                    color = MaterialTheme.colors.onBackground
-                )
-            }
-            Spacer(modifier = Modifier.width(20.dp))
+            Text(
+                modifier = Modifier.weight(1f),
+                text = stringResource(id = R.string.abgoosht),
+                style = MaterialTheme.typography.h1,
+                color = MaterialTheme.colors.onBackground
+            )
             Row(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Text1(
                     text = stringResource(id = R.string.forFourPerson),
-                    textAlign = TextAlign.End,
                     style = MaterialTheme.typography.caption,
                     color = MaterialTheme.colors.onBackground
                 )
-                Spacer(modifier = Modifier.width(20.dp))
-
-//                Chip(
-//                    modifier = Modifier
-//                        .clip(RoundedCornerShape(16.dp))
-//                        .alpha(0.5f)
-//                        .background(Color(0xA0FF6262).copy(0.2f)),
-//                    border = BorderStroke(0.dp, Color.Red),
-//                    leadingIcon = {
-//                        Icon(
-//                            modifier = Modifier.size(18.dp),
-//                            painter = painterResource(id = R.drawable.ic_timer_new),
-//                            contentDescription = "timer icon",
-//                        )
-//                    },
-//                    onClick = {}) {
-//                    Text(
-//                        text = stringResource(id = R.string.time),
-//                        textAlign = TextAlign.End,
-//                        style = MaterialTheme.typography.caption,
-//                        color = MaterialTheme.colors.onBackground
-//                    )
-//                }
-
-                Row(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .clip(MaterialTheme.shapes.medium)
-                        .background(Color(0xA0FF6262).copy(0.2f))
-                        .padding(vertical = 5.dp, horizontal = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Image(
-                        painterResource(R.drawable.timer),
-                        modifier = Modifier.size(20.dp),
-                        contentDescription = "",
-                        contentScale = ContentScale.FillWidth,
-                    )
-                    Text1(
-                        text = stringResource(id = R.string.time),
-                        textAlign = TextAlign.End,
-                        style = MaterialTheme.typography.caption,
-                        color = MaterialTheme.colors.onBackground
-                    )
-
-
-                }
-
-
+                CustomChip(
+                    modifier = Modifier.fillMaxWidth(),
+                    icon = R.drawable.timer,
+                    label = stringResource(id = R.string.time),
+                    hasColor = true,
+                    color = Color(0xA0FF6262).copy(0.2f)
+                )
             }
-
-
         }
-        //------------------------------------------------------------------------------------------------------
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp, horizontal = 15.dp)
-                .padding(horizontal = 15.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(vertical = 10.dp, horizontal = 30.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
 
         ) {
-
-            Row(
-                modifier = Modifier
-                    .weight(1f),
-//                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color(0xA0FF6262).copy(0.2f))
-                        .padding(vertical = 5.dp, horizontal = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    Text1(
-                        text = "آسان",
-                        textAlign = TextAlign.End,
-                        style = MaterialTheme.typography.caption,
-                        color = MaterialTheme.colors.surface
-                    )
-                    Spacer(modifier = Modifier.width(20.dp))
-
-                    Image(
-                        painterResource(R.drawable.ic_leaf),
-                        modifier = Modifier.size(25.dp),
-                        contentDescription = "",
-                        contentScale = ContentScale.FillWidth,
-                    )
-                }
-                Spacer(modifier = Modifier.weight(1f))
-            }
-            Spacer(modifier = Modifier.width(20.dp))
-
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxHeight()
                     .fillMaxWidth(),
-
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text1(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colors.primary)
-                        .padding(vertical = 10.dp, horizontal = 20.dp),
-                    text = "صبحانه",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.caption,
-                    color = MaterialTheme.colors.surface
+                CustomChip(
+                    icon = null,
+                    label = stringResource(id = R.string.breakfast),
+                    hasColor = false,
+                    color = null,
+                    modifier = null
                 )
-
                 Spacer(modifier = Modifier.width(10.dp))
-
-                Text1(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colors.primary)
-                        .padding(vertical = 10.dp, horizontal = 20.dp),
-                    text = "ناهار",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.caption,
-                    color = MaterialTheme.colors.surface
+                CustomChip(
+                    icon = null,
+                    label = stringResource(id = R.string.lunch),
+                    hasColor = false,
+                    color = null,
+                    modifier = null
                 )
-
-
             }
 
+            SubCategory(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                icon = R.drawable.ic_leaf,
+                label = stringResource(id = R.string.easy)
+            )
         }
-        //---------------------------------------------------------------------------
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(400.dp)
-                .padding(vertical = 10.dp, horizontal = 15.dp)
-                .clip(RoundedCornerShape(25.dp))
-                .background(MaterialTheme.colors.primary),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Top,
-        )
-        {
-            ScrollableTabRow(
-                selectedTabIndex = minOf(collectionTaps.count(), paperPage.value),
-                edgePadding = 20.dp,
-                contentColor = MaterialTheme.colors.secondary,
-                tabs = {
-                    collectionTaps.forEachIndexed { index, tabNane ->
-                        Tab(
-                            modifier = Modifier.background(MaterialTheme.colors.primary),
-                            onClick = {
-                                paperPage.value = index
-                                scope.launch { pageState.currentPage }
-                            },
-
-                            text = { Text1(tabNane) },
-                            selected = index == pageState.currentPage,
+        ScrollableTabRow(
+            modifier = Modifier.padding(vertical = 15.dp, horizontal = 30.dp),
+            selectedTabIndex = pageState.currentPage,
+            edgePadding = 0.dp,
+            backgroundColor = MaterialTheme.colors.background,
+            indicator = {
+                Box(
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .tabIndicatorOffset(it[pageState.currentPage])
+                        .height(1.dp)
+                        .background(
+                            MaterialTheme.colors.primary,
+                            shape = MaterialTheme.shapes.large
+                        )
+                )
+            },
+            tabs = {
+                tabs.forEachIndexed { index, tabNane ->
+                    Tab(
+                        selected = pageState.currentPage == index,
+                        onClick = {
+                            scope.launch { pageState.animateScrollToPage(index) }
+                        },
+                        selectedContentColor = MaterialTheme.colors.primary
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(vertical = 10.dp),
+                            text = tabNane,
+                            style = MaterialTheme.typography.h3,
+                            color = if (pageState.currentPage == index) MaterialTheme.colors.primary else MaterialTheme.colors.onBackground
                         )
                     }
                 }
-            )
-            HorizontalPager(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(25.dp))
-                    .padding(vertical = 10.dp, horizontal = 15.dp),
-                verticalAlignment = Alignment.Top,
-                pageCount = collectionTaps.count(),
-                state = pageState,
-                userScrollEnabled = true,
-                reverseLayout = true
-            ) {
-                Text1(
-                    text = ".دﺮﯿﮔ راﺮﻗ هدﺎﻔﺘﺳا درﻮﻣ ﺎﺳﺎﺳا ﯽﺣاﺮﻃ دﻮﺟﻮﻣ یﺎﯿﻧد ﻞﻫا ﻪﺘﺳﻮﯿﭘ تﺎﻟاﻮﺳ یﻮﮕﺑاﻮﺟ و ﯽﻠﺻا یﺎﻫدروﺎﺘﺳد ﯽﻨﯿﭽﻓوﺮﺣ ﻞﻣﺎﺷ زﺎﯿﻧ درﻮﻣ نﺎﻣزو ﺪﺳر نﺎﯾﺎﭘ ﻪﺑ ﭗﯾﺎﺗ ﺖﺨﺳ ﻂﯾاﺮﺷ و ﺎﻫرﺎﮑﻫار ﻪﺋارا رد دﻮﺟﻮﻣ یراﻮﺷد و مﺎﻤﺗ ﻪﮐ ﺖﺷاد ﺪﯿﻣا ناﻮﺗ ﯽﻣ ترﻮﺻ ﻦﯾا رد .دﺮﮐ دﺎﺠﯾا ﯽﺳرﺎﻓ نﺎﺑز رد وﺮﺸﯿﭘ ﮓﻨﻫﺮﻓ و ﯽﻗﺎﻠﺧ نﺎﺣاﺮﻃ صﻮﺼﺨﻟا ﯽﻠﻋ یا ﻪﻧﺎﯾار نﺎﺣاﺮﻃ یاﺮﺑ ار یﺮﺘﺸﯿﺑ ﺖﺧﺎﻨﺷ ﺎﻫراﺰﻓا مﺮﻧ ﺎﺑ ﺎﺗ ﺪﺒﻠﻃ ﯽﻣ ار نﺎﺼﺼﺨﺘﻣ و ﻪﻌﻣﺎﺟ ناواﺮﻓ ﺖﺧﺎﻨﺷ هﺪﻨﯾآ و لﺎﺣ ،ﻪﺘﺷﺬﮔ ﺪﺻرد ﻪﺳ و ﺖﺼﺷ رد یدﺎﯾز یﺎﻬﺑﺎﺘﮐ .ﺪﺷﺎﺑ ﯽﻣ یدﺮﺑرﺎﮐ یﺎﻫراﺰﺑا دﻮﺒﻬﺑ فﺪﻫ ﺎﺑ عﻮﻨﺘﻣ یﺎﻫدﺮﺑرﺎﮐ و زﺎﯿﻧ درﻮﻣ یژﻮﻟﻮﻨﮑﺗ ﯽﻠﻌﻓ ﻂﯾاﺮﺷ یاﺮﺑ و ﺖﺳا مزﺎﻟ ﻪﮐ نﺎﻨﭽﻧآﺮﻄﺳ و نﻮﺘﺳ رد ﻪﻠﺠﻣ و ﻪﻣﺎﻧزور ﻪﮑﻠﺑ نﻮﺘﻣ و ﺎﻫﺮﮕﭘﺎﭼ .ﺖﺳا ﮏﯿﻓاﺮﮔ نﺎﺣاﺮﻃ زا هدﺎﻔﺘﺳا ﺎﺑ و پﺎﭼ ﺖﻌﻨﺻ زا مﻮﻬﻔﻣﺎﻧ ﯽﮔدﺎﺳ ﺪﯿﻟﻮﺗ ﺎﺑ ﯽﮕﺘﺧﺎﺳ ﻦﺘﻣ مﻮﺴﭙﯾا مرﻮﻟ\n" +
-                            ".دﺮﯿﮔ راﺮﻗ هدﺎﻔﺘﺳا درﻮﻣ ﺎﺳﺎﺳا ﯽﺣاﺮﻃ دﻮﺟﻮﻣ یﺎﯿﻧد ﻞﻫا ﻪﺘﺳﻮﯿﭘ تﺎﻟاﻮﺳ یﻮﮕﺑاﻮﺟ و ﯽﻠﺻا یﺎﻫدروﺎﺘﺳد ﯽﻨﯿﭽﻓوﺮﺣ ﻞﻣﺎﺷ زﺎﯿﻧ درﻮﻣ نﺎﻣزو ﺪﺳر نﺎﯾﺎﭘ ﻪﺑ ﭗﯾﺎﺗ ﺖﺨﺳ ﻂﯾاﺮﺷ و ﺎﻫرﺎﮑﻫار ﻪﺋارا رد دﻮﺟﻮﻣ یراﻮﺷد و مﺎﻤﺗ ﻪﮐ ﺖﺷاد ﺪﯿﻣا ناﻮﺗ ﯽﻣ ترﻮﺻ ﻦﯾا رد .دﺮﮐ دﺎﺠﯾا ﯽﺳرﺎﻓ نﺎﺑز رد وﺮﺸﯿﭘ ﮓﻨﻫﺮﻓ و ﯽﻗﺎﻠﺧ نﺎﺣاﺮﻃ صﻮﺼﺨﻟا ﯽﻠﻋ یا ﻪﻧﺎﯾار نﺎﺣاﺮﻃ یاﺮﺑ ار یﺮﺘﺸﯿﺑ ﺖﺧﺎﻨﺷ ﺎﻫراﺰﻓا مﺮﻧ ﺎﺑ ﺎﺗ ﺪﺒﻠﻃ ﯽﻣ ار نﺎﺼﺼﺨﺘﻣ و ﻪﻌﻣﺎﺟ ناواﺮﻓ ﺖﺧﺎﻨﺷ هﺪﻨﯾآ و لﺎﺣ ،ﻪﺘﺷﺬﮔ ﺪﺻرد ﻪﺳ ",
-                    style = TextStyle(color = MaterialTheme.colors.surface),
-                    modifier = Modifier,
-                )
+            }
+        )
+        HorizontalPager(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(MaterialTheme.shapes.medium)
+                .padding(vertical = 10.dp, horizontal = 15.dp),
+            verticalAlignment = Alignment.Top,
+            pageCount = tabs.count(),
+            state = pageState,
+            userScrollEnabled = true,
+            reverseLayout = true
 
+        ) { page ->
+            val tabText = when (page) {
+                0 -> "111111 ${stringResource(id = R.string.tabText)}"
+                1 -> "22222 ${stringResource(id = R.string.tabText)}"
+                else -> "33333 ${stringResource(id = R.string.tabText)}"
+            }
+
+            Column(
+                modifier = Modifier
+                    .height(400.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(MaterialTheme.colors.surface)
+                    .padding(vertical = 20.dp, horizontal = 15.dp)
+
+            ) {
+                LazyColumn(
+                    state = stateLazy,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    item {
+                        Text(
+                            text = tabText,
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.onBackground
+                        )
+                    }
+
+                }
             }
         }
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-            Column {
-                Text1(
-                    modifier = Modifier.padding(15.dp, 10.dp, 15.dp, 0.dp),
-                    text = "بیشتر از این دسته",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(color = MaterialTheme.colors.surface)
+            Column(modifier = Modifier.padding(10.dp)) {
+                Text(
+                    modifier = Modifier.padding(15.dp, 0.dp, 0.dp, 10.dp),
+                    text = stringResource(id = R.string.more),
+                    style = MaterialTheme.typography.h3,
+                    color = MaterialTheme.colors.onBackground
                 )
                 LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(fakeData.size) {
-                        var food: Food = fakeData[it]
-                        Column(
-                            modifier = Modifier.padding(vertical = 10.dp, horizontal = 5.dp)
-                        ) {
+                    itemsIndexed(itemsToDisplay) { foodId, food ->
+                        FoodItem(food)
+                    }
+                    item() {
+                        if (!showAllItems) {
                             Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .padding(vertical = 10.dp, horizontal = 5.dp)
+                                    .clickable {
+                                        showAllItems = true
+                                    }
                                     .size(width = 136.dp, height = 80.dp),
                                 shape = RoundedCornerShape(16.dp),
                                 elevation = 2.dp
                             ) {
-                                Image(
-                                    painterResource(R.drawable.pic_food),
-                                    contentDescription = "",
-                                    contentScale = ContentScale.FillWidth,
-                                    modifier = Modifier.fillMaxSize()
-                                )
-                            }
-                            Column(
-                                modifier = Modifier.padding(
-                                    vertical = 10.dp,
-                                    horizontal = 10.dp
-                                )
-                            ) {
-                                Text1(
-                                    text = "سیب زمینی",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    style = TextStyle(color = MaterialTheme.colors.surface)
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text1(
-                                    text = "20 دقیقه",
-                                    fontSize = 12.sp,
-                                    style = TextStyle(color = MaterialTheme.colors.surface)
-                                )
-                            }
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        modifier = Modifier.padding(bottom = 4.dp),
+                                        text = stringResource(R.string.showMore),
+                                        style = MaterialTheme.typography.body1,
+                                        color = MaterialTheme.colors.onBackground,
+                                    )
+                                    Spacer(
+                                        modifier = Modifier.size(10.dp)
+                                    )
+                                    Icon(
+                                        modifier = Modifier.size(30.dp),
+                                        painter = painterResource(id = R.drawable.arrow_left),
+                                        contentDescription = "arrow forward icon",
+                                        tint = MaterialTheme.colors.onBackground
+                                    )
+                                }
 
+                            }
                         }
-
                     }
                 }
             }
-
         }
     }
 }
-
-
-
-
