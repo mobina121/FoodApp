@@ -33,7 +33,9 @@ fun CategoriesScreen(navController: NavController) {
             Spacer(modifier = Modifier.width(16.dp))
 
             Button(onClick = {
-                navController.navigate(AppScreens.Profile.route)
+//                navController.navigate(AppScreens.Profile.route)
+                navController.navigate(AppScreens.Login.route)
+
             }, Modifier.weight(1f)) {
                 Text("Navigate Profile Screen", fontSize = 20.sp)
             }

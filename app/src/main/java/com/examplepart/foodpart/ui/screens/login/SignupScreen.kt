@@ -1,6 +1,7 @@
 package com.examplepart.foodpart.ui.screens.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
@@ -122,7 +122,7 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 5.dp, horizontal = 20.dp),
-            text = stringResource(id = R.string.interYourInfo),
+            text = stringResource(id = R.string.interYourInfoForSingUp),
             style = MaterialTheme.typography.body1,
             color = MaterialTheme.colors.onBackground
         )
@@ -218,17 +218,18 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
                 style = MaterialTheme.typography.caption,
                 color = MaterialTheme.colors.onBackground
             )
-            TextButton(onClick = {
-                navController.navigate(AppScreens.Login.route)
 
-            }) {
-                Text(
-                    modifier = Modifier.padding(end = 15.dp),
-                    text = stringResource(id = R.string.logIn),
-                    style = MaterialTheme.typography.caption,
-                    color = Color(0xff1976D2)
-                )
-            }
+            Text(
+                modifier = Modifier
+                    .padding(end = 30.dp, start = 4.dp)
+                    .clickable {
+                        navController.navigate(AppScreens.Login.route)
+                    },
+                text = stringResource(id = R.string.logIn),
+                style = MaterialTheme.typography.caption,
+                color = Color(0xff1976D2)
+            )
+
         }
     }
 }
