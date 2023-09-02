@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -30,11 +31,14 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -65,8 +69,72 @@ import kotlinx.coroutines.launch
 import androidx.compose.material.Text as Text1
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FoodDetailScreen(navController: NavController) {
+
+    val bottomSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden
+    )
+    val scope = rememberCoroutineScope()
+
+    ModalBottomSheetLayout(
+        sheetState = bottomSheetState,
+        content = {
+            FoodDetailScreenContents(
+                navController,
+                generateRandom = {
+                    scope.launch {
+                        bottomSheetState.show()
+                    }
+                }
+            )
+        },
+        sheetContent = {
+            Report(
+                userId = "Jeff Sickel",
+                userName = "Nine women can't make a baby in one month."
+            )
+        },
+        sheetShape = MaterialTheme.shapes.large.copy(
+            bottomStart = CornerSize(0.dp),
+            bottomEnd = CornerSize(0.dp)
+        ),
+        sheetElevation = 4.dp,
+    )
+}
+
+@Composable
+fun Report(userId: String, userName: String) {
+    Column(
+        Modifier
+            .padding(
+                vertical = 32.dp,
+                horizontal = 24.dp
+            )
+    ) {
+        Text(
+            text = "stringResource(R.string.label_quote_author_once_said, name)",
+            color = MaterialTheme.colors.onSurface,
+            style = MaterialTheme.typography.body1,
+        )
+
+        Spacer(modifier = Modifier.size(32.dp))
+
+        Text(
+            text = "quote",
+            color = MaterialTheme.colors.primary,
+            style = MaterialTheme.typography.subtitle1,
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterialApi::class)
+private fun FoodDetailScreenContents(
+    navController: NavController,
+    generateRandom: () -> Unit
+) {
     var isDropDownMenuShowing: Boolean by remember {
         mutableStateOf(false)
     }
@@ -100,7 +168,9 @@ fun FoodDetailScreen(navController: NavController) {
                         CustomDropdownMenuItem(
                             title = stringResource(R.string.report),
                             iconId = R.drawable.ic_report,
-                            onClicked = {})
+                            onClicked = {
+                                generateRandom
+                            })
                         CustomDropdownMenuItem(
                             title = stringResource(R.string.send),
                             iconId = R.drawable.ic_share,
