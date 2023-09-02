@@ -23,7 +23,7 @@ fun NavGraphBuilder.mainNavGraph(navController: NavController) {
         FullscreenImageScreen(navController)
     }
     composable(AppScreens.Login.route) {
-        LoginScreen()
+        LoginScreen(navController)
     }
     composable(AppScreens.Signup.route) {
         SignupScreen(navController)
