@@ -26,7 +26,7 @@ fun NavGraphBuilder.mainNavGraph(navController: NavController) {
         LoginScreen()
     }
     composable(AppScreens.Signup.route) {
-        SignupScreen()
+        SignupScreen(navController)
     }
     composable(AppScreens.Categories.route) {
         CategoriesScreen(navController)

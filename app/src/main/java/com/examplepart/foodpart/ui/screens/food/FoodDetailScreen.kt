@@ -108,7 +108,9 @@ fun FoodDetailScreen(navController: NavController) {
                         CustomDropdownMenuItem(
                             title = stringResource(R.string.save),
                             iconId = R.drawable.ic_bookmark,
-                            onClicked = {})
+                            onClicked = {
+                                navController.navigate(AppScreens.Signup.route)
+                            })
                     }
 
                 },
