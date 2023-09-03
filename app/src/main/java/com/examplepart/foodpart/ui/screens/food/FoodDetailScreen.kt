@@ -25,6 +25,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.ExperimentalMaterialApi
@@ -32,12 +34,17 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScrollableTabRow
+import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarHost
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -57,6 +64,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
+import com.examplepart.foodpart.ui.common.CustomButton
 import com.examplepart.foodpart.ui.common.CustomChip
 import com.examplepart.foodpart.ui.common.CustomDropdownMenuItem
 import com.examplepart.foodpart.ui.common.FoodAppBar
@@ -81,9 +89,9 @@ fun FoodDetailScreen(navController: NavController) {
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
         content = {
-            FoodDetailScreenContents(
-                navController,
-                generateRandom = {
+            FoodDetailScreenContent(
+                navController = navController,
+                sendReport = {
                     scope.launch {
                         bottomSheetState.show()
                     }
@@ -92,48 +100,25 @@ fun FoodDetailScreen(navController: NavController) {
         },
         sheetContent = {
             Report(
-                userId = "Jeff Sickel",
-                userName = "Nine women can't make a baby in one month."
+                bottomSheetState = bottomSheetState,
+                userId = "",
+                userName = ""
             )
         },
         sheetShape = MaterialTheme.shapes.large.copy(
             bottomStart = CornerSize(0.dp),
-            bottomEnd = CornerSize(0.dp)
+            bottomEnd = CornerSize(0.dp),
+
         ),
         sheetElevation = 4.dp,
     )
 }
 
-@Composable
-fun Report(userId: String, userName: String) {
-    Column(
-        Modifier
-            .padding(
-                vertical = 32.dp,
-                horizontal = 24.dp
-            )
-    ) {
-        Text(
-            text = "stringResource(R.string.label_quote_author_once_said, name)",
-            color = MaterialTheme.colors.onSurface,
-            style = MaterialTheme.typography.body1,
-        )
-
-        Spacer(modifier = Modifier.size(32.dp))
-
-        Text(
-            text = "quote",
-            color = MaterialTheme.colors.primary,
-            style = MaterialTheme.typography.subtitle1,
-        )
-    }
-}
 
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
-private fun FoodDetailScreenContents(
+private fun FoodDetailScreenContent(
     navController: NavController,
-    generateRandom: () -> Unit
+    sendReport: () -> Unit
 ) {
     var isDropDownMenuShowing: Boolean by remember {
         mutableStateOf(false)
@@ -168,19 +153,21 @@ private fun FoodDetailScreenContents(
                         CustomDropdownMenuItem(
                             title = stringResource(R.string.report),
                             iconId = R.drawable.ic_report,
-                            onClicked = {
-                                generateRandom
-                            })
+                        ) {
+                            sendReport()
+                            isDropDownMenuShowing = false
+                        }
                         CustomDropdownMenuItem(
                             title = stringResource(R.string.send),
-                            iconId = R.drawable.ic_share,
-                            onClicked = {})
+                            iconId = R.drawable.ic_share
+                        ) {}
                         CustomDropdownMenuItem(
                             title = stringResource(R.string.save),
-                            iconId = R.drawable.ic_bookmark,
-                            onClicked = {
-                                navController.navigate(AppScreens.Signup.route)
-                            })
+                            iconId = R.drawable.ic_bookmark
+                        ) {
+                            navController.navigate(AppScreens.Signup.route)
+                            isDropDownMenuShowing = false
+                        }
                     }
 
                 },
@@ -199,6 +186,17 @@ private fun FoodDetailScreenContents(
                 }
 
             )
+        },
+        snackbarHost = {
+            SnackbarHost(it) {
+                Snackbar (
+                    backgroundColor = Color(0xff393939),
+                    shape = MaterialTheme.shapes.medium,
+                    snackbarData = it
+                )
+
+
+            }
         }
     ) { paddingValues ->
         Box(
@@ -227,6 +225,9 @@ fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
     var stateLazy = rememberLazyListState()
 
     val scope = rememberCoroutineScope()
+
+
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -442,5 +443,81 @@ fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
                 }
             }
         }
+    }
+}
+
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun Report(bottomSheetState: ModalBottomSheetState, userId: String, userName: String) {
+    var reportText by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+
+    Column(
+        modifier = Modifier
+            .background(MaterialTheme.colors.background)
+            .padding(
+                vertical = 15.dp,
+                horizontal = 24.dp
+            )
+    ) {
+        Text(
+            text = stringResource(R.string.commandReport),
+            color = MaterialTheme.colors.onSurface,
+            style = MaterialTheme.typography.h3,
+        )
+
+
+        OutlinedTextField(
+            modifier = Modifier
+                .padding(vertical = 20.dp)
+                .fillMaxWidth()
+                .height(88.dp),
+            value = reportText,
+            onValueChange = { text -> reportText = text },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                backgroundColor = MaterialTheme.colors.surface,
+                unfocusedBorderColor = MaterialTheme.colors.surface,
+                focusedBorderColor = MaterialTheme.colors.primary,
+            ),
+            shape = MaterialTheme.shapes.medium,
+            placeholder = {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                    text = stringResource(R.string.wrightHere),
+                    style = MaterialTheme.typography.body1,
+                    color = MaterialTheme.colors.onSurface
+                )
+            },
+            textStyle = MaterialTheme.typography.body1,
+            maxLines = 2
+        )
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+        ) {
+            Button(
+                onClick = {
+                    scope.launch {
+                        bottomSheetState.hide()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.primary),
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = MaterialTheme.shapes.medium
+            ) {
+                Text(
+                    text = stringResource(id = R.string.record),
+                    style = MaterialTheme.typography.button,
+                    color = MaterialTheme.colors.onSurface
+                )
+            }
+        }
+
+//        CustomButton(modifier = Modifier, buttonText = stringResource(id = R.string.record))
     }
 }

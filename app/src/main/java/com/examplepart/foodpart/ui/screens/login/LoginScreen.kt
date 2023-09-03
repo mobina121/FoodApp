@@ -179,7 +179,7 @@ fun LoginScreenContent(modifier: Modifier, navController: NavController) {
             maxLines = 2
         )
 
-        CustomButton(buttonText = stringResource(id = R.string.confirm))
+        CustomButton(modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp), buttonText = stringResource(id = R.string.confirm))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,

@@ -15,12 +15,11 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun CustomButton(buttonText: String) {
+fun CustomButton(buttonText: String, modifier: Modifier) {
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(vertical = 10.dp, horizontal = 20.dp)
+        modifier = modifier
     ) {
         Button(
             onClick = {},

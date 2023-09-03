@@ -15,15 +15,15 @@ fun CustomDropdownMenu(isDropDownMenuShowing: Boolean) {
         }) {
         CustomDropdownMenuItem(
             title = stringResource(R.string.report),
-            iconId = R.drawable.ic_report,
-            onClicked = {})
+            iconId = R.drawable.ic_report
+        ) {}
         CustomDropdownMenuItem(
             title = stringResource(R.string.send),
-            iconId = R.drawable.ic_share,
-            onClicked = {})
+            iconId = R.drawable.ic_share
+        ) {}
         CustomDropdownMenuItem(
             title = stringResource(R.string.save),
-            iconId = R.drawable.ic_bookmark,
-            onClicked = {})
+            iconId = R.drawable.ic_bookmark
+        ) {}
     }
 }
