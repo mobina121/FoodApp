@@ -40,12 +40,15 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -64,7 +67,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
-import com.examplepart.foodpart.ui.common.CustomButton
 import com.examplepart.foodpart.ui.common.CustomChip
 import com.examplepart.foodpart.ui.common.CustomDropdownMenuItem
 import com.examplepart.foodpart.ui.common.FoodAppBar
@@ -101,14 +103,11 @@ fun FoodDetailScreen(navController: NavController) {
         sheetContent = {
             Report(
                 bottomSheetState = bottomSheetState,
-                userId = "",
-                userName = ""
             )
         },
         sheetShape = MaterialTheme.shapes.large.copy(
             bottomStart = CornerSize(0.dp),
             bottomEnd = CornerSize(0.dp),
-
         ),
         sheetElevation = 4.dp,
     )
@@ -124,6 +123,14 @@ private fun FoodDetailScreenContent(
         mutableStateOf(false)
     }
 
+    var isLoggin by remember { mutableStateOf(true) }
+
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
+
+    val msg = stringResource(id = R.string.theRecipeHasBeenAddedToFavorites)
+    val actionLabel = stringResource(id = R.string.saved)
+
     Scaffold(
         topBar = {
             FoodAppBar(
@@ -136,9 +143,10 @@ private fun FoodDetailScreenContent(
                     )
                 },
                 actions = {
-                    IconButton(onClick = {
-                        isDropDownMenuShowing = !isDropDownMenuShowing
-                    }) {
+                    IconButton(
+                        onClick = {
+                            isDropDownMenuShowing = !isDropDownMenuShowing
+                        }) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_more),
                             contentDescription = "more icon",
@@ -165,8 +173,31 @@ private fun FoodDetailScreenContent(
                             title = stringResource(R.string.save),
                             iconId = R.drawable.ic_bookmark
                         ) {
-                            navController.navigate(AppScreens.Signup.route)
-                            isDropDownMenuShowing = false
+                            if (isLoggin) {
+                                scope.launch {
+                                    val snackbarResult =
+                                        scaffoldState.snackbarHostState.showSnackbar(
+                                            message = msg,
+                                            actionLabel = actionLabel,
+                                            duration = SnackbarDuration.Short
+                                        )
+
+                                    when (snackbarResult) {
+                                        SnackbarResult.Dismissed -> {}
+                                        SnackbarResult.ActionPerformed -> {
+                                            navController.navigate(AppScreens.Categories.route)
+                                        }
+
+                                        else -> {}
+                                    }
+                                }
+
+                            } else {
+                                navController.navigate(AppScreens.Signup.route)
+                                isDropDownMenuShowing = false
+                                isLoggin = true
+                            }
+
                         }
                     }
 
@@ -187,15 +218,15 @@ private fun FoodDetailScreenContent(
 
             )
         },
+        scaffoldState = scaffoldState,
         snackbarHost = {
-            SnackbarHost(it) {
-                Snackbar (
+            SnackbarHost(it) { data ->
+                Snackbar(
+                    actionColor = MaterialTheme.colors.primary,
                     backgroundColor = Color(0xff393939),
-                    shape = MaterialTheme.shapes.medium,
-                    snackbarData = it
+                    contentColor = MaterialTheme.colors.onBackground,
+                    snackbarData = data
                 )
-
-
             }
         }
     ) { paddingValues ->
@@ -221,8 +252,13 @@ fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
     var showAllItems by remember { mutableStateOf(false) }
     val itemsToDisplay = if (showAllItems) fakeData else fakeData.take(4)
     val pageState = rememberPagerState()
-    val tabs = listOf("مواد اولیه", "طرز تهیه", "اطلاعات بیشتر")
-    var stateLazy = rememberLazyListState()
+    val tabs = listOf(
+        stringResource(id = R.string.rawMaterial),
+        stringResource(id = R.string.howToPrepare),
+        stringResource(id = R.string.moreInformation)
+    )
+
+    val stateLazy = rememberLazyListState()
 
     val scope = rememberCoroutineScope()
 
@@ -288,7 +324,7 @@ fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
             ) {
                 CustomChip(
                     icon = null,
-                    label = stringResource(id = R.string.breakfast),
+                    label = stringResource(id = R.string.lunch),
                     hasColor = false,
                     color = null,
                     modifier = null
@@ -296,7 +332,7 @@ fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
                 Spacer(modifier = Modifier.width(10.dp))
                 CustomChip(
                     icon = null,
-                    label = stringResource(id = R.string.lunch),
+                    label = stringResource(id = R.string.breakfast),
                     hasColor = false,
                     color = null,
                     modifier = null
@@ -436,7 +472,6 @@ fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
                                         tint = MaterialTheme.colors.onBackground
                                     )
                                 }
-
                             }
                         }
                     }
@@ -449,7 +484,7 @@ fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Report(bottomSheetState: ModalBottomSheetState, userId: String, userName: String) {
+fun Report(bottomSheetState: ModalBottomSheetState) {
     var reportText by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
 
@@ -467,7 +502,6 @@ fun Report(bottomSheetState: ModalBottomSheetState, userId: String, userName: St
             style = MaterialTheme.typography.h3,
         )
 
-
         OutlinedTextField(
             modifier = Modifier
                 .padding(vertical = 20.dp)
@@ -478,7 +512,7 @@ fun Report(bottomSheetState: ModalBottomSheetState, userId: String, userName: St
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 backgroundColor = MaterialTheme.colors.surface,
                 unfocusedBorderColor = MaterialTheme.colors.surface,
-                focusedBorderColor = MaterialTheme.colors.primary,
+                focusedBorderColor = MaterialTheme.colors.onSurface,
             ),
             shape = MaterialTheme.shapes.medium,
             placeholder = {
@@ -517,7 +551,5 @@ fun Report(bottomSheetState: ModalBottomSheetState, userId: String, userName: St
                 )
             }
         }
-
-//        CustomButton(modifier = Modifier, buttonText = stringResource(id = R.string.record))
     }
 }

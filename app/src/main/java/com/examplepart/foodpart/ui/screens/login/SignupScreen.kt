@@ -136,7 +136,7 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 backgroundColor = MaterialTheme.colors.surface,
                 unfocusedBorderColor = MaterialTheme.colors.surface,
-                focusedBorderColor = MaterialTheme.colors.primary,
+                focusedBorderColor = MaterialTheme.colors.onSurface,
             ),
             shape = MaterialTheme.shapes.medium,
             placeholder = {
@@ -163,7 +163,7 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 backgroundColor = MaterialTheme.colors.surface,
                 unfocusedBorderColor = MaterialTheme.colors.surface,
-                focusedBorderColor = MaterialTheme.colors.primary,
+                focusedBorderColor = MaterialTheme.colors.onSurface,
             ),
             shape = MaterialTheme.shapes.medium,
             placeholder = {
@@ -190,7 +190,7 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 backgroundColor = MaterialTheme.colors.surface,
                 unfocusedBorderColor = MaterialTheme.colors.surface,
-                focusedBorderColor = MaterialTheme.colors.primary,
+                focusedBorderColor = MaterialTheme.colors.onSurface,
             ),
             shape = MaterialTheme.shapes.medium,
             placeholder = {
@@ -207,7 +207,10 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
             maxLines = 2
         )
 
-        CustomButton(modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp), buttonText = stringResource(id = R.string.confirm))
+        CustomButton(
+            modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp),
+            buttonText = stringResource(id = R.string.confirm)
+        )
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
@@ -229,7 +232,6 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
                 style = MaterialTheme.typography.caption,
                 color = Color(0xff1976D2)
             )
-
         }
     }
 }
