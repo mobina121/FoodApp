@@ -33,7 +33,7 @@ fun PhotoOfFood(navController: NavController, photoId: Int) {
         Image(
             painterResource(photoId),
             contentDescription = "",
-            contentScale = ContentScale.FillWidth,
+            contentScale = ContentScale.Crop,
         )
     }
 }

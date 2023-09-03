@@ -55,7 +55,6 @@ fun FullscreenImageScreen(navController: NavController) {
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.navigate(AppScreens.FoodDetail.route)
-
                     }) {
                         Icon(
                             modifier = Modifier.size(18.dp),
@@ -64,23 +63,23 @@ fun FullscreenImageScreen(navController: NavController) {
                             tint = MaterialTheme.colors.onBackground
                         )
                     }
-
                 }
-
             )
         }
     ) { paddingValues ->
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues).padding(vertical = 40.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.pic_food),
+                painter = painterResource(id = R.drawable.food_pic),
                 contentDescription = "",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.padding(paddingValues).fillMaxSize()
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
             )
         }
-
     }
 }

@@ -16,7 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun CustomDropdownMenuItem(title: String, iconId: Int, onClicked: (Int) -> Unit) {
+fun CustomDropdownMenuItem(title: String, iconId: Int, onClicked: () -> Unit) {
     DropdownMenuItem(onClick = {}) {
         Row(
             modifier = Modifier.width(150.dp),
@@ -24,7 +24,7 @@ fun CustomDropdownMenuItem(title: String, iconId: Int, onClicked: (Int) -> Unit)
             horizontalArrangement = Arrangement.Start
         ) {
             IconButton(onClick = {
-                onClicked(0)
+                onClicked()
             }) {
                 Icon(
                     modifier = Modifier.size(18.dp),
