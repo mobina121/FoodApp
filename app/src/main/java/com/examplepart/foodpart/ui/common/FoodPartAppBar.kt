@@ -18,7 +18,7 @@ fun FoodPartAppBar(
     showEndIcon: Boolean = true,
     startIcon: @Composable (() -> Unit)? = null,
     endIcon: @Composable (() -> Unit)? = null,
-    contentModifier: Modifier = Modifier,
+    contentModifier: Modifier = Modifier
 ) {
     TopAppBar(
         modifier = modifier,
