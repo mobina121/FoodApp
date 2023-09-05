@@ -32,8 +32,8 @@ fun CategoriesScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             title = stringResource(id = R.string.food_details),
-            showStartIcon = true,
-            showEndIcon = true,
+            showStartIcon = false,
+            showEndIcon = false,
             startIcon = {
                 Icon(
                     modifier = Modifier.padding(horizontal = 8.dp).size(14.dp),
