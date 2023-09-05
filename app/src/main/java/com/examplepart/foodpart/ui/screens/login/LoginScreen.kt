@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -96,10 +98,15 @@ fun LoginScreen(navController: NavController) {
 fun LoginScreenContent(modifier: Modifier, navController: NavController) {
     var userNameText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
-    Column {
+    val scrollState = rememberScrollState()
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(scrollState)) {
 
         Box(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .padding(top = 64.dp)
+                .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
             Image(

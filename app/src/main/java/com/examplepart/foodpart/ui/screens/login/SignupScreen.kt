@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -20,6 +22,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -97,10 +100,15 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
     var userNameText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
     var repeatPasswordText by remember { mutableStateOf("") }
-    Column {
+    val scrollState = rememberScrollState()
+    Column (modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(scrollState)){
 
         Box(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .padding(top = 64.dp)
+                .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
             Image(
