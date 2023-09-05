@@ -1,24 +1,61 @@
 package com.examplepart.foodpart.ui.screens.main
 
+import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.examplepart.foodpart.R
 import com.examplepart.foodpart.ui.core.AppScreens
 
 @Composable
 fun CategoriesScreen(navController: NavController) {
     Column {
+        FoodPartAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            title = stringResource(id = R.string.food_details),
+            showStartIcon = true,
+            showEndIcon = true,
+            startIcon = {
+                Icon(
+                    modifier = Modifier.padding(horizontal = 8.dp).size(14.dp),
+                    painter = painterResource(id = R.drawable.ic_appbar_start),
+                    contentDescription = "start icon",
+                    tint = MaterialTheme.colors.onBackground
+                )
+            },
+            endIcon = {
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    painter = painterResource(id = R.drawable.ic_action),
+                    contentDescription = "end icon",
+                    tint = MaterialTheme.colors.onBackground
+                )
+            }
+        )
+
+
+
+
+
         Text("Categories Screen", fontSize = 45.sp)
         Row(
             modifier = Modifier.padding(16.dp),
