@@ -105,7 +105,7 @@ fun LoginScreenContent(modifier: Modifier, navController: NavController) {
 
         Box(
             modifier = Modifier
-                .padding(top = 64.dp)
+                .padding(top = 100.dp)
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
