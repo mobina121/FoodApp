@@ -226,7 +226,7 @@ private fun FoodDetailScreenContent(
                     actionColor = MaterialTheme.colors.primary,
                     backgroundColor = DarkGray,
                     contentColor = MaterialTheme.colors.onBackground,
-                    snackbarData = data,
+                    snackbarData = data
                 )
             }
         }

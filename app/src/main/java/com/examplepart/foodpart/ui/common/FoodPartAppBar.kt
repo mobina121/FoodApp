@@ -8,7 +8,9 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.examplepart.foodpart.R
 
 @Composable
 fun FoodPartAppBar(
@@ -37,7 +39,7 @@ fun FoodPartAppBar(
                 modifier = Modifier.weight(1f),
                 text = title,
                 color = MaterialTheme.colors.onBackground,
-                style = if (showStartIcon) MaterialTheme.typography.h2 else MaterialTheme.typography.h1,
+                style = if (showStartIcon || title != stringResource(id = R.string.foodPart)) MaterialTheme.typography.h2 else MaterialTheme.typography.h1,
             )
 
             if (showEndIcon) {
