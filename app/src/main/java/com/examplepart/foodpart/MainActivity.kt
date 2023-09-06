@@ -59,7 +59,9 @@ class MainActivity : ComponentActivity() {
                                             bottomEnd = CornerSize(0.dp),
                                             bottomStart = CornerSize(0.dp)
                                         )
-                                    )
+                                    ),
+                                backgroundColor = MaterialTheme.colors.secondary
+
                             ) {
                                 navigationItems.forEach { screen ->
                                     BottomNavigationItem(
@@ -91,6 +93,7 @@ class MainActivity : ComponentActivity() {
                                         selectedContentColor = MaterialTheme.colors.primary,
                                         unselectedContentColor = White,
                                         modifier = Modifier
+                                            .padding(bottom = 10.dp)
                                             .background(
                                                 color = MaterialTheme.colors.secondary
                                             )

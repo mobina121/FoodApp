@@ -95,7 +95,10 @@ fun LoginScreen(navController: NavController) {
 }
 
 @Composable
-fun LoginScreenContent(modifier: Modifier, navController: NavController) {
+fun LoginScreenContent(
+    modifier: Modifier,
+    navController: NavController
+) {
     var userNameText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()

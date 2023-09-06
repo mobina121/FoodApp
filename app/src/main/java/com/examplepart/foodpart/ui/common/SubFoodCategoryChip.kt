@@ -22,6 +22,7 @@ import com.examplepart.foodpart.datamodel.SubFoodCategoryModel
 
 @Composable
 fun SubFoodCategoryChip(
+    modifier: Modifier ,
     subFoodCategoryModel: SubFoodCategoryModel,
     isSelected: Boolean,
     onClicked: () -> Unit
@@ -31,8 +32,8 @@ fun SubFoodCategoryChip(
         if (isSelected) Color(0xA0FF6262).copy(alpha = 0.2f) else MaterialTheme.colors.surface
 
     Column(
-        modifier = Modifier
-            .padding(4.dp)
+        modifier = modifier
+            .padding(vertical = 3.dp)
             .clip(MaterialTheme.shapes.large)
             .clickable {
                 onClicked()
@@ -50,11 +51,11 @@ fun SubFoodCategoryChip(
                     color = borderColor,
                     shape = MaterialTheme.shapes.large
                 )
-                .padding(vertical = 10.dp, horizontal = 20.dp)
+                .padding(vertical = 6.dp, horizontal = 20.dp)
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = subFoodCategoryModel.name,
+                text = subFoodCategoryModel.subCategoryName,
                 style = if (isSelected)
                     MaterialTheme.typography.subtitle1.copy(color = MaterialTheme.colors.primary)
                 else MaterialTheme.typography.subtitle1,

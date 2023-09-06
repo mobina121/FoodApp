@@ -28,6 +28,7 @@ import com.examplepart.foodpart.datamodel.FoodCategoryModel
 
 @Composable
 fun FoodCategoryChip(
+    modifier: Modifier ,
     foodCategoryModel: FoodCategoryModel,
     isSelected: Boolean,
     onClicked: () -> Unit
@@ -37,7 +38,7 @@ fun FoodCategoryChip(
         if (isSelected) Color(0xA0FF6262).copy(alpha = 0.2f) else Color.Transparent
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(4.dp)
             .width(64.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -75,7 +76,7 @@ fun FoodCategoryChip(
             modifier = Modifier
                 .padding(vertical = 10.dp)
                 .fillMaxWidth(),
-            text = foodCategoryModel.foodName,
+            text = foodCategoryModel.categoryName,
             style = if (isSelected) MaterialTheme.typography.body1.copy(
                 color = MaterialTheme.colors.primary
             ) else MaterialTheme.typography.body1,

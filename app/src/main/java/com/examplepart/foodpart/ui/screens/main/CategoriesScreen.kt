@@ -17,21 +17,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.examplepart.foodpart.R
 import com.examplepart.foodpart.datamodel.foodCategories
+import com.examplepart.foodpart.ui.common.DisplayItemsForSubCategory
 import com.examplepart.foodpart.ui.common.FoodCategoryChip
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.common.SubFoodCategoryChip
+import com.examplepart.foodpart.ui.core.AppScreens
 
 
 @Composable
-fun CategoriesScreen() {
+fun CategoriesScreen(navController: NavController) {
     val foodCategories = foodCategories
     var selectedCategoryIndex by remember { mutableStateOf<Int?>(null) }
     var selectedSubCategoryIndex by remember { mutableStateOf<Int?>(null) }
 
-
-    Column(modifier = Modifier.padding(vertical = 10.dp, horizontal = 16.dp)) {
+    Column(
+        modifier = Modifier.padding(vertical = 10.dp)
+    ) {
         FoodPartAppBar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -44,7 +48,11 @@ fun CategoriesScreen() {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(foodCategories) { index, foodCategoryModel ->
+                val startPadding = if (index == 0) 16.dp else 0.dp
+                val endPadding = if (index == foodCategories.size - 1) 16.dp else 0.dp
+
                 FoodCategoryChip(
+                    modifier = Modifier.padding(start = startPadding, end = endPadding),
                     foodCategoryModel = foodCategoryModel,
                     isSelected = selectedCategoryIndex == index
                 ) {
@@ -55,7 +63,7 @@ fun CategoriesScreen() {
 
         Divider(
             modifier = Modifier
-                .padding(vertical = 5.dp)
+                .padding(vertical = 5.dp, horizontal = 16.dp)
                 .height(0.5.dp),
             color = MaterialTheme.colors.onSurface
         )
@@ -64,26 +72,48 @@ fun CategoriesScreen() {
         val hasSubcategories = selectedCategory?.subCategories?.isNotEmpty() == true
 
         selectedCategory?.let { category ->
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                itemsIndexed(category.subCategories) { index, subCategoryModel ->
-                    SubFoodCategoryChip(
-                        subFoodCategoryModel = subCategoryModel,
-                        isSelected = selectedSubCategoryIndex == index
-                    ) {
-                        selectedSubCategoryIndex = index
+            Column {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    itemsIndexed(category.subCategories) { index, subCategoryModel ->
+                        val startPadding = if (index == 0) 16.dp else 0.dp
+                        val endPadding = if (index == foodCategories.size - 1) 16.dp else 0.dp
+
+                        SubFoodCategoryChip(
+                            modifier = Modifier.padding(start = startPadding, end = endPadding),
+                            subFoodCategoryModel = subCategoryModel,
+                            isSelected = selectedSubCategoryIndex == index
+                        ) {
+                            selectedSubCategoryIndex = index
+                        }
+                    }
+                }
+                if (hasSubcategories) {
+                    Divider(
+                        modifier = Modifier
+                            .padding(vertical = 5.dp, horizontal = 16.dp)
+                            .height(0.5.dp),
+                        color = MaterialTheme.colors.onSurface
+                    )
+                }
+            }
+            val selectedSubCategory =
+                selectedSubCategoryIndex?.let { category.subCategories.getOrNull(it) }
+            selectedSubCategory?.let { subCategory ->
+                DisplayItemsForSubCategory(
+                    items = subCategory.foods,
+                ) {
+                    navController.navigate(AppScreens.FoodDetail.route)
+                    navController.navigate(AppScreens.FoodDetail.route) {
+                        popUpTo(AppScreens.Categories.route) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 }
             }
-        }
-        if (hasSubcategories) {
-            Divider(
-                modifier = Modifier
-                    .padding(vertical = 5.dp)
-                    .height(0.5.dp),
-                color = MaterialTheme.colors.onSurface
-            )
         }
     }
 }
