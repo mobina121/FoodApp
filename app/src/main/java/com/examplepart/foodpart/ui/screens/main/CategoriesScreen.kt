@@ -28,7 +28,7 @@ import com.examplepart.foodpart.ui.core.AppScreens
 
 
 @Composable
-fun CategoriesScreen(navController: NavController) {
+fun CategoriesScreen(navController: NavController){
     val foodCategories = foodCategories
     var selectedCategoryIndex by remember { mutableStateOf<Int?>(null) }
     var selectedSubCategoryIndex by remember { mutableStateOf<Int?>(null) }
