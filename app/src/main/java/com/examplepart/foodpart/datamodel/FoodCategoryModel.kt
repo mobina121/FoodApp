@@ -505,7 +505,7 @@ val foodCategories = mutableStateListOf(
     ),
     FoodCategoryModel(
         categoryId = 3,
-        categoryName = "مناطق مدیترانه",
+        categoryName = "ترکی",
         categoryAvtarUrl = "https://example.com/mediterranean-avatar",
         categoryImageUrl = "https://example.com/mediterranean-image",
         subCategories = listOf(

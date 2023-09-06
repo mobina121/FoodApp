@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.common
+package com.examplepart.foodpart.ui.screens.food
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,11 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.examplepart.foodpart.datamodel.SubFoodCategoryModel
+import com.examplepart.foodpart.ui.theme.DarkRed
+import com.examplepart.foodpart.ui.theme.Transparent
 
 
 @Composable
@@ -27,9 +28,9 @@ fun SubFoodCategoryChip(
     isSelected: Boolean,
     onClicked: () -> Unit
 ) {
-    val borderColor = if (isSelected) MaterialTheme.colors.primary else Color(0x00000000)
+    val borderColor = if (isSelected) MaterialTheme.colors.primary else Transparent
     val backgroundColor =
-        if (isSelected) Color(0xA0FF6262).copy(alpha = 0.2f) else MaterialTheme.colors.surface
+        if (isSelected) DarkRed else MaterialTheme.colors.surface
 
     Column(
         modifier = modifier

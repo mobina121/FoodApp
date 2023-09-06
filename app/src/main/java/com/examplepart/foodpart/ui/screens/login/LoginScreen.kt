@@ -29,7 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -134,7 +134,7 @@ fun LoginScreenContent(
                 .fillMaxWidth()
                 .padding(vertical = 5.dp, horizontal = 20.dp),
             text = stringResource(id = R.string.interYourInfoForLogin),
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.subtitle1,
             color = MaterialTheme.colors.onBackground
         )
         OutlinedTextField(
@@ -156,11 +156,11 @@ fun LoginScreenContent(
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp),
                     text = stringResource(R.string.userName),
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.colors.onSurface
                 )
             },
-            textStyle = MaterialTheme.typography.body1,
+            textStyle = MaterialTheme.typography.subtitle1,
             maxLines = 2
         )
 
@@ -183,11 +183,11 @@ fun LoginScreenContent(
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp),
                     text = stringResource(R.string.password),
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.colors.onSurface
                 )
             },
-            textStyle = MaterialTheme.typography.body1,
+            textStyle = MaterialTheme.typography.subtitle1,
             maxLines = 2
         )
 
@@ -214,7 +214,7 @@ fun LoginScreenContent(
                     },
                 text = stringResource(id = R.string.signup),
                 style = MaterialTheme.typography.caption,
-                color = Color(0xff1976D2)
+                color = Blue
             )
 
             Text(

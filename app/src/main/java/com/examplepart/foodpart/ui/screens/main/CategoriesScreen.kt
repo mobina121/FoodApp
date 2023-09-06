@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -19,20 +22,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
+import com.examplepart.foodpart.datamodel.FoodItemModel
 import com.examplepart.foodpart.datamodel.foodCategories
-import com.examplepart.foodpart.ui.common.DisplayItemsForSubCategory
-import com.examplepart.foodpart.ui.common.FoodCategoryChip
+import com.examplepart.foodpart.ui.screens.food.FoodCategoryChip
+import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.common.ShowError
-import com.examplepart.foodpart.ui.common.SubFoodCategoryChip
+import com.examplepart.foodpart.ui.screens.food.SubFoodCategoryChip
 import com.examplepart.foodpart.ui.core.AppScreens
 
 
 @Composable
 fun CategoriesScreen(navController: NavController) {
     val foodCategories = foodCategories
-    var selectedCategoryIndex by remember { mutableStateOf<Int?>(null) }
-    var selectedSubCategoryIndex by remember { mutableStateOf<Int?>(null) }
+    var selectedCategoryIndex by remember { mutableStateOf<Int?>(0) }
+    var selectedSubCategoryIndex by remember { mutableStateOf<Int?>(0) }
 
     Column(
         modifier = Modifier.padding(vertical = 10.dp)
@@ -121,6 +125,26 @@ fun CategoriesScreen(navController: NavController) {
                         buttonTitle = stringResource(id = R.string.retry)
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DisplayItemsForSubCategory(
+    items: List<FoodItemModel>,
+    onClickFoodItem: (id: String) -> Unit
+) {
+    LazyVerticalGrid(
+        modifier = Modifier.padding(horizontal = 36.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        columns = GridCells.Fixed(2)
+    ) {
+        items(items) { food ->
+            FoodItem(
+                food = food,
+            ) {
+                onClickFoodItem(food.id)
             }
         }
     }

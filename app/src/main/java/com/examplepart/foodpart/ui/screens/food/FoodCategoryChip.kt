@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.common
+package com.examplepart.foodpart.ui.screens.food
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.examplepart.foodpart.R
 import com.examplepart.foodpart.datamodel.FoodCategoryModel
+import com.examplepart.foodpart.ui.theme.DarkRed
 
 
 @Composable
@@ -35,7 +36,7 @@ fun FoodCategoryChip(
 ) {
     val borderColor = if (isSelected) MaterialTheme.colors.primary else Color.Gray
     val backgroundColor =
-        if (isSelected) Color(0xA0FF6262).copy(alpha = 0.2f) else Color.Transparent
+        if (isSelected) DarkRed else Color.Transparent
 
     Column(
         modifier = modifier
@@ -77,9 +78,8 @@ fun FoodCategoryChip(
                 .padding(vertical = 10.dp)
                 .fillMaxWidth(),
             text = foodCategoryModel.categoryName,
-            style = if (isSelected) MaterialTheme.typography.body1.copy(
-                color = MaterialTheme.colors.primary
-            ) else MaterialTheme.typography.body1,
+            color = if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.onBackground,
+            style = MaterialTheme.typography.subtitle1,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             textAlign = TextAlign.Center

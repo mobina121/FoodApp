@@ -22,7 +22,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,7 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -131,7 +130,7 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
                 .fillMaxWidth()
                 .padding(vertical = 5.dp, horizontal = 20.dp),
             text = stringResource(id = R.string.interYourInfoForSingUp),
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.subtitle1,
             color = MaterialTheme.colors.onBackground
         )
         OutlinedTextField(
@@ -153,11 +152,11 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp),
                     text = stringResource(R.string.userName),
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.colors.onSurface
                 )
             },
-            textStyle = MaterialTheme.typography.body1,
+            textStyle = MaterialTheme.typography.subtitle1,
             maxLines = 2
         )
 
@@ -180,11 +179,11 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp),
                     text = stringResource(R.string.password),
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.colors.onSurface
                 )
             },
-            textStyle = MaterialTheme.typography.body1,
+            textStyle = MaterialTheme.typography.subtitle1,
             maxLines = 2
         )
 
@@ -207,11 +206,11 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp),
                     text = stringResource(R.string.repeatPassword),
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.colors.onSurface
                 )
             },
-            textStyle = MaterialTheme.typography.body1,
+            textStyle = MaterialTheme.typography.subtitle1,
             maxLines = 2
         )
 
@@ -238,7 +237,7 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
                     },
                 text = stringResource(id = R.string.logIn),
                 style = MaterialTheme.typography.caption,
-                color = Color(0xff1976D2)
+                color = Blue
             )
         }
     }

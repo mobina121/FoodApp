@@ -36,7 +36,7 @@ fun CustomDropdownMenuItem(title: String, iconId: Int, onClicked: () -> Unit) {
             Text(
                 modifier = Modifier.weight(1f),
                 text = title,//stringResource(R.string.report),
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.subtitle1,
                 color = MaterialTheme.colors.onBackground,
             )
         }

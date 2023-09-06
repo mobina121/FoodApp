@@ -29,11 +29,13 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 13.sp
     ),
+
     button = TextStyle(
         fontFamily = FontFamily(Font(R.font.iranyekan_mobile_extra_bold)),
         fontWeight = FontWeight.ExtraBold,
         fontSize = 16.sp
     ),
+
     caption = TextStyle(
         fontFamily = FontFamily(Font(R.font.iranyekan_mobile_regular)),
         fontWeight = FontWeight.Normal,
