@@ -23,12 +23,13 @@ import com.examplepart.foodpart.datamodel.foodCategories
 import com.examplepart.foodpart.ui.common.DisplayItemsForSubCategory
 import com.examplepart.foodpart.ui.common.FoodCategoryChip
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
+import com.examplepart.foodpart.ui.common.ShowError
 import com.examplepart.foodpart.ui.common.SubFoodCategoryChip
 import com.examplepart.foodpart.ui.core.AppScreens
 
 
 @Composable
-fun CategoriesScreen(navController: NavController){
+fun CategoriesScreen(navController: NavController) {
     val foodCategories = foodCategories
     var selectedCategoryIndex by remember { mutableStateOf<Int?>(null) }
     var selectedSubCategoryIndex by remember { mutableStateOf<Int?>(null) }
@@ -101,17 +102,24 @@ fun CategoriesScreen(navController: NavController){
             val selectedSubCategory =
                 selectedSubCategoryIndex?.let { category.subCategories.getOrNull(it) }
             selectedSubCategory?.let { subCategory ->
-                DisplayItemsForSubCategory(
-                    items = subCategory.foods,
-                ) {
-                    navController.navigate(AppScreens.FoodDetail.route)
-                    navController.navigate(AppScreens.FoodDetail.route) {
-                        popUpTo(AppScreens.Categories.route) {
-                            saveState = true
+                if (subCategory.foods.isNotEmpty()) {
+                    DisplayItemsForSubCategory(
+                        items = subCategory.foods,
+                    ) {
+                        navController.navigate(AppScreens.FoodDetail.route)
+                        navController.navigate(AppScreens.FoodDetail.route) {
+                            popUpTo(AppScreens.Categories.route) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
                     }
+                } else {
+                    ShowError(
+                        errorMessage = stringResource(id = R.string.foodCategoriesNotFound),
+                        buttonTitle = stringResource(id = R.string.retry)
+                    )
                 }
             }
         }
