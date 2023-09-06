@@ -102,9 +102,11 @@ fun LoginScreenContent(
     var userNameText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
-    Column(modifier = Modifier
+    Column(
+        modifier = Modifier
         .fillMaxSize()
-        .verticalScroll(scrollState)) {
+        .verticalScroll(scrollState)
+    ) {
 
         Box(
             modifier = Modifier
