@@ -16,9 +16,9 @@ fun WhatToCookScreen(navController: NavController) {
         Text(text = "What To Cook Screen", fontSize = 45.sp)
         Row {
             Button(onClick = {
-                navController.navigate(AppScreens.Categories.route)
+                navController.navigate(AppScreens.Login.route)
             }, Modifier.weight(1f)) {
-                Text("Navigate Categories Screen", fontSize = 20.sp)
+                Text("Navigate Login Screen", fontSize = 20.sp)
             }
             Button(onClick = {
                 navController.navigate(AppScreens.Profile.route)

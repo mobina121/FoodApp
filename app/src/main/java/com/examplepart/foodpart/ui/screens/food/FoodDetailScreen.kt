@@ -67,6 +67,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
+import com.examplepart.foodpart.datamodel.fakeData
 import com.examplepart.foodpart.ui.common.CustomChip
 import com.examplepart.foodpart.ui.common.CustomDropdownMenuItem
 import com.examplepart.foodpart.ui.common.FoodAppBar
@@ -74,7 +75,6 @@ import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.PhotoOfFood
 import com.examplepart.foodpart.ui.common.SubCategory
 import com.examplepart.foodpart.ui.core.AppScreens
-import com.examplepart.foodpart.ui.datamodels.fakeData
 import kotlinx.coroutines.launch
 import androidx.compose.material.Text as Text1
 
@@ -437,7 +437,7 @@ fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     itemsIndexed(itemsToDisplay) { foodId, food ->
-                        FoodItem(food)
+                        FoodItem(food) {}
                     }
                     item() {
                         if (!showAllItems) {

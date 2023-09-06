@@ -2,56 +2,118 @@ package com.examplepart.foodpart.ui.screens.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.examplepart.foodpart.R
+import com.examplepart.foodpart.datamodel.foodCategories
+import com.examplepart.foodpart.ui.common.DisplayItemsForSubCategory
+import com.examplepart.foodpart.ui.common.FoodCategoryChip
+import com.examplepart.foodpart.ui.common.FoodPartAppBar
+import com.examplepart.foodpart.ui.common.SubFoodCategoryChip
 import com.examplepart.foodpart.ui.core.AppScreens
 
+
 @Composable
-fun CategoriesScreen(navController: NavController) {
-    Column {
-        Text("Categories Screen", fontSize = 45.sp)
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+fun CategoriesScreen(navController: NavController){
+    val foodCategories = foodCategories
+    var selectedCategoryIndex by remember { mutableStateOf<Int?>(null) }
+    var selectedSubCategoryIndex by remember { mutableStateOf<Int?>(null) }
+
+    Column(
+        modifier = Modifier.padding(vertical = 10.dp)
+    ) {
+        FoodPartAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            title = stringResource(id = R.string.foodPart),
+            showStartIcon = false,
+            showEndIcon = false,
+        )
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Button(onClick = {
-                navController.navigate(AppScreens.WhatToCook.route)
-            }, Modifier.weight(1f)) {
-                Text("Navigate What To Cook Screen", fontSize = 20.sp)
-            }
-            Spacer(modifier = Modifier.width(16.dp))
+            itemsIndexed(foodCategories) { index, foodCategoryModel ->
+                val startPadding = if (index == 0) 16.dp else 0.dp
+                val endPadding = if (index == foodCategories.size - 1) 16.dp else 0.dp
 
-            Button(onClick = {
-//                navController.navigate(AppScreens.Profile.route)
-                navController.navigate(AppScreens.Login.route)
-
-            }, Modifier.weight(1f)) {
-                Text("Navigate Profile Screen", fontSize = 20.sp)
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Button(
-                onClick = { navController.navigate(AppScreens.Search.route) },
-                Modifier.weight(1f)
-            ) {
-                Text("Navigate Search Screen", fontSize = 20.sp)
+                FoodCategoryChip(
+                    modifier = Modifier.padding(start = startPadding, end = endPadding),
+                    foodCategoryModel = foodCategoryModel,
+                    isSelected = selectedCategoryIndex == index
+                ) {
+                    selectedCategoryIndex = index
+                }
             }
         }
-        Button(onClick = {
-            navController.navigate(AppScreens.FoodDetail.route)
-        }) {
-            Text(text = "Navigate Food Detail Screen", fontSize = 20.sp)
+
+        Divider(
+            modifier = Modifier
+                .padding(vertical = 5.dp, horizontal = 16.dp)
+                .height(0.5.dp),
+            color = MaterialTheme.colors.onSurface
+        )
+
+        val selectedCategory = selectedCategoryIndex?.let { foodCategories.getOrNull(it) }
+        val hasSubcategories = selectedCategory?.subCategories?.isNotEmpty() == true
+
+        selectedCategory?.let { category ->
+            Column {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    itemsIndexed(category.subCategories) { index, subCategoryModel ->
+                        val startPadding = if (index == 0) 16.dp else 0.dp
+                        val endPadding = if (index == foodCategories.size - 1) 16.dp else 0.dp
+
+                        SubFoodCategoryChip(
+                            modifier = Modifier.padding(start = startPadding, end = endPadding),
+                            subFoodCategoryModel = subCategoryModel,
+                            isSelected = selectedSubCategoryIndex == index
+                        ) {
+                            selectedSubCategoryIndex = index
+                        }
+                    }
+                }
+                if (hasSubcategories) {
+                    Divider(
+                        modifier = Modifier
+                            .padding(vertical = 5.dp, horizontal = 16.dp)
+                            .height(0.5.dp),
+                        color = MaterialTheme.colors.onSurface
+                    )
+                }
+            }
+            val selectedSubCategory =
+                selectedSubCategoryIndex?.let { category.subCategories.getOrNull(it) }
+            selectedSubCategory?.let { subCategory ->
+                DisplayItemsForSubCategory(
+                    items = subCategory.foods,
+                ) {
+                    navController.navigate(AppScreens.FoodDetail.route)
+                    navController.navigate(AppScreens.FoodDetail.route) {
+                        popUpTo(AppScreens.Categories.route) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            }
         }
     }
 }
