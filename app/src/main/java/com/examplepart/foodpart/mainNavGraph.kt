@@ -29,7 +29,9 @@ fun NavGraphBuilder.mainNavGraph(navController: NavController) {
         SignupScreen(navController)
     }
     composable(AppScreens.Categories.route) {
-        CategoriesScreen(navController)
+        CategoriesScreen(
+//            ()->Unit
+        )
     }
     composable(AppScreens.Profile.route) {
         ProfileScreen()
