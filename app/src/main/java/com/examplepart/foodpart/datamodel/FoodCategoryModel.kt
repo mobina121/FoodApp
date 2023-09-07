@@ -107,7 +107,7 @@ val foodCategories = mutableStateListOf(
             ),
             SubFoodCategoryModel(
                 102,
-                    "سوپ ها",
+                "سوپ ها",
                 "https://example.com/pizza-avatar",
                 "https://example.com/pizza-image",
                 foods = emptyList()
@@ -794,3 +794,85 @@ val foodCategories = mutableStateListOf(
         )
     )
 )
+
+//val foodsList = mutableStateListOf(
+//    FoodItemModel(
+//        "102",
+//        "پاستا قارچ",
+//        "10",
+//        "https://example.com/pasta-image"
+//    ),
+//    FoodItemModel(
+//        "103",
+//        "پاستامخصوص",
+//        "20",
+//        "https://example.com/pasta-image"
+//    ),
+//    FoodItemModel(
+//        "104",
+//        "پاستا",
+//        "20",
+//        "https://example.com/pasta-image"
+//    ),
+//    FoodItemModel(
+//        "105",
+//        "پاستا",
+//        "20",
+//        "https://example.com/pasta-image"
+//    ),
+//    FoodItemModel(
+//        "106",
+//        "پاستا",
+//        "20",
+//        "https://example.com/pasta-image"
+//    ),
+//    FoodItemModel(
+//        "107",
+//        "پاستا",
+//        "20",
+//        "https://example.com/pasta-image"
+//    ),
+//    FoodItemModel(
+//        "108",
+//        "پاستا",
+//        "20",
+//        "https://example.com/pasta-image"
+//    ),
+//    FoodItemModel(
+//        "109",
+//        "پاستا",
+//        "20",
+//        "https://example.com/pasta-image"
+//    ),
+//    FoodItemModel(
+//        "110",
+//        "پاستا",
+//        "20",
+//        "https://example.com/pasta-image"
+//    ),
+//    FoodItemModel(
+//        "111",
+//        "پاستا",
+//        "20",
+//        "https://example.com/pasta-image"
+//    ),
+//    FoodItemModel(
+//        "112",
+//        "پاستا",
+//        "20",
+//        "https://example.com/pasta-image"
+//    ),
+//    FoodItemModel(
+//        "113",
+//        "پاستا",
+//        "20",
+//        "https://example.com/pasta-image"
+//    ),
+//    FoodItemModel(
+//        "114",
+//        "پاستا",
+//        "20",
+//        "https://example.com/pasta-image"
+//    ),
+//    )
+

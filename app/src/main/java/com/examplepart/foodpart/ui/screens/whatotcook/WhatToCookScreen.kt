@@ -61,13 +61,7 @@ fun WhatToCookScreen(navController: NavController) {
     )
     {
         //doSearch
-        navController.navigate(AppScreens.Search.route) {
-            popUpTo(AppScreens.Categories.route) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
+        navController.navigate(AppScreens.WhatToCookResult.route)
     }
 }
 

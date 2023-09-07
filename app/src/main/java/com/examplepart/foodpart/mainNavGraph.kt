@@ -1,5 +1,6 @@
 package com.examplepart.foodpart
 
+import com.examplepart.foodpart.ui.screens.whatotcook.WhatToCookResultScreen
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -12,7 +13,6 @@ import com.examplepart.foodpart.ui.screens.main.CategoriesScreen
 import com.examplepart.foodpart.ui.screens.profile.ProfileScreen
 import com.examplepart.foodpart.ui.screens.profile.SavedScreen
 import com.examplepart.foodpart.ui.screens.search.SearchScreen
-import com.examplepart.foodpart.ui.screens.whatotcook.WhatToCookResultScreen
 import com.examplepart.foodpart.ui.screens.whatotcook.WhatToCookScreen
 
 fun NavGraphBuilder.mainNavGraph(navController: NavController) {
@@ -41,7 +41,7 @@ fun NavGraphBuilder.mainNavGraph(navController: NavController) {
         SearchScreen()
     }
     composable(AppScreens.WhatToCookResult.route) {
-        WhatToCookResultScreen()
+        WhatToCookResultScreen(navController)
     }
     composable(AppScreens.WhatToCook.route) {
         WhatToCookScreen(navController)
