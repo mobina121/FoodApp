@@ -15,3 +15,11 @@ val Green = Color(0xFF00FF67)
 val Red = Color(0xFFFF4444)
 val Yellow = Color(0xFFFFE100)
 val Blue = Color(0xFF1976D2)
+
+val DarkRed = Color(0xA0FF6262).copy(alpha = 0.2f)
+val DarkGreen = Color(0xA000FF67).copy(alpha = 0.2f)
+val DarkYellow = Color(0xA0FFE100).copy(alpha = 0.2f)
+val DarkGray = Color(0xffff393939)
+
+val Transparent = Color(0x00000000)
+

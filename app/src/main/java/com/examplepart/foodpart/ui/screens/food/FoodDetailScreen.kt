@@ -59,7 +59,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -75,6 +75,7 @@ import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.PhotoOfFood
 import com.examplepart.foodpart.ui.common.SubCategory
 import com.examplepart.foodpart.ui.core.AppScreens
+import com.examplepart.foodpart.ui.theme.DarkRed
 import kotlinx.coroutines.launch
 import androidx.compose.material.Text as Text1
 
@@ -223,7 +224,7 @@ private fun FoodDetailScreenContent(
             SnackbarHost(it) { data ->
                 Snackbar(
                     actionColor = MaterialTheme.colors.primary,
-                    backgroundColor = Color(0xff393939),
+                    backgroundColor = DarkGray,
                     contentColor = MaterialTheme.colors.onBackground,
                     snackbarData = data
                 )
@@ -303,7 +304,7 @@ fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
                     icon = R.drawable.timer,
                     label = stringResource(id = R.string.time),
                     hasColor = true,
-                    color = Color(0xA0FF6262).copy(0.2f)
+                    color = DarkRed
                 )
             }
         }
@@ -416,7 +417,7 @@ fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
                     item {
                         Text(
                             text = tabText,
-                            style = MaterialTheme.typography.body1,
+                            style = MaterialTheme.typography.subtitle1,
                             color = MaterialTheme.colors.onBackground
                         )
                     }
@@ -459,7 +460,7 @@ fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
                                     Text(
                                         modifier = Modifier.padding(bottom = 4.dp),
                                         text = stringResource(R.string.showMore),
-                                        style = MaterialTheme.typography.body1,
+                                        style = MaterialTheme.typography.subtitle1,
                                         color = MaterialTheme.colors.onBackground,
                                     )
                                     Spacer(
@@ -521,11 +522,11 @@ fun Report(bottomSheetState: ModalBottomSheetState) {
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp),
                     text = stringResource(R.string.wrightHere),
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.colors.onSurface
                 )
             },
-            textStyle = MaterialTheme.typography.body1,
+            textStyle = MaterialTheme.typography.subtitle1,
             maxLines = 2
         )
         Row(

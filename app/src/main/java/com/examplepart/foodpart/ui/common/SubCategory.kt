@@ -20,21 +20,26 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.examplepart.foodpart.R
+import com.examplepart.foodpart.ui.theme.DarkGreen
+import com.examplepart.foodpart.ui.theme.DarkRed
+import com.examplepart.foodpart.ui.theme.DarkYellow
+import com.examplepart.foodpart.ui.theme.Green
+import com.examplepart.foodpart.ui.theme.Yellow
 
 
 @Composable
 fun SubCategory(icon: Int, label: String, modifier: Modifier) {
     val backgroundColor = when (label) {
-        stringResource(id = R.string.easy) -> Color(0xA000FF67).copy(alpha = 0.2f)
-        stringResource(id = R.string.difficult) -> Color(0xA0FF6262).copy(alpha = 0.2f)
-        stringResource(id = R.string.normal) -> Color(0xA0FFE100).copy(alpha = 0.2f)
+        stringResource(id = R.string.easy) -> DarkGreen
+        stringResource(id = R.string.difficult) -> DarkRed
+        stringResource(id = R.string.normal) -> DarkYellow
         else -> MaterialTheme.colors.surface
     }
 
     val color = when (label) {
-        stringResource(id = R.string.easy) -> Color(0xff00FF67)
-        stringResource(id = R.string.difficult) -> Color(0xffFF6262)
-        else -> Color(0xffFFE100)
+        stringResource(id = R.string.easy) -> Green
+        stringResource(id = R.string.difficult) -> MaterialTheme.colors.primary
+        else -> Yellow
     }
     Row(
         modifier = Modifier

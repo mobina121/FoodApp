@@ -60,7 +60,7 @@ fun FoodItem(
 
             Text(
                 text = food.name,
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.subtitle1,
                 color = MaterialTheme.colors.onBackground
             )
 

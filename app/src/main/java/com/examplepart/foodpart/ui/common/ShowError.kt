@@ -17,7 +17,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ShowError(
     errorMessage: String,
-    buttonTitle: String
+    buttonTitle: String,
+    reTry: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -38,6 +39,8 @@ fun ShowError(
         CustomButton(
             modifier = Modifier.padding(vertical = 10.dp, horizontal = 130.dp),
             buttonText = buttonTitle
-        )
+        ) {
+            reTry()
+        }
     }
 }
