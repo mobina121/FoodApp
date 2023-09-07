@@ -49,6 +49,8 @@
     <string name="howMuchTimeDoYouHave">چقدر وقت داری؟</string>
     <string name="howDifficultIsTheOrder">دستور چقدر سخت باشه؟</string>
     <string name="noMatter">مهم نیست</string>
+    <string name="resultFor">نتایج جستجو با </string>
+    <string name="extraText">سیب زمینی و تخم مرغ در 20 دقیقه با درجه سختی اسان </string>
 
 
     <string name="helpText">کاربر گرامی مواد اولیه ی موجود را در قسمت “تو خونه چی داری ؟” وارد کرده و با علامت “،” از یکدیگر جدا کنید سپس کل زمانی که دارین را به دقیقه در بخش “چقدر وقت داری ؟” وارد کنین. سطح دستور پخت را انتخاب کرده و کلیک جستجو را بزنید تا با توجه به اطلاعات شما غذاهای پیشنهاد را نمایش دهیم.</string>
