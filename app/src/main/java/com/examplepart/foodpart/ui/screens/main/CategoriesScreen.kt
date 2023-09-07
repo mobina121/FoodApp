@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,92 +34,98 @@ fun CategoriesScreen(navController: NavController) {
     val foodCategories = foodCategories
     var selectedCategoryIndex by remember { mutableStateOf<Int?>(0) }
     var selectedSubCategoryIndex by remember { mutableStateOf<Int?>(0) }
-
-    Column(
-        modifier = Modifier.padding(vertical = 10.dp)
-    ) {
-        FoodPartAppBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            title = stringResource(id = R.string.foodPart),
-            showStartIcon = false,
-            showEndIcon = false,
-        )
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+    Scaffold(
+        topBar = {
+            FoodPartAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 16.dp, 16.dp, 0.dp),
+                title = stringResource(id = R.string.foodPart),
+                showStartIcon = false,
+                showEndIcon = false,
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier.padding(paddingValues)
         ) {
-            itemsIndexed(foodCategories) { index, foodCategoryModel ->
-                val startPadding = if (index == 0) 16.dp else 0.dp
-                val endPadding = if (index == foodCategories.size - 1) 16.dp else 0.dp
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                itemsIndexed(foodCategories) { index, foodCategoryModel ->
+                    val startPadding = if (index == 0) 16.dp else 0.dp
+                    val endPadding = if (index == foodCategories.size - 1) 16.dp else 0.dp
 
-                FoodCategoryChip(
-                    modifier = Modifier.padding(start = startPadding, end = endPadding),
-                    foodCategoryModel = foodCategoryModel,
-                    isSelected = selectedCategoryIndex == index
-                ) {
-                    selectedCategoryIndex = index
+                    FoodCategoryChip(
+                        modifier = Modifier.padding(start = startPadding, end = endPadding),
+                        foodCategoryModel = foodCategoryModel,
+                        isSelected = selectedCategoryIndex == index
+                    ) {
+                        selectedCategoryIndex = index
+                    }
                 }
             }
-        }
 
-        Divider(
-            modifier = Modifier
-                .padding(vertical = 5.dp, horizontal = 16.dp)
-                .height(0.5.dp),
-            color = MaterialTheme.colors.onSurface
-        )
+            Divider(
+                modifier = Modifier
+                    .padding(vertical = 5.dp, horizontal = 16.dp)
+                    .height(0.5.dp),
+                color = MaterialTheme.colors.onSurface
+            )
 
-        val selectedCategory = selectedCategoryIndex?.let { foodCategories.getOrNull(it) }
-        val hasSubcategories = selectedCategory?.subCategories?.isNotEmpty() == true
+            val selectedCategory = selectedCategoryIndex?.let { foodCategories.getOrNull(it) }
+            val hasSubcategories = selectedCategory?.subCategories?.isNotEmpty() == true
 
-        selectedCategory?.let { category ->
-            Column {
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    itemsIndexed(category.subCategories) { index, subCategoryModel ->
-                        val startPadding = if (index == 0) 16.dp else 0.dp
-                        val endPadding = if (index == foodCategories.size - 1) 16.dp else 0.dp
+            selectedCategory?.let { category ->
+                Column {
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        itemsIndexed(category.subCategories) { index, subCategoryModel ->
+                            val startPadding = if (index == 0) 16.dp else 0.dp
+                            val endPadding = if (index == foodCategories.size - 1) 16.dp else 0.dp
 
-                        SubFoodCategoryChip(
-                            modifier = Modifier.padding(start = startPadding, end = endPadding),
-                            subFoodCategoryModel = subCategoryModel,
-                            isSelected = selectedSubCategoryIndex == index
-                        ) {
-                            selectedSubCategoryIndex = index
+                            SubFoodCategoryChip(
+                                modifier = Modifier.padding(start = startPadding, end = endPadding),
+                                subFoodCategoryModel = subCategoryModel,
+                                isSelected = selectedSubCategoryIndex == index
+                            ) {
+                                selectedSubCategoryIndex = index
+                            }
                         }
                     }
-                }
-                if (hasSubcategories) {
-                    Divider(
-                        modifier = Modifier
-                            .padding(vertical = 5.dp, horizontal = 16.dp)
-                            .height(0.5.dp),
-                        color = MaterialTheme.colors.onSurface
-                    )
-                }
-            }
-            val selectedSubCategory =
-                selectedSubCategoryIndex?.let { category.subCategories.getOrNull(it) }
-            selectedSubCategory?.let { subCategory ->
-                if (subCategory.foods.isNotEmpty()) {
-                    FoodsList(
-                        items = subCategory.foods,
-                    ) {
-                        navController.navigate(AppScreens.FoodDetail.route)
+                    if (hasSubcategories) {
+                        Divider(
+                            modifier = Modifier
+                                .padding(vertical = 5.dp, horizontal = 16.dp)
+                                .height(0.5.dp),
+                            color = MaterialTheme.colors.onSurface
+                        )
                     }
-                } else {
-                    ShowError(
-                        errorMessage = stringResource(id = R.string.foodCategoriesNotFound),
-                        buttonTitle = stringResource(id = R.string.retry)
-                    ){
-                        //doRetry
+                }
+                val selectedSubCategory =
+                    selectedSubCategoryIndex?.let { category.subCategories.getOrNull(it) }
+                selectedSubCategory?.let { subCategory ->
+                    if (subCategory.foods.isNotEmpty()) {
+                        FoodsList(
+                            items = subCategory.foods,
+                        ) {
+                            navController.navigate(AppScreens.FoodDetail.route)
+                        }
+                    } else {
+                        ShowError(
+                            errorMessage = stringResource(id = R.string.foodCategoriesNotFound),
+                            buttonTitle = stringResource(id = R.string.retry)
+                        ) {
+                            //doRetry
+                        }
                     }
                 }
             }
         }
     }
+
+
 }
 
 

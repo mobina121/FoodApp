@@ -60,7 +60,7 @@ fun WhatToCookResultScreenContent(
             FoodPartAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
+                    .padding(16.dp, 16.dp, 16.dp, 0.dp),
                 title = stringResource(id = R.string.whatToCook),
                 showStartIcon = true,
                 showEndIcon = false,

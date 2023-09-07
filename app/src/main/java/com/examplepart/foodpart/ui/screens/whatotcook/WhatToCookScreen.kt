@@ -105,7 +105,7 @@ private fun WhatToCookScreenContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
                 .verticalScroll(scrollState),
 
             ) {
@@ -200,7 +200,7 @@ private fun WhatToCookScreenContent(
             }
             Spacer(modifier = Modifier.weight(1f))
             CustomButton(
-                modifier = Modifier.padding(horizontal = 4.dp),
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
                 buttonText = stringResource(id = R.string.search),
             ) {
                 if (materialText.isNotEmpty() && timeText.isNotEmpty()) {

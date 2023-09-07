@@ -73,7 +73,8 @@ private fun SearchScreenContent(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize().padding(it),
+                .fillMaxSize()
+                .padding(it),
 
             ) {
 
