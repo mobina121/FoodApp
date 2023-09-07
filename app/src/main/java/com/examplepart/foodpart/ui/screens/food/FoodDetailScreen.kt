@@ -246,7 +246,7 @@ private fun FoodDetailScreenContent(
 
 
 @SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
 
@@ -438,7 +438,10 @@ fun ScreenContent(modifier: Modifier = Modifier, navController: NavController) {
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     itemsIndexed(itemsToDisplay) { foodId, food ->
-                        FoodItem(food) {}
+                        FoodItem(
+                            modifier = Modifier,
+                            food
+                        ) {}
                     }
                     item() {
                         if (!showAllItems) {

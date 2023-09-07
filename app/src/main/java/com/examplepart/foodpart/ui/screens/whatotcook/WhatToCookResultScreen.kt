@@ -122,6 +122,7 @@ fun WhatToCookResultScreenContent(
                 ) {
                     items(foodsList) { food ->
                         FoodItem(
+                            modifier = Modifier,
                             food = food,
                         ) {
                             ocClickFood()

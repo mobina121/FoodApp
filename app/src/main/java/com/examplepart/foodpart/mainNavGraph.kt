@@ -32,7 +32,7 @@ fun NavGraphBuilder.mainNavGraph(navController: NavController) {
         CategoriesScreen(navController)
     }
     composable(AppScreens.Profile.route) {
-        ProfileScreen()
+        ProfileScreen(navController)
     }
     composable(AppScreens.Saved.route) {
         SavedScreen()
