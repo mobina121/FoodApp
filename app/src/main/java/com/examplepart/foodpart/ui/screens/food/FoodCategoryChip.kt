@@ -29,7 +29,7 @@ import com.examplepart.foodpart.ui.theme.DarkRed
 
 @Composable
 fun FoodCategoryChip(
-    modifier: Modifier ,
+    modifier: Modifier,
     foodCategoryModel: FoodCategoryModel,
     isSelected: Boolean,
     onClicked: () -> Unit

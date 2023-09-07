@@ -26,11 +26,12 @@ import com.examplepart.foodpart.datamodel.FoodItemModel
 
 @Composable
 fun FoodItem(
+    modifier: Modifier ,
     food: FoodItemModel,
     onClick: (id: String) -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(vertical = 10.dp, horizontal = 5.dp)
             .clip(MaterialTheme.shapes.medium)
             .clickable {

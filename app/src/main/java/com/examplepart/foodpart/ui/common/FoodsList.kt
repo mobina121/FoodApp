@@ -22,6 +22,7 @@ fun FoodsList(
     ) {
         items(items) { food ->
             FoodItem(
+                modifier = Modifier,
                 food = food,
             ) {
                 onClickFoodItem(food.id)

@@ -154,6 +154,7 @@ private fun SearchScreenContent(
                         ) {
                             items(foods) { food ->
                                 FoodItem(
+                                    modifier = Modifier,
                                     food = food,
                                 ) {
                                     ocClickFood()
