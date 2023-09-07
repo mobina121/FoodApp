@@ -89,7 +89,9 @@ fun LoginScreen(navController: NavController) {
                     .padding(paddingValues)
                     .padding(25.dp),
                 navController = navController
-            )
+            ) {
+                //doLogin
+            }
         }
     }
 }
@@ -97,15 +99,16 @@ fun LoginScreen(navController: NavController) {
 @Composable
 fun LoginScreenContent(
     modifier: Modifier,
-    navController: NavController
+    navController: NavController,
+    onLogin: () -> Unit
 ) {
     var userNameText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
-        .fillMaxSize()
-        .verticalScroll(scrollState)
+            .fillMaxSize()
+            .verticalScroll(scrollState)
     ) {
 
         Box(
@@ -193,8 +196,10 @@ fun LoginScreenContent(
 
         CustomButton(
             modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp),
-            buttonText = stringResource(id = R.string.confirm)
-        )
+            buttonText = stringResource(id = R.string.confirm),
+        ) {
+            onLogin()
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,

@@ -123,7 +123,9 @@ fun CategoriesScreen(navController: NavController) {
                     ShowError(
                         errorMessage = stringResource(id = R.string.foodCategoriesNotFound),
                         buttonTitle = stringResource(id = R.string.retry)
-                    )
+                    ){
+                        //doRetry
+                    }
                 }
             }
         }

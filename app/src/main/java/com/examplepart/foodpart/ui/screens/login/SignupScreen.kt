@@ -89,21 +89,28 @@ fun SignupScreen(navController: NavController) {
                     .padding(paddingValues)
                     .padding(25.dp),
                 navController = navController
-            )
+            ) {
+                //doSignup
+            }
         }
     }
 }
 
 @Composable
-fun SignupScreenContent(modifier: Modifier, navController: NavController) {
+fun SignupScreenContent(
+    modifier: Modifier,
+    navController: NavController,
+    onSignup: () -> Unit
+) {
     var userNameText by remember { mutableStateOf("") }
     var passwordText by remember { mutableStateOf("") }
     var repeatPasswordText by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
-    Column (modifier = Modifier
-        .fillMaxSize()
-        .verticalScroll(scrollState)){
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+    ) {
         Box(
             modifier = Modifier
                 .padding(top = 100.dp)
@@ -217,7 +224,9 @@ fun SignupScreenContent(modifier: Modifier, navController: NavController) {
         CustomButton(
             modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp),
             buttonText = stringResource(id = R.string.confirm)
-        )
+        ) {
+            onSignup()
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
