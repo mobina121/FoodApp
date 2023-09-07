@@ -38,7 +38,7 @@ fun NavGraphBuilder.mainNavGraph(navController: NavController) {
         SavedScreen()
     }
     composable(AppScreens.Search.route) {
-        SearchScreen()
+        SearchScreen(navController)
     }
     composable(AppScreens.WhatToCookResult.route) {
         WhatToCookResultScreen(navController)

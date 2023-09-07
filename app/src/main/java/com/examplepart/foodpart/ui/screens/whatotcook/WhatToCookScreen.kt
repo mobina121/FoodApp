@@ -1,5 +1,7 @@
 package com.examplepart.foodpart.ui.screens.whatotcook
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +20,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarHost
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -29,10 +34,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
@@ -43,9 +49,6 @@ import com.examplepart.foodpart.ui.theme.Green
 
 @Composable
 fun WhatToCookScreen(navController: NavController) {
-
-    val whatDoYouHaveText by remember { mutableStateOf("") }
-    val howMuchTimeDoYouHave by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
     val selectedOption = remember { mutableStateOf("Option1") }
     val (helpMessageVisible, setHelpMessageVisible) = remember { mutableStateOf(true) }
@@ -53,8 +56,6 @@ fun WhatToCookScreen(navController: NavController) {
 
     WhatToCookScreenContent(
         scrollState,
-        whatDoYouHaveText,
-        howMuchTimeDoYouHave,
         selectedOption,
         helpMessageVisible,
         setHelpMessageVisible
@@ -68,86 +69,60 @@ fun WhatToCookScreen(navController: NavController) {
 @Composable
 private fun WhatToCookScreenContent(
     scrollState: ScrollState,
-    whatDoYouHaveText: String,
-    howMuchTimeDoYouHave: String,
     selectedOption: MutableState<String>,
     helpMessageVisible: Boolean,
     setHelpMessageVisible: (Boolean) -> Unit,
     onSearch: () -> Unit
 ) {
-    var whatDoYouHaveText1 = whatDoYouHaveText
-    var howMuchTimeDoYouHave1 = howMuchTimeDoYouHave
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(scrollState),
+    var materialText by remember { mutableStateOf("") }
+    var timeText by remember { mutableStateOf("") }
+    val msg = stringResource(id = R.string.errorMsg)
+    val context = LocalContext.current
 
-        ) {
-        FoodPartAppBar(
-            modifier = Modifier
-                .fillMaxWidth(),
-            title = stringResource(id = R.string.whatToCook),
-            showStartIcon = false,
-            showEndIcon = false,
-        )
-        if (helpMessageVisible) {
-            HelpMessage(onCloseClick = {
-                setHelpMessageVisible(false)
-            })
+    Scaffold(
+        topBar = {
+            FoodPartAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 16.dp, 16.dp, 0.dp),
+                title = stringResource(id = R.string.whatToCook),
+                showStartIcon = false,
+                showEndIcon = false,
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(it) { data ->
+                Snackbar(
+                    backgroundColor = Color.DarkGray,
+                    contentColor = MaterialTheme.colors.onBackground,
+                    snackbarData = data
+                )
+            }
         }
 
-        OutlinedTextField(
+    ) {
+        Column(
             modifier = Modifier
-                .padding(vertical = 20.dp)
-                .fillMaxWidth()
-                .height(56.dp),
-            value = whatDoYouHaveText1,
-            onValueChange = { text -> whatDoYouHaveText1 = text },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                backgroundColor = MaterialTheme.colors.surface,
-                unfocusedBorderColor = MaterialTheme.colors.surface,
-                focusedBorderColor = MaterialTheme.colors.onSurface,
-            ),
-            shape = MaterialTheme.shapes.medium,
-            placeholder = {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
-                    text = stringResource(R.string.whatDoYouHave),
-                    style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.onSurface
-                )
-            },
-            textStyle = MaterialTheme.typography.subtitle1,
-            maxLines = 2
-        )
-
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp),
-            text = stringResource(R.string.helpOne),
-            style = MaterialTheme.typography.subtitle1,
-            color = MaterialTheme.colors.onSurface
-        )
-
-        Row(
-            modifier = Modifier
-                .padding(vertical = 20.dp)
-                .fillMaxWidth()
-                .height(56.dp)
-                .clip(MaterialTheme.shapes.medium)
-                .background(MaterialTheme.colors.surface),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+                .fillMaxSize()
+                .padding(it)
+                .padding(16.dp)
+                .verticalScroll(scrollState),
 
             ) {
+
+            if (helpMessageVisible) {
+                HelpMessage(onCloseClick = {
+                    setHelpMessageVisible(false)
+                })
+            }
+
             OutlinedTextField(
-                modifier = Modifier.weight(4f),
-                value = howMuchTimeDoYouHave1,
-                onValueChange = { text -> howMuchTimeDoYouHave1 = text },
+                modifier = Modifier
+                    .padding(vertical = 20.dp)
+                    .fillMaxWidth()
+                    .height(56.dp),
+                value = materialText,
+                onValueChange = { text -> materialText = text },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = MaterialTheme.colors.surface,
                     unfocusedBorderColor = MaterialTheme.colors.surface,
@@ -159,7 +134,7 @@ private fun WhatToCookScreenContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 10.dp),
-                        text = stringResource(R.string.howMuchTimeDoYouHave),
+                        text = stringResource(R.string.whatDoYouHave),
                         style = MaterialTheme.typography.subtitle1,
                         color = MaterialTheme.colors.onSurface
                     )
@@ -168,32 +143,79 @@ private fun WhatToCookScreenContent(
                 maxLines = 2
             )
             Text(
-                modifier = Modifier.weight(1f),
-                text = stringResource(id = R.string.time),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colors.onBackground,
-                style = MaterialTheme.typography.subtitle1
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp),
+                text = stringResource(R.string.helpOne),
+                style = MaterialTheme.typography.subtitle1,
+                color = MaterialTheme.colors.onSurface
             )
-        }
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp),
-            text = stringResource(R.string.howDifficultIsTheOrder),
-            style = MaterialTheme.typography.subtitle1,
-            color = MaterialTheme.colors.onSurface
-        )
-        CustomRadioButtonGroup {
-            println("Selected option: ${selectedOption.value}")
-        }
-        Spacer(modifier = Modifier.weight(1f))
-        CustomButton(
-            modifier = Modifier.padding(horizontal = 4.dp),
-            buttonText = stringResource(id = R.string.search),
-        ) {
-            onSearch()
+            OutlinedTextField(
+                modifier = Modifier
+                    .padding(vertical = 20.dp)
+                    .fillMaxWidth()
+                    .height(56.dp),
+                value = timeText,
+                onValueChange = { text -> timeText = text },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    backgroundColor = MaterialTheme.colors.surface,
+                    unfocusedBorderColor = MaterialTheme.colors.surface,
+                    focusedBorderColor = MaterialTheme.colors.onSurface,
+                ),
+                shape = MaterialTheme.shapes.medium,
+                placeholder = {
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            modifier = Modifier,
+                            text = stringResource(id = R.string.howMuchTimeDoYouHave),
+                            color = MaterialTheme.colors.onBackground,
+                            style = MaterialTheme.typography.subtitle1
+                        )
+                        Text(
+                            modifier = Modifier,
+                            text = stringResource(id = R.string.time),
+                            color = MaterialTheme.colors.onBackground,
+                            style = MaterialTheme.typography.subtitle1
+                        )
+                    }
+                },
+                textStyle = MaterialTheme.typography.subtitle1,
+                maxLines = 2
+            )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp),
+                text = stringResource(R.string.howDifficultIsTheOrder),
+                style = MaterialTheme.typography.subtitle1,
+                color = MaterialTheme.colors.onSurface
+            )
+            CustomRadioButtonGroup {
+                println("Selected option: ${selectedOption.value}")
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            CustomButton(
+                modifier = Modifier.padding(horizontal = 4.dp),
+                buttonText = stringResource(id = R.string.search),
+            ) {
+                if (materialText.isNotEmpty() && timeText.isNotEmpty()) {
+                    onSearch()
+                } else {
+                    showErrorMsg(context, msg)
+                }
+            }
         }
     }
+
+}
+
+private fun showErrorMsg(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 
 @Composable
