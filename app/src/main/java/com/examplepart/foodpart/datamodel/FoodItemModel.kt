@@ -2,7 +2,18 @@ package com.examplepart.foodpart.datamodel
 
 import androidx.compose.runtime.mutableStateListOf
 
-data class FoodItemModel(val id: String, val name: String, val time: String, val imageUrl: String)
+data class FoodItemModel(
+    val id: String,
+    val name: String,
+    val time: String,
+    val imageUrl: String,
+    val count: String? = null,
+    val difficulty: String? = null,
+    val point: String? = null,
+    val readyTime: Int? = null,
+    val recipe: String? = null,
+    val meals: List<String>? = null,
+)
 
 val fakeData = mutableStateListOf(
     FoodItemModel("1","پیتزا", "30 دقیقه",""),
