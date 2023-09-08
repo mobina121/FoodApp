@@ -128,6 +128,7 @@ private fun WhatToCookScreenContent(
                     backgroundColor = MaterialTheme.colors.surface,
                     unfocusedBorderColor = MaterialTheme.colors.surface,
                     focusedBorderColor = MaterialTheme.colors.onSurface,
+                    cursorColor = MaterialTheme.colors.onSurface,
                 ),
                 shape = MaterialTheme.shapes.medium,
                 placeholder = {
@@ -162,6 +163,7 @@ private fun WhatToCookScreenContent(
                     backgroundColor = MaterialTheme.colors.surface,
                     unfocusedBorderColor = MaterialTheme.colors.surface,
                     focusedBorderColor = MaterialTheme.colors.onSurface,
+                    cursorColor = MaterialTheme.colors.onSurface
                 ),
                 shape = MaterialTheme.shapes.medium,
                 placeholder = {
@@ -204,7 +206,7 @@ private fun WhatToCookScreenContent(
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
                 buttonText = stringResource(id = R.string.search),
             ) {
-                if (materialText.isNotEmpty() && timeText.isNotEmpty()) {
+                if (materialText.isNotEmpty()) {
                     onSearch()
                 } else {
                     showErrorMsg(context, msg)
