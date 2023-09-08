@@ -55,7 +55,7 @@
     <string name="whatAreYouLookingFor">دنبال چی میگردی؟</string>
     <string name="wrightHereInformal">اینجا بنویس…</string>
     <string name="nothingFound">اوپس… چیزی پیدا نشد!</string>
-    <string name="errorMsg">بگو تو خونه چی داری و چقدر تایم داری!</string>
+    <string name="errorMsg">بگو تو خونه چی داری!</string>
     <string name="onConfirmation">تایید</string>
     <string name="changeUserName">تغییر نام کاربری</string>
     <string name="newUserName">نام کاربری جدید</string>

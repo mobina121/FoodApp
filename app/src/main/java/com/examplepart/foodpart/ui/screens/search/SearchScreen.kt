@@ -1,6 +1,5 @@
 package com.examplepart.foodpart.ui.screens.search
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,17 +8,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -78,6 +78,22 @@ private fun SearchScreenContent(
 
             ) {
 
+            val trailingIconView = @Composable {
+                if (searchText.isNotEmpty()) {
+                    IconButton(
+                        onClick = {
+                            searchText = ""
+                            isFound = true
+                        },
+                    ) {
+                        Icon(
+                            Icons.Default.Clear,
+                            contentDescription = "",
+                            tint = if (isFound) MaterialTheme.colors.onSurface else MaterialTheme.colors.primary
+                        )
+                    }
+                }
+            }
             OutlinedTextField(
                 modifier = Modifier
                     .padding(vertical = 20.dp, horizontal = 16.dp)
@@ -89,6 +105,7 @@ private fun SearchScreenContent(
                     backgroundColor = MaterialTheme.colors.surface,
                     unfocusedBorderColor = if (isFound) MaterialTheme.colors.onSurface else MaterialTheme.colors.primary,
                     focusedBorderColor = if (isFound) MaterialTheme.colors.onSurface else MaterialTheme.colors.primary,
+                    cursorColor = MaterialTheme.colors.onSurface
                 ),
                 shape = MaterialTheme.shapes.medium,
                 placeholder = {
@@ -106,20 +123,11 @@ private fun SearchScreenContent(
                             color = if (isFound) MaterialTheme.colors.onSurface else MaterialTheme.colors.primary
                         )
                         Spacer(modifier = Modifier.weight(1f))
-                        Icon(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .clickable {
-                                    onCancelSearch()
-                                },
-                            painter = painterResource(id = R.drawable.ic_close),
-                            contentDescription = "arrow forward icon",
-                            tint = if (isFound) MaterialTheme.colors.onSurface else MaterialTheme.colors.primary
-                        )
                     }
                 },
                 textStyle = MaterialTheme.typography.subtitle1,
-                maxLines = 2
+                maxLines = 2,
+                trailingIcon = trailingIconView
             )
             if (searchText.isNotEmpty()) {
                 if (searchText == "موز") {
