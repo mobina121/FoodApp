@@ -1,6 +1,6 @@
-package com.examplepart.foodpart.ui.screens.whatotcook
+package com.examplepart.foodpart.ui.core
 
-enum class RadioOption(val title: String) {
+enum class Difficulty(val title: String) {
     NO_MATTER("مهم نیست"),
     EASY("آسان"),
     NORMAL("متوسط"),

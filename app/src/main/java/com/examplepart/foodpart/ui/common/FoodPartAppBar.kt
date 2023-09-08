@@ -25,7 +25,7 @@ fun FoodPartAppBar(
     TopAppBar(
         modifier = modifier,
         backgroundColor = MaterialTheme.colors.background,
-        elevation = 4.dp,
+        elevation = 0.dp,
     ) {
         Row(
             modifier = contentModifier.fillMaxWidth(),

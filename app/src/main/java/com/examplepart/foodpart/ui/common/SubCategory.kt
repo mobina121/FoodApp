@@ -2,6 +2,7 @@ package com.examplepart.foodpart.ui.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -28,7 +29,11 @@ import com.examplepart.foodpart.ui.theme.Yellow
 
 
 @Composable
-fun SubCategory(icon: Int, label: String, modifier: Modifier) {
+fun SubCategory(
+    label: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
     val backgroundColor = when (label) {
         stringResource(id = R.string.easy) -> DarkGreen
         stringResource(id = R.string.difficult) -> DarkRed
@@ -36,23 +41,26 @@ fun SubCategory(icon: Int, label: String, modifier: Modifier) {
         else -> MaterialTheme.colors.surface
     }
 
-    val color = when (label) {
+    val borderColor = when (label) {
         stringResource(id = R.string.easy) -> Green
         stringResource(id = R.string.difficult) -> MaterialTheme.colors.primary
         else -> Yellow
     }
+
     Row(
-        modifier = Modifier
-            .fillMaxHeight()
+        modifier = modifier
             .clip(MaterialTheme.shapes.large)
             .background(
                 color = backgroundColor
             )
             .border(
                 width = 1.dp,
-                color = color,
+                color = borderColor,
                 shape = MaterialTheme.shapes.large
             )
+            .clickable {
+                onClick()
+            }
             .padding(vertical = 5.dp, horizontal = 15.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -61,9 +69,9 @@ fun SubCategory(icon: Int, label: String, modifier: Modifier) {
             modifier = Modifier
                 .padding(0.dp, 0.dp, 10.dp, 0.dp)
                 .size(18.dp),
-            painter = painterResource(id = icon),
+            painter = painterResource(id = R.drawable.ic_leaf),
             contentDescription = "",
-            tint = color
+            tint = borderColor
         )
 
         Text(
