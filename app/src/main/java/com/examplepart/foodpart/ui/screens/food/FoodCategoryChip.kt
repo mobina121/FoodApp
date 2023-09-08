@@ -59,9 +59,7 @@ fun FoodCategoryChip(
 
         ) {
             Image(
-                painter = painterResource(
-                    id = if (isSelected) R.drawable.salectes_cat else R.drawable.ghaza
-                ),
+                painter = painterResource(R.drawable.salectes_cat),
                 contentDescription = "",
                 contentScale = ContentScale.Fit,
                 modifier = Modifier

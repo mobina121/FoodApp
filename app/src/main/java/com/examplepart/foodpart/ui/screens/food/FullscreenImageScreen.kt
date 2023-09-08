@@ -2,16 +2,13 @@ package com.examplepart.foodpart.ui.screens.food
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -20,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
-import com.examplepart.foodpart.ui.common.FoodAppBar
+import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.core.AppScreens
 
 
@@ -28,32 +25,31 @@ import com.examplepart.foodpart.ui.core.AppScreens
 fun FullscreenImageScreen(navController: NavController) {
     Scaffold(
         topBar = {
-            FoodAppBar(
-                modifier = Modifier.padding(horizontal = 15.dp),
-                title = {
-                    Text(
-                        text = stringResource(R.string.picture),
-                        style = MaterialTheme.typography.h2,
-                        color = MaterialTheme.colors.onBackground,
-                    )
-                },
-                actions = {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.pic_app_bar),
-                            contentDescription = "more icon",
-                            tint = MaterialTheme.colors.onBackground
-                        )
-                    }
-                },
-                navigationIcon = {
+            FoodPartAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                title = stringResource(id = R.string.picture),
+                showStartIcon = true,
+                showEndIcon = true,
+                startIcon = {
                     IconButton(onClick = {
                         navController.navigate(AppScreens.FoodDetail.route)
                     }) {
                         Icon(
-                            modifier = Modifier.size(18.dp),
-                            painter = painterResource(id = R.drawable.arrow_back),
+                            painter = painterResource(id = R.drawable.arrow_right),
                             contentDescription = "arrow forward icon",
+                            tint = MaterialTheme.colors.onBackground
+                        )
+                    }
+                },
+                endIcon = {
+                    IconButton(
+                        onClick = {})
+                    {
+                        Icon(
+                            painter = painterResource(id = R.drawable.pic_app_bar),
+                            contentDescription = "more icon",
                             tint = MaterialTheme.colors.onBackground
                         )
                     }
@@ -63,17 +59,15 @@ fun FullscreenImageScreen(navController: NavController) {
     ) { paddingValues ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(paddingValues)
-                .padding(vertical = 40.dp)
+                .padding(vertical = 64.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.food_pic),
                 contentDescription = "",
                 contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
+                modifier = Modifier.fillMaxSize()
             )
         }
     }

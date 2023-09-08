@@ -36,10 +36,26 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navigationItems = listOf(
-                AppScreenItem(AppScreens.Categories, stringResource(R.string.categories), R.drawable.ic_category),
-                AppScreenItem(AppScreens.WhatToCook, stringResource(R.string.whatToCook), R.drawable.ic_restaurant_menu),
-                AppScreenItem(AppScreens.Search, stringResource(R.string.search), R.drawable.ic_search),
-                AppScreenItem(AppScreens.Profile, stringResource(R.string.profile), R.drawable.ic_profile)
+                AppScreenItem(
+                    AppScreens.Categories,
+                    stringResource(R.string.categories),
+                    R.drawable.ic_category
+                ),
+                AppScreenItem(
+                    AppScreens.WhatToCook,
+                    stringResource(R.string.whatToCook),
+                    R.drawable.ic_restaurant_menu
+                ),
+                AppScreenItem(
+                    AppScreens.Search,
+                    stringResource(R.string.search),
+                    R.drawable.ic_search
+                ),
+                AppScreenItem(
+                    AppScreens.Profile,
+                    stringResource(R.string.profile),
+                    R.drawable.ic_profile
+                )
             )
 
             val navController = rememberNavController()
@@ -77,14 +93,14 @@ class MainActivity : ComponentActivity() {
                                         },
                                         icon = {
                                             Icon(
-                                                modifier=Modifier.padding(6.dp),
+                                                modifier = Modifier.padding(6.dp),
                                                 painter = painterResource(id = screen.iconResId),
                                                 contentDescription = null
                                             )
                                         },
                                         label = {
                                             Text(
-                                                modifier=Modifier.padding(bottom = 10.dp),
+                                                modifier = Modifier.padding(bottom = 10.dp),
                                                 text = screen.label,
                                                 style = MaterialTheme.typography.subtitle1
                                             )

@@ -37,7 +37,7 @@ fun WhatToCookResultScreen(navController: NavController) {
 
     WhatToCookResultScreenContent(
         foods,
-        ocClickStareIcon = {
+        onClickStareIcon = {
             navController.navigate(AppScreens.WhatToCook.route)
         },
         ocClickFood = {
@@ -49,7 +49,7 @@ fun WhatToCookResultScreen(navController: NavController) {
 @Composable
 fun WhatToCookResultScreenContent(
     foodsList: List<FoodItemModel>,
-    ocClickStareIcon: () -> Unit,
+    onClickStareIcon: () -> Unit,
     ocClickFood: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -67,7 +67,7 @@ fun WhatToCookResultScreenContent(
                 startIcon = {
 
                     IconButton(onClick = {
-                        ocClickStareIcon()
+                        onClickStareIcon()
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_right),

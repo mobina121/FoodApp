@@ -45,6 +45,7 @@ import com.examplepart.foodpart.R
 import com.examplepart.foodpart.ui.common.CustomButton
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.core.AppScreens
+import com.examplepart.foodpart.ui.core.Difficulty
 import com.examplepart.foodpart.ui.theme.Green
 
 @Composable
@@ -265,7 +266,7 @@ private fun HelpMessage(
 private fun CustomRadioButtonGroup(
     optionSelected: (selectedOption: String) -> Unit
 ) {
-    var selectedOption by remember { mutableStateOf(RadioOption.NO_MATTER) }
+    var selectedOption by remember { mutableStateOf(Difficulty.NO_MATTER) }
 
     Row(
         modifier = Modifier
@@ -275,7 +276,7 @@ private fun CustomRadioButtonGroup(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        RadioOption.values().forEach { option ->
+        Difficulty.values().forEach { option ->
             Row(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.medium)
