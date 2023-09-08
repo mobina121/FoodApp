@@ -6,12 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
@@ -21,7 +19,6 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -37,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
 import com.examplepart.foodpart.ui.common.CustomButton
+import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.core.AppScreens
 
 
@@ -44,36 +43,22 @@ import com.examplepart.foodpart.ui.core.AppScreens
 fun LoginScreen(navController: NavController) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                elevation = 0.dp,
-                backgroundColor = MaterialTheme.colors.background,
-                content = {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp)
-                            .padding(vertical = 10.dp, horizontal = 15.dp)
-                            .padding(horizontal = 15.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        IconButton(onClick = {
-                            navController.navigate(AppScreens.FoodDetail.route)
-                        }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.arrow_right),
-                                contentDescription = "arrow forward icon",
-                                tint = MaterialTheme.colors.onBackground
-                            )
-                        }
-                        Spacer(
-                            modifier = Modifier.size(10.dp)
-                        )
-                        Text(
-                            modifier = Modifier,
-                            text = stringResource(id = R.string.logIn),
-                            style = MaterialTheme.typography.h2,
-                            color = MaterialTheme.colors.onBackground,
+            FoodPartAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp, 16.dp, 16.dp, 0.dp),
+                title = stringResource(id = R.string.logIn),
+                showStartIcon = true,
+                showEndIcon = false,
+                startIcon = {
+
+                    IconButton(onClick = {
+                        navController.navigate(AppScreens.FoodDetail.route)
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_right),
+                            contentDescription = "arrow forward icon",
+                            tint = MaterialTheme.colors.onBackground
                         )
                     }
                 }
@@ -81,13 +66,12 @@ fun LoginScreen(navController: NavController) {
         }
     ) { paddingValues ->
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
             contentAlignment = Alignment.Center
         ) {
             LoginScreenContent(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(25.dp),
                 navController = navController
             ) {
                 //doLogin
@@ -98,7 +82,6 @@ fun LoginScreen(navController: NavController) {
 
 @Composable
 fun LoginScreenContent(
-    modifier: Modifier,
     navController: NavController,
     onLogin: () -> Unit
 ) {
@@ -110,7 +93,6 @@ fun LoginScreenContent(
             .fillMaxSize()
             .verticalScroll(scrollState)
     ) {
-
         Box(
             modifier = Modifier
                 .padding(top = 100.dp)
@@ -214,6 +196,7 @@ fun LoginScreenContent(
             Text(
                 modifier = Modifier
                     .padding(horizontal = 4.dp)
+                    .clip(MaterialTheme.shapes.medium)
                     .clickable {
                         navController.navigate(AppScreens.Signup.route)
                     },
