@@ -3,7 +3,7 @@
 
     <style name="Theme.MySplash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_dark_1</item>
         <item name="postSplashScreenTheme">@style/Theme.FoodPart</item>
     </style>
 
