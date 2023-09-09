@@ -67,8 +67,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
-import com.examplepart.foodpart.datamodel.FoodDetailsModel
 import com.examplepart.foodpart.datamodel.fakeData
+import com.examplepart.foodpart.datamodel.foodCategories
 import com.examplepart.foodpart.ui.common.CustomChip
 import com.examplepart.foodpart.ui.common.CustomDropdownMenuItem
 import com.examplepart.foodpart.ui.common.FoodItem
@@ -84,7 +84,7 @@ import androidx.compose.material.Text as Text1
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FoodDetailScreen(navController: NavController) {
+fun FoodDetailScreen(navController: NavController, id: String) {
 
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
@@ -117,7 +117,8 @@ fun FoodDetailScreen(navController: NavController) {
                 },
                 navigateCategories = {
                     navController.navigate(AppScreens.Categories.route)
-                }
+                },
+                foodId = id
             )
         },
         sheetContent = {
@@ -143,8 +144,8 @@ private fun FoodDetailScreenContent(
     navigateCategories: (categoryId: String) -> Unit,
     navigateToSavedScreen: () -> Unit,
     navigateToSignup: () -> Unit,
-
-    ) {
+    foodId: String
+) {
 
     var isDropDownMenuShowing: Boolean by remember {
         mutableStateOf(false)
@@ -267,7 +268,8 @@ private fun FoodDetailScreenContent(
             },
             onShowMoreCategory = {
                 navigateCategories(it)
-            }
+            },
+            foodId = foodId
         )
     }
 }
@@ -279,20 +281,12 @@ private fun FoodDetailScreenContent(
 fun ScreenContent(
     modifier: Modifier,
     showFullScreenPhoto: (foodId: String) -> Unit,
-    onShowMoreCategory: (foodCategory: String) -> Unit
-
+    onShowMoreCategory: (foodCategory: String) -> Unit,
+    foodId: String
 ) {
-    val foodDetailsModel = FoodDetailsModel(
-        id = "1",
-        name = "",
-        count = "4 نفر",
-        image = "",
-        difficulty = stringResource(id = R.string.easy),
-        point = stringResource(id = R.string.tabText),
-        readyTime = 20,
-        recipe = stringResource(id = R.string.tabText),
-        meals = mutableListOf()
-    )
+    val foodDetailsModel = foodCategories[0].subCategories[0].foods.filter {
+        it.id == foodId
+    }[0]
     val itemsToDisplay = fakeData.take(5)
     val pageState = rememberPagerState()
     val tabs = listOf(
@@ -328,7 +322,7 @@ fun ScreenContent(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = stringResource(id = R.string.abgoosht),
+                text = foodDetailsModel.name,
                 style = MaterialTheme.typography.h1,
                 color = MaterialTheme.colors.onBackground
             )
@@ -375,16 +369,14 @@ fun ScreenContent(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                SimpleChip(
-                    label = stringResource(id = R.string.lunch),
-
+                foodDetailsModel.meals?.forEach {
+                    SimpleChip(
+                        label = it,
                     )
-                Spacer(modifier = Modifier.width(10.dp))
-                SimpleChip(
-                    label = stringResource(id = R.string.breakfast),
-                )
+                    Spacer(modifier = Modifier.width(10.dp))
+                }
             }
-            SubCategory(label = foodDetailsModel.difficulty)
+            foodDetailsModel.difficulty?.let { SubCategory(label = it) }
         }
         ScrollableTabRow(
             modifier = Modifier.padding(vertical = 15.dp, horizontal = 20.dp),
@@ -454,12 +446,14 @@ fun ScreenContent(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     item {
-                        Text(
-                            text = tabText,
-                            style = MaterialTheme.typography.subtitle1,
-                            color = MaterialTheme.colors.onBackground,
-                            lineHeight = 20.sp
-                        )
+                        tabText?.let {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.subtitle1,
+                                color = MaterialTheme.colors.onBackground,
+                                lineHeight = 20.sp
+                            )
+                        }
                     }
                 }
             }
