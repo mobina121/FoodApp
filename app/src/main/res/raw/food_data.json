@@ -1,0 +1,131 @@
+[
+  {
+    "id": 1,
+    "name": "ایتالیایی",
+    "avatarUrl": "https://example.com/italian-avatar",
+    "imageUrl": "https://example.com/italian-image",
+    "subCategories": [
+      {
+        "id": 101,
+        "name": "پیتزا",
+        "avatarUrl": "https://example.com/pizza-avatar",
+        "imageUrl": "https://example.com/pizza-image"
+      },
+      {
+        "id": 102,
+        "name": "پاستا",
+        "avatarUrl": "https://example.com/pasta-avatar",
+        "imageUrl": "https://example.com/pasta-image"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "آسیایی",
+    "avatarUrl": "https://example.com/asian-avatar",
+    "imageUrl": "https://example.com/asian-image",
+    "subCategories": [
+      {
+        "id": 201,
+        "name": "سوشی",
+        "avatarUrl": "https://example.com/sushi-avatar",
+        "imageUrl": "https://example.com/sushi-image"
+      },
+      {
+        "id": 202,
+        "name": "نودلز",
+        "avatarUrl": "https://example.com/noodles-avatar",
+        "imageUrl": "https://example.com/noodles-image"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "آمریکایی",
+    "avatarUrl": "https://example.com/american-avatar",
+    "imageUrl": "https://example.com/american-image",
+    "subCategories": []
+  },
+  {
+    "id": 4,
+    "name": "مکزیکی",
+    "avatarUrl": "https://example.com/mexican-avatar",
+    "imageUrl": "https://example.com/mexican-image",
+    "subCategories": [
+      {
+        "id": 401,
+        "name": "تاکوس",
+        "avatarUrl": "https://example.com/tacos-avatar",
+        "imageUrl": "https://example.com/tacos-image"
+      },
+      {
+        "id": 402,
+        "name": "بریتوس",
+        "avatarUrl": "https://example.com/burritos-avatar",
+        "imageUrl": "https://example.com/burritos-image"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "مناطق مدیترانه",
+    "avatarUrl": "https://example.com/mediterranean-avatar",
+    "imageUrl": "https://example.com/mediterranean-image",
+    "subCategories": []
+  },
+  {
+    "id": 6,
+    "name": "هندی",
+    "avatarUrl": "https://example.com/indian-avatar",
+    "imageUrl": "https://example.com/indian-image",
+    "subCategories": [
+      {
+        "id": 601,
+        "name": "کریها",
+        "avatarUrl": "https://example.com/curries-avatar",
+        "imageUrl": "https://example.com/curries-image"
+      },
+      {
+        "id": 602,
+        "name": "تندوری",
+        "avatarUrl": "https://example.com/tandoori-avatar",
+        "imageUrl": "https://example.com/tandoori-image"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "چینی",
+    "avatarUrl": "https://example.com/chinese-avatar",
+    "imageUrl": "https://example.com/chinese-image",
+    "subCategories": []
+  },
+  {
+    "id": 8,
+    "name": "ژاپنی",
+    "avatarUrl": "https://example.com/japanese-avatar",
+    "imageUrl": "https://example.com/japanese-image",
+    "subCategories": [
+      {
+        "id": 801,
+        "name": "سوشی",
+        "avatarUrl": "https://example.com/japanese-sushi-avatar",
+        "imageUrl": "https://example.com/japanese-sushi-image"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "تایلندی",
+    "avatarUrl": "https://example.com/thai-avatar",
+    "imageUrl": "https://example.com/thai-image",
+    "subCategories": []
+  },
+  {
+    "id": 10,
+    "name": "گیاهی",
+    "avatarUrl": "https://example.com/vegetarian-avatar",
+    "imageUrl": "https://example.com/vegetarian-image",
+    "subCategories": []
+  }
+]
