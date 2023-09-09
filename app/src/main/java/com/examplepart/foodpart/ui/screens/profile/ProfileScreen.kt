@@ -326,6 +326,7 @@ private fun SettingProfile(
                     backgroundColor = MaterialTheme.colors.surface,
                     unfocusedBorderColor = MaterialTheme.colors.surface,
                     focusedBorderColor = MaterialTheme.colors.onSurface,
+                    cursorColor = MaterialTheme.colors.onSurface
                 ),
                 shape = MaterialTheme.shapes.medium,
                 placeholder = {
@@ -379,6 +380,7 @@ private fun SettingProfile(
                         backgroundColor = MaterialTheme.colors.surface,
                         unfocusedBorderColor = MaterialTheme.colors.surface,
                         focusedBorderColor = MaterialTheme.colors.onSurface,
+                        cursorColor = MaterialTheme.colors.onSurface
                     ),
                     shape = MaterialTheme.shapes.medium,
                     placeholder = {
@@ -405,6 +407,7 @@ private fun SettingProfile(
                         backgroundColor = MaterialTheme.colors.surface,
                         unfocusedBorderColor = MaterialTheme.colors.surface,
                         focusedBorderColor = MaterialTheme.colors.onSurface,
+                        cursorColor = MaterialTheme.colors.onSurface
                     ),
                     shape = MaterialTheme.shapes.medium,
                     placeholder = {
@@ -431,6 +434,7 @@ private fun SettingProfile(
                         backgroundColor = MaterialTheme.colors.surface,
                         unfocusedBorderColor = MaterialTheme.colors.surface,
                         focusedBorderColor = MaterialTheme.colors.onSurface,
+                        cursorColor = MaterialTheme.colors.onSurface
                     ),
                     shape = MaterialTheme.shapes.medium,
                     placeholder = {
