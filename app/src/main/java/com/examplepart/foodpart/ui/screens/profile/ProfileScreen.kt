@@ -18,11 +18,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
@@ -40,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -109,9 +105,6 @@ private fun ProfileScreenContent(
                 onEnter = {
                     goSingUp()
                 },
-                showDialog = {
-                    goSingUp()
-                }
             )
             if (isUserLSignUp) {
                 SettingProfile(
@@ -128,7 +121,6 @@ private fun ProfileScreenContent(
 private fun InformationProfile(
     isUserLSignUp: Boolean,
     onEnter: () -> Unit,
-    showDialog: () -> Unit
 ) {
     var showDialogState by remember { mutableStateOf(false) }
 
@@ -175,58 +167,17 @@ private fun InformationProfile(
             onEnter()
         }
     }
-//    CustomAlertDialog(showDialogState){
-//        onDismiss = {}
-//        onExitClicked = {}
-//        onCancelClicked = {}
-//    }
-
-//    if (showDialogState) {
-//        AlertDialog(
-//
-//            onDismissRequest = {
-//                showDialogState = false
-//            },
-//            title = {
-//                Text(
-//                    modifier = Modifier.padding(vertical = 30.dp),
-//                    text = stringResource(id = R.string.doYouWantToExit),
-//                    textAlign = TextAlign.Center,
-//                    style = MaterialTheme.typography.subtitle1
-//                )
-//            },
-//            buttons = {
-//                Row(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    horizontalArrangement = Arrangement.SpaceBetween
-//                ) {
-//                    CustomButton(
-//                        modifier = Modifier
-//                            .weight(3f)
-//                            .padding(8.dp),
-//                        buttonText = stringResource(id = R.string.exit),
-//                        onClick = {
-//                            showDialogState = false
-//                        },
-//                        backgroundColor = MaterialTheme.colors.primary,
-//                        shape = MaterialTheme.shapes.medium
-//                    )
-//
-//                    CustomButton(
-//                        modifier = Modifier
-//                            .weight(1f)
-//                            .padding(8.dp),
-//                        buttonText = stringResource(id = R.string.cancel),
-//                        onClick = {
-//                            showDialogState = false
-//                        },
-//                        backgroundColor = MaterialTheme.colors.primary,
-//                        shape = MaterialTheme.shapes.medium
-//                    )
-//                }
-//            }
-//        )
-//    }
+    CustomAlertDialog(showDialogState,
+        onDismiss = {
+            showDialogState = false
+        },
+        onExitClicked = {
+            showDialogState = false
+        },
+        onCancelClicked = {
+            showDialogState = false
+        }
+    )
 }
 
 @Composable
@@ -243,7 +194,8 @@ fun CustomAlertDialog(
         ) {
             Box(
                 modifier = Modifier
-                    .size(300.dp, 200.dp) // Set the desired width and height here
+                    .size(300.dp, 200.dp)
+                    .clip(MaterialTheme.shapes.medium)
                     .background(MaterialTheme.colors.surface)
                     .padding(16.dp)
             ) {
@@ -253,8 +205,10 @@ fun CustomAlertDialog(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Exit the app?",
-                        style = MaterialTheme.typography.h6
+                        modifier = Modifier.padding(vertical = 10.dp),
+                        text = stringResource(id = R.string.doYouWantToExit),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.subtitle1
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
@@ -266,50 +220,40 @@ fun CustomAlertDialog(
                                 onExitClicked()
                                 onDismiss()
                             },
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = MaterialTheme.colors.primary
-                            )
+                            modifier = Modifier
+                                .weight(2.5f)
+                                .clip(MaterialTheme.shapes.medium)
+                                .background(MaterialTheme.colors.primary),
+                            shape = MaterialTheme.shapes.medium
+
                         ) {
-                            Text(text = "Exit", color = Color.White)
+                            Text(
+                                text = stringResource(id = R.string.exit),
+                                style = MaterialTheme.typography.button
+                            )
                         }
                         Spacer(modifier = Modifier.width(16.dp))
                         Button(
                             onClick = {
-                                onCancelClicked()
+                                onExitClicked()
                                 onDismiss()
                             },
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = MaterialTheme.colors.primary
-                            )
+                            modifier = Modifier
+                                .weight(1.5f)
+                                .clip(MaterialTheme.shapes.medium)
+                                .background(MaterialTheme.colors.secondary),
+                            shape = MaterialTheme.shapes.medium
+
                         ) {
-                            Text(text = "Cancel", color = Color.White)
+                            Text(
+                                text = stringResource(id = R.string.cancel),
+                                style = MaterialTheme.typography.button
+                            )
                         }
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun CustomButton(
-    modifier: Modifier = Modifier,
-    buttonText: String,
-    onClick: () -> Unit,
-    backgroundColor: Color = MaterialTheme.colors.primary,
-    shape: Shape = RoundedCornerShape(4.dp)
-) {
-    Button(
-        modifier = modifier,
-        onClick = onClick,
-        shape = shape,
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = backgroundColor
-        )
-    ) {
-        Text(text = buttonText, color = Color.White)
     }
 }
 
