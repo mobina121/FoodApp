@@ -110,7 +110,7 @@ fun CategoriesScreen(navController: NavController) {
                         FoodsList(
                             items = subCategory.foods,
                         ) {
-                            navController.navigate(AppScreens.FoodDetail.route)
+                            navController.navigate(AppScreens.FoodDetail.createRoute(it))
                         }
                     } else {
                         ShowError(

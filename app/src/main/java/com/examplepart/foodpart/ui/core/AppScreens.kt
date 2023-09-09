@@ -1,7 +1,12 @@
 package com.examplepart.foodpart.ui.core
 
 sealed class AppScreens(val route: String) {
-    object FoodDetail : AppScreens("foodDetail")
+    object FoodDetail : AppScreens("foodDetail/{id}") {
+        fun createRoute(id: String): String {
+            return "foodDetail/$id"
+        }
+    }
+
     object FullscreenImage : AppScreens("fullscreenImage")
     object Login : AppScreens("login")
     object Signup : AppScreens("signup")
