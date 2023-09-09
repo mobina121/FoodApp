@@ -1,21 +1,25 @@
 package com.examplepart.foodpart.ui.screens.food
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -45,24 +49,30 @@ import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Tab
-import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material.TabPosition
+import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -378,21 +388,29 @@ fun ScreenContent(
             }
             foodDetailsModel.difficulty?.let { SubCategory(label = it) }
         }
+        val density = LocalDensity.current
+        val tabWidths = remember {
+            val tabWidthStateList = mutableStateListOf<Dp>()
+            repeat(tabs.size) {
+                tabWidthStateList.add(0.dp)
+            }
+            tabWidthStateList
+        }
         ScrollableTabRow(
             modifier = Modifier.padding(vertical = 15.dp, horizontal = 20.dp),
             selectedTabIndex = pageState.currentPage,
             edgePadding = 0.dp,
             backgroundColor = MaterialTheme.colors.background,
             indicator = {
-                Box(
+                TabRowDefaults.Indicator(
                     modifier = Modifier
                         .padding(top = 4.dp)
-                        .tabIndicatorOffset(it[pageState.currentPage])
                         .height(1.dp)
-                        .background(
-                            MaterialTheme.colors.primary,
-                            shape = MaterialTheme.shapes.large
-                        )
+                        .customTabIndicatorOffset(
+                            currentTabPosition = it[pageState.currentPage],
+                            tabWidth = tabWidths[pageState.currentPage]
+                        ),
+                    color = MaterialTheme.colors.primary
                 )
             },
             divider = {},
@@ -408,6 +426,10 @@ fun ScreenContent(
                         Text(
                             modifier = Modifier.padding(vertical = 10.dp),
                             text = tabNane,
+                            onTextLayout = { textLayoutResult ->
+                                tabWidths[pageState.currentPage] =
+                                    with(density) { textLayoutResult.size.width.toDp() }
+                            },
                             style = MaterialTheme.typography.h3,
                             color = if (pageState.currentPage == index) MaterialTheme.colors.primary else MaterialTheme.colors.onBackground
                         )
@@ -594,4 +616,27 @@ fun Report(bottomSheetState: ModalBottomSheetState) {
             }
         }
     }
+}
+
+fun Modifier.customTabIndicatorOffset(
+    currentTabPosition: TabPosition,
+    tabWidth: Dp
+): Modifier = composed(
+    inspectorInfo = debugInspectorInfo {
+        name = "customTabIndicatorOffset"
+        value = currentTabPosition
+    }
+) {
+    val currentTabWidth by animateDpAsState(
+        targetValue = tabWidth,
+        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing)
+    )
+    val indicatorOffset by animateDpAsState(
+        targetValue = ((currentTabPosition.left + currentTabPosition.right - tabWidth) / 2),
+        animationSpec = tween(durationMillis = 250, easing = FastOutSlowInEasing)
+    )
+    fillMaxWidth()
+        .wrapContentSize(Alignment.BottomStart)
+        .offset(x = indicatorOffset)
+        .width(currentTabWidth)
 }
