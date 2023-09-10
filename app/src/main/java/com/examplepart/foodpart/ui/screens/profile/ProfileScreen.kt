@@ -1,5 +1,7 @@
 package com.examplepart.foodpart.ui.screens.profile
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +31,7 @@ import androidx.compose.material.SnackbarHost
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -257,6 +260,7 @@ fun CustomAlertDialog(
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 private fun SettingProfile(
     foodsList: List<FoodItemModel>,
@@ -267,8 +271,13 @@ private fun SettingProfile(
     var currentPassText by remember { mutableStateOf("") }
     var newPassText by remember { mutableStateOf("") }
     var repeatNewPasText by remember { mutableStateOf("") }
+    val isPasswordMatching by derivedStateOf {
+        newPassText == repeatNewPasText
+    }
     var showDropDownChangeName by remember { mutableStateOf(false) }
     var showDropDownChangePassword by remember { mutableStateOf(false) }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -314,34 +323,40 @@ private fun SettingProfile(
                 tint = MaterialTheme.colors.onBackground
             )
         }
-        if (showDropDownChangeName) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .padding(vertical = 12.dp, horizontal = 24.dp)
-                    .fillMaxWidth()
-                    .height(56.dp),
-                value = nweUserNameText,
-                onValueChange = { text -> nweUserNameText = text },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    backgroundColor = MaterialTheme.colors.surface,
-                    unfocusedBorderColor = MaterialTheme.colors.surface,
-                    focusedBorderColor = MaterialTheme.colors.onSurface,
-                    cursorColor = MaterialTheme.colors.onSurface
-                ),
-                shape = MaterialTheme.shapes.medium,
-                placeholder = {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 20.dp),
-                        text = stringResource(R.string.newUserName),
-                        style = MaterialTheme.typography.subtitle1,
-                        color = MaterialTheme.colors.onSurface
-                    )
-                },
-                textStyle = MaterialTheme.typography.subtitle1,
-                maxLines = 2
-            )
+
+        AnimatedVisibility(
+            visible = showDropDownChangeName,
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Box {
+                OutlinedTextField(
+                    modifier = Modifier
+                        .padding(vertical = 12.dp, horizontal = 24.dp)
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    value = nweUserNameText,
+                    onValueChange = { text -> nweUserNameText = text },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = MaterialTheme.colors.surface,
+                        unfocusedBorderColor = MaterialTheme.colors.surface,
+                        focusedBorderColor = MaterialTheme.colors.onSurface,
+                        cursorColor = MaterialTheme.colors.onSurface
+                    ),
+                    shape = MaterialTheme.shapes.medium,
+                    placeholder = {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            text = stringResource(R.string.newUserName),
+                            style = MaterialTheme.typography.subtitle1,
+                            color = MaterialTheme.colors.onSurface
+                        )
+                    },
+                    textStyle = MaterialTheme.typography.subtitle1,
+                    maxLines = 2
+                )
+            }
         }
 
         Row(
@@ -367,93 +382,94 @@ private fun SettingProfile(
                 tint = MaterialTheme.colors.onBackground
             )
         }
-        if (showDropDownChangePassword) {
-            Column {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .padding(vertical = 8.dp, horizontal = 24.dp)
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    value = currentPassText,
-                    onValueChange = { text -> currentPassText = text },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = MaterialTheme.colors.surface,
-                        unfocusedBorderColor = MaterialTheme.colors.surface,
-                        focusedBorderColor = MaterialTheme.colors.onSurface,
-                        cursorColor = MaterialTheme.colors.onSurface
-                    ),
-                    shape = MaterialTheme.shapes.medium,
-                    placeholder = {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 20.dp),
-                            text = stringResource(R.string.currentPassword),
-                            style = MaterialTheme.typography.subtitle1,
-                            color = MaterialTheme.colors.onSurface
-                        )
-                    },
-                    textStyle = MaterialTheme.typography.subtitle1,
-                    maxLines = 2
-                )
-                OutlinedTextField(
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    value = newPassText,
-                    onValueChange = { text -> newPassText = text },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = MaterialTheme.colors.surface,
-                        unfocusedBorderColor = MaterialTheme.colors.surface,
-                        focusedBorderColor = MaterialTheme.colors.onSurface,
-                        cursorColor = MaterialTheme.colors.onSurface
-                    ),
-                    shape = MaterialTheme.shapes.medium,
-                    placeholder = {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 20.dp),
-                            text = stringResource(R.string.newPassword),
-                            style = MaterialTheme.typography.subtitle1,
-                            color = MaterialTheme.colors.onSurface
-                        )
-                    },
-                    textStyle = MaterialTheme.typography.subtitle1,
-                    maxLines = 2
-                )
-                OutlinedTextField(
-                    modifier = Modifier
-                        .padding(vertical = 8.dp, horizontal = 24.dp)
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    value = repeatNewPasText,
-                    onValueChange = { text -> repeatNewPasText = text },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = MaterialTheme.colors.surface,
-                        unfocusedBorderColor = MaterialTheme.colors.surface,
-                        focusedBorderColor = MaterialTheme.colors.onSurface,
-                        cursorColor = MaterialTheme.colors.onSurface
-                    ),
-                    shape = MaterialTheme.shapes.medium,
-                    placeholder = {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 20.dp),
-                            text = stringResource(R.string.repeatNewPassword),
-                            style = MaterialTheme.typography.subtitle1,
-                            color = MaterialTheme.colors.onSurface
-                        )
-                    },
-                    textStyle = MaterialTheme.typography.subtitle1,
-                    maxLines = 2
-                )
+
+        AnimatedVisibility(
+            visible = showDropDownChangePassword,
+        ) {
+            Box {
+                Column {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .padding(vertical = 8.dp, horizontal = 24.dp)
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        value = currentPassText,
+                        onValueChange = { text -> currentPassText = text },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = MaterialTheme.colors.surface,
+                            unfocusedBorderColor = MaterialTheme.colors.surface,
+                            focusedBorderColor = MaterialTheme.colors.onSurface,
+                            cursorColor = MaterialTheme.colors.onSurface
+                        ),
+                        shape = MaterialTheme.shapes.medium,
+                        placeholder = {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                text = stringResource(R.string.currentPassword),
+                                style = MaterialTheme.typography.subtitle1,
+                                color = MaterialTheme.colors.onSurface
+                            )
+                        },
+                        textStyle = MaterialTheme.typography.subtitle1,
+                        maxLines = 2
+                    )
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        value = newPassText,
+                        onValueChange = { text -> newPassText = text },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = MaterialTheme.colors.surface,
+                            unfocusedBorderColor = MaterialTheme.colors.surface,
+                            focusedBorderColor = MaterialTheme.colors.onSurface,
+                            cursorColor = MaterialTheme.colors.onSurface
+                        ),
+                        shape = MaterialTheme.shapes.medium,
+                        placeholder = {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                text = stringResource(R.string.newPassword),
+                                style = MaterialTheme.typography.subtitle1,
+                                color = MaterialTheme.colors.onSurface
+                            )
+                        },
+                        textStyle = MaterialTheme.typography.subtitle1,
+                        maxLines = 2
+                    )
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .padding(vertical = 8.dp, horizontal = 24.dp)
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        value = repeatNewPasText,
+                        onValueChange = { text -> repeatNewPasText = text },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            backgroundColor = MaterialTheme.colors.surface,
+                            unfocusedBorderColor = MaterialTheme.colors.surface,
+                            focusedBorderColor = if (isPasswordMatching) MaterialTheme.colors.onSurface else MaterialTheme.colors.primary,
+                            cursorColor = if (isPasswordMatching) MaterialTheme.colors.onSurface else MaterialTheme.colors.primary
+                        ),
+                        shape = MaterialTheme.shapes.medium,
+                        placeholder = {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                text = stringResource(R.string.repeatNewPassword),
+                                style = MaterialTheme.typography.subtitle1,
+                                color = MaterialTheme.colors.onSurface
+                            )
+                        },
+                        textStyle = MaterialTheme.typography.subtitle1,
+                        maxLines = 2
+                    )
+                }
+
             }
-
         }
-
         Spacer(modifier = Modifier.weight(1f))
         CustomButton(
             modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp),
