@@ -458,6 +458,7 @@ private fun SettingProfile(
         CustomButton(
             modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp),
             buttonText = stringResource(id = R.string.onConfirmation),
+            enable = (nweUserNameText != "") || (currentPassText != "") || (newPassText != "")
         ) {
             onConfirmation()
         }
