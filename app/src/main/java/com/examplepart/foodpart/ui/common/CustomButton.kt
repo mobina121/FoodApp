@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 fun CustomButton(
     buttonText: String,
     modifier: Modifier,
+    enable : Boolean = true,
     buttonPressed: () -> Unit
 
 ) {
@@ -25,6 +26,7 @@ fun CustomButton(
         modifier = modifier
     ) {
         Button(
+            enabled = enable,
             onClick = {
                 buttonPressed()
             },
