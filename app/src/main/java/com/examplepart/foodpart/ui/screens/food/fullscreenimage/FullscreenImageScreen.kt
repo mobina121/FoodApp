@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.screens.food
+package com.examplepart.foodpart.ui.screens.food.fullscreenimage
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
-import com.examplepart.foodpart.ui.core.AppScreens
+import com.examplepart.foodpart.core.AppScreens
 
 
 @Composable

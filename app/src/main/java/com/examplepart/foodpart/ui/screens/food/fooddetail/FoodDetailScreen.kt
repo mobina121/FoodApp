@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.screens.food
+package com.examplepart.foodpart.ui.screens.food.fooddetail
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -86,7 +86,7 @@ import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.common.PhotoOfFood
 import com.examplepart.foodpart.ui.common.SimpleChip
 import com.examplepart.foodpart.ui.common.SubCategory
-import com.examplepart.foodpart.ui.core.AppScreens
+import com.examplepart.foodpart.core.AppScreens
 import com.examplepart.foodpart.ui.theme.DarkRed
 import kotlinx.coroutines.launch
 import androidx.compose.material.Text as Text1

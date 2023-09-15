@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.screens.profile
+package com.examplepart.foodpart.ui.screens.profile.userprofile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -51,7 +51,7 @@ import com.examplepart.foodpart.datamodel.fakeData
 import com.examplepart.foodpart.ui.common.CustomButton
 import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
-import com.examplepart.foodpart.ui.core.AppScreens
+import com.examplepart.foodpart.core.AppScreens
 
 @Composable
 fun ProfileScreen(navController: NavController) {

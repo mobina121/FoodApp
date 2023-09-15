@@ -26,8 +26,12 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.examplepart.foodpart.ui.core.AppScreens
+import com.examplepart.foodpart.core.AppScreenItem
+import com.examplepart.foodpart.core.AppScreens
 import com.examplepart.foodpart.ui.theme.FoodPartTheme
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

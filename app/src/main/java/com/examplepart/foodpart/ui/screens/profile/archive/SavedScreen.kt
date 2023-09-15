@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.screens.profile
+package com.examplepart.foodpart.ui.screens.profile.archive
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable

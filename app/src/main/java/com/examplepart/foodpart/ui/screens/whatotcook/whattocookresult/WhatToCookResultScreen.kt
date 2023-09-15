@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.screens.whatotcook
+package com.examplepart.foodpart.ui.screens.whatotcook.whattocookresult
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,7 +28,7 @@ import com.examplepart.foodpart.datamodel.fakeData
 import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.common.ShowError
-import com.examplepart.foodpart.ui.core.AppScreens
+import com.examplepart.foodpart.core.AppScreens
 import kotlinx.coroutines.launch
 
 @Composable

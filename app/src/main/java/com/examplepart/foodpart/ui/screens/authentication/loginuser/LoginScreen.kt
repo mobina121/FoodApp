@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.screens.login
+package com.examplepart.foodpart.ui.screens.authentication.loginuser
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -36,7 +36,7 @@ import androidx.navigation.NavController
 import com.examplepart.foodpart.R
 import com.examplepart.foodpart.ui.common.CustomButton
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
-import com.examplepart.foodpart.ui.core.AppScreens
+import com.examplepart.foodpart.core.AppScreens
 
 
 @Composable

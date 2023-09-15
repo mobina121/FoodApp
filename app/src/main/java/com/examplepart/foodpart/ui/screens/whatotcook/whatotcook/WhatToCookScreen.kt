@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.screens.whatotcook
+package com.examplepart.foodpart.ui.screens.whatotcook.whatotcook
 
 import android.content.Context
 import android.widget.Toast
@@ -44,8 +44,8 @@ import androidx.navigation.NavController
 import com.examplepart.foodpart.R
 import com.examplepart.foodpart.ui.common.CustomButton
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
-import com.examplepart.foodpart.ui.core.AppScreens
-import com.examplepart.foodpart.ui.core.Difficulty
+import com.examplepart.foodpart.core.AppScreens
+import com.examplepart.foodpart.core.Difficulty
 import com.examplepart.foodpart.ui.theme.Green
 
 @Composable
