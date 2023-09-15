@@ -36,7 +36,7 @@ import com.examplepart.foodpart.R
 import com.examplepart.foodpart.datamodel.fakeData
 import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
-import com.examplepart.foodpart.ui.core.AppScreens
+import com.examplepart.foodpart.core.AppScreens
 
 @Composable
 fun SearchScreen(navController: NavController) {

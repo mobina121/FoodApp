@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.core
+package com.examplepart.foodpart.core
 
 sealed class AppScreens(val route: String) {
     object FoodDetail : AppScreens("foodDetail/{id}") {

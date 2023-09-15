@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.screens.main
+package com.examplepart.foodpart.ui.screens.categories
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,9 +24,7 @@ import com.examplepart.foodpart.datamodel.foodCategories
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.common.FoodsList
 import com.examplepart.foodpart.ui.common.ShowError
-import com.examplepart.foodpart.ui.core.AppScreens
-import com.examplepart.foodpart.ui.screens.food.FoodCategoryChip
-import com.examplepart.foodpart.ui.screens.food.SubFoodCategoryChip
+import com.examplepart.foodpart.core.AppScreens
 
 
 @Composable

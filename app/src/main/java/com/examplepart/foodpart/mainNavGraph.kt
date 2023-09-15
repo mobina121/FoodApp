@@ -5,17 +5,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.examplepart.foodpart.ui.core.AppScreens
-import com.examplepart.foodpart.ui.screens.food.FoodDetailScreen
-import com.examplepart.foodpart.ui.screens.food.FullscreenImageScreen
-import com.examplepart.foodpart.ui.screens.login.LoginScreen
-import com.examplepart.foodpart.ui.screens.login.SignupScreen
-import com.examplepart.foodpart.ui.screens.main.CategoriesScreen
-import com.examplepart.foodpart.ui.screens.profile.ProfileScreen
-import com.examplepart.foodpart.ui.screens.profile.SavedScreen
+import com.examplepart.foodpart.core.AppScreens
+import com.examplepart.foodpart.ui.screens.food.fooddetail.FoodDetailScreen
+import com.examplepart.foodpart.ui.screens.food.fullscreenimage.FullscreenImageScreen
+import com.examplepart.foodpart.ui.screens.authentication.loginuser.LoginScreen
+import com.examplepart.foodpart.ui.screens.authentication.registeruser.SignupScreen
+import com.examplepart.foodpart.ui.screens.categories.CategoriesScreen
+import com.examplepart.foodpart.ui.screens.profile.userprofile.ProfileScreen
+import com.examplepart.foodpart.ui.screens.profile.archive.SavedScreen
 import com.examplepart.foodpart.ui.screens.search.SearchScreen
-import com.examplepart.foodpart.ui.screens.whatotcook.WhatToCookResultScreen
-import com.examplepart.foodpart.ui.screens.whatotcook.WhatToCookScreen
+import com.examplepart.foodpart.ui.screens.whatotcook.whattocookresult.WhatToCookResultScreen
+import com.examplepart.foodpart.ui.screens.whatotcook.whatotcook.WhatToCookScreen
 
 fun NavGraphBuilder.mainNavGraph(navController: NavController) {
     composable(
