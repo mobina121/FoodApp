@@ -1,13 +1,22 @@
-package ir.partsoftware.programmingquote.database.author
+package com.examplepart.foodpart.database.food
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "categories")
+@Entity(tableName = "foods")
 data class FoodEntity(
     @PrimaryKey
     val id: String,
+    val categoryId: String,
     val name: String,
-    val infoUrl: String?,
-    val image: String?,
+    val image: String,
+    val cookTime: Int?,
+    val readyTime: Int?,
+    val count: String?,
+    val point: String?,
+    val difficulty: String?,
+    val recipe: String?,
+    val ingredients: String?,
+    val meals: List<String>?,
+    val similarFoods: List<String>?
 )

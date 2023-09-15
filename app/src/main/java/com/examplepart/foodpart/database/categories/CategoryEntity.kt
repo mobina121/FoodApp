@@ -1,4 +1,4 @@
-package ir.partsoftware.programmingquote.database.author
+package com.examplepart.foodpart.database.categories
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -8,6 +8,6 @@ data class CategoryEntity(
     @PrimaryKey
     val id: String,
     val name: String,
-    val infoUrl: String?,
-    val image: String?,
+    val image: String,
+    val subCategories: List<String>?
 )
