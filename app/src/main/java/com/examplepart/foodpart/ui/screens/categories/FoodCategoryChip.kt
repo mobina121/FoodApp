@@ -23,14 +23,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.examplepart.foodpart.R
-import com.examplepart.foodpart.datamodel.FoodCategoryModel
+import com.examplepart.foodpart.database.categories.CategoryEntity
 import com.examplepart.foodpart.ui.theme.DarkRed
 
 
 @Composable
 fun FoodCategoryChip(
     modifier: Modifier,
-    foodCategoryModel: FoodCategoryModel,
+    categoryEntity: CategoryEntity,
     isSelected: Boolean,
     onClicked: () -> Unit
 ) {
@@ -75,7 +75,7 @@ fun FoodCategoryChip(
             modifier = Modifier
                 .padding(vertical = 10.dp)
                 .fillMaxWidth(),
-            text = foodCategoryModel.categoryName,
+            text = categoryEntity.name,
             color = if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.onBackground,
             style = MaterialTheme.typography.subtitle1,
             overflow = TextOverflow.Ellipsis,

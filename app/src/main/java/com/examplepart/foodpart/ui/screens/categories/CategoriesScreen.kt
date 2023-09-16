@@ -11,6 +11,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,18 +21,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
-import com.examplepart.foodpart.datamodel.foodCategories
+import com.examplepart.foodpart.network.common.Result
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
-import com.examplepart.foodpart.ui.common.FoodsList
-import com.examplepart.foodpart.ui.common.ShowError
-import com.examplepart.foodpart.core.AppScreens
 
 
 @Composable
-fun CategoriesScreen(navController: NavController) {
-    val foodCategories = foodCategories
-    var selectedCategoryIndex by remember { mutableStateOf<Int?>(0) }
-    var selectedSubCategoryIndex by remember { mutableStateOf<Int?>(0) }
+fun CategoriesScreen(
+    navController: NavController,
+    categoriesViewModel: CategoriesViewModel
+) {
+    val foodCategories by categoriesViewModel.categories.collectAsState()
+    val subCategories by categoriesViewModel.subCategories.collectAsState()
+    var selectedCategoryIndex by remember { mutableStateOf(0) }
+    var selectedSubCategoryIndex by remember { mutableStateOf(0) }
+    val categoryResult by categoriesViewModel.categoryResult.collectAsState(initial = Result.Idle)
+
+
     Scaffold(
         topBar = {
             FoodPartAppBar(
@@ -50,13 +55,13 @@ fun CategoriesScreen(navController: NavController) {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                itemsIndexed(foodCategories) { index, foodCategoryModel ->
+                itemsIndexed(foodCategories) { index, categoryEntity ->
                     val startPadding = if (index == 0) 16.dp else 0.dp
                     val endPadding = if (index == foodCategories.size - 1) 16.dp else 0.dp
 
                     FoodCategoryChip(
                         modifier = Modifier.padding(start = startPadding, end = endPadding),
-                        foodCategoryModel = foodCategoryModel,
+                        categoryEntity = categoryEntity,
                         isSelected = selectedCategoryIndex == index
                     ) {
                         selectedCategoryIndex = index
@@ -71,28 +76,30 @@ fun CategoriesScreen(navController: NavController) {
                 color = MaterialTheme.colors.onSurface
             )
 
-            val selectedCategory = selectedCategoryIndex?.let { foodCategories.getOrNull(it) }
-            val hasSubcategories = selectedCategory?.subCategories?.isNotEmpty() == true
+            val selectedCategory = foodCategories.getOrNull(selectedCategoryIndex)
+//            val hasSubcategories = selectedCategory?.isSubCategory == false
 
             selectedCategory?.let { category ->
                 Column {
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        itemsIndexed(category.subCategories) { index, subCategoryModel ->
+                        itemsIndexed(subCategories.filter {
+                            selectedCategory.subCategories?.contains(it.id) ?: false
+                        }) { index, subCategoryEntity ->
                             val startPadding = if (index == 0) 16.dp else 0.dp
                             val endPadding = if (index == foodCategories.size - 1) 16.dp else 0.dp
 
                             SubFoodCategoryChip(
                                 modifier = Modifier.padding(start = startPadding, end = endPadding),
-                                subFoodCategoryModel = subCategoryModel,
+                                subCategoryEntity = subCategoryEntity,
                                 isSelected = selectedSubCategoryIndex == index
                             ) {
                                 selectedSubCategoryIndex = index
                             }
                         }
                     }
-                    if (hasSubcategories) {
+                    if ((category.subCategories?.size ?: 0) > 0) {
                         Divider(
                             modifier = Modifier
                                 .padding(vertical = 5.dp, horizontal = 16.dp)
@@ -102,23 +109,23 @@ fun CategoriesScreen(navController: NavController) {
                     }
                 }
                 val selectedSubCategory =
-                    selectedSubCategoryIndex?.let { category.subCategories.getOrNull(it) }
-                selectedSubCategory?.let { subCategory ->
-                    if (subCategory.foods.isNotEmpty()) {
-                        FoodsList(
-                            items = subCategory.foods,
-                        ) {
-                            navController.navigate(AppScreens.FoodDetail.createRoute(it))
-                        }
-                    } else {
-                        ShowError(
-                            errorMessage = stringResource(id = R.string.foodCategoriesNotFound),
-                            buttonTitle = stringResource(id = R.string.retry)
-                        ) {
-                            //doRetry
-                        }
-                    }
-                }
+                    selectedSubCategoryIndex.let { category.subCategories?.getOrNull(it) }
+//                selectedSubCategory?.let { subCategory ->
+//                    if (subCategory.foods.isNotEmpty()) {
+//                        FoodsList(
+//                            items = subCategory.foods,
+//                        ) {
+//                            navController.navigate(AppScreens.FoodDetail.createRoute(it))
+//                        }
+//                    } else {
+//                        ShowError(
+//                            errorMessage = stringResource(id = R.string.foodCategoriesNotFound),
+//                            buttonTitle = stringResource(id = R.string.retry)
+//                        ) {
+//                            //doRetry
+//                        }
+//                    }
+//                }
             }
         }
     }

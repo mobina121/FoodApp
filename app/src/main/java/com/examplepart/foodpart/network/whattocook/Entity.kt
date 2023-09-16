@@ -2,7 +2,7 @@ package com.examplepart.foodpart.network.whattocook
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "categories")
+@Entity(tableName = "test4")
 data class Entity(
     @PrimaryKey
     val id: String,

@@ -3,7 +3,7 @@ package ir.partsoftware.programmingquote.database.author
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "categories")
+@Entity(tableName = "test2")
 data class Entity(
     @PrimaryKey
     val id: String,
