@@ -1,5 +1,6 @@
 package com.examplepart.foodpart
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -37,7 +38,7 @@ fun NavGraphBuilder.mainNavGraph(navController: NavController) {
         LoginScreen(navController)
     }
     composable(AppScreens.Signup.route) {
-        SignupScreen(navController)
+        SignupScreen(viewModel = hiltViewModel(), navController)
     }
     composable(AppScreens.Categories.route) {
         CategoriesScreen(navController)
