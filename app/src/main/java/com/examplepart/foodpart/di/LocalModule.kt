@@ -16,6 +16,6 @@ object LocalModule {
     fun provideSharedPreferences(
         @ApplicationContext context: Context
     ): SharedPreferences {
-        return context.getSharedPreferences("quotes", Context.MODE_PRIVATE)
+        return context.getSharedPreferences("food_part_prefs", Context.MODE_PRIVATE)
     }
 }

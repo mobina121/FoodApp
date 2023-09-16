@@ -69,6 +69,9 @@
     <string name="exit">خروج</string>
     <string name="cancel">انصراف</string>
     <string name="doYouWantToExit">آیا تمایل به خروج از حساب کاربری خود را دارید؟</string>
+    <string name="signupPasswordError">پسورد باید حداقل ۸ کاراکتر بوده و شامل حروف بزرگ و کوچک انگلیسی باشد.</string>
+    <string name="signupUsernameError">نام کاربری باید حداقل 4 کاراکتر باشد.</string>
+    <string name="signupRepeatPasswordError">تکرار رمز عبور اشتباه است.</string>
 
 
     <string name="helpText">کاربر گرامی مواد اولیه ی موجود را در قسمت “تو خونه چی داری ؟” وارد کرده و با علامت “،” از یکدیگر جدا کنید سپس کل زمانی که دارین را به دقیقه در بخش “چقدر وقت داری ؟” وارد کنین. سطح دستور پخت را انتخاب کرده و کلیک جستجو را بزنید تا با توجه به اطلاعات شما غذاهای پیشنهاد را نمایش دهیم.</string>
