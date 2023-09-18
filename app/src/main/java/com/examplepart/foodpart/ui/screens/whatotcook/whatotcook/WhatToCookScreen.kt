@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
@@ -27,35 +30,45 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
-import com.examplepart.foodpart.ui.common.CustomButton
-import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.core.AppScreens
 import com.examplepart.foodpart.core.Difficulty
+import com.examplepart.foodpart.network.common.Result
+import com.examplepart.foodpart.ui.common.CustomButton
+import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.theme.Green
 
 @Composable
-fun WhatToCookScreen(navController: NavController) {
+fun WhatToCookScreen(
+    viewModel: WhatToCookViewModel,
+    navController: NavController
+) {
     val scrollState = rememberScrollState()
     val selectedOption = remember { mutableStateOf("Option1") }
     val (helpMessageVisible, setHelpMessageVisible) = remember { mutableStateOf(true) }
 
 
     WhatToCookScreenContent(
+        viewModel,
         scrollState,
         selectedOption,
         helpMessageVisible,
@@ -67,18 +80,29 @@ fun WhatToCookScreen(navController: NavController) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun WhatToCookScreenContent(
+    viewModel: WhatToCookViewModel,
     scrollState: ScrollState,
     selectedOption: MutableState<String>,
     helpMessageVisible: Boolean,
     setHelpMessageVisible: (Boolean) -> Unit,
     onSearch: () -> Unit
 ) {
-    var materialText by remember { mutableStateOf("") }
-    var timeText by remember { mutableStateOf("") }
+    val whatToCookResult by viewModel.whatToCookResult.collectAsState(Result.Idle)
+    val ingredientsError by viewModel.ingredientsValidationState.collectAsState()
+    val timeLimitError by viewModel.timeLimitValidationState.collectAsState()
+
+    var showErrorMessage by remember { mutableStateOf(false) }
+
+    var errorMessage by remember { mutableStateOf<Int?>(null) }
+
+    var ingredientsText by remember { mutableStateOf("") }
+    var timeLimitText by remember { mutableStateOf("") }
     val msg = stringResource(id = R.string.errorMsg)
     val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Scaffold(
         topBar = {
@@ -102,6 +126,14 @@ private fun WhatToCookScreenContent(
         }
 
     ) {
+        if (whatToCookResult is Result.Loading) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -122,8 +154,8 @@ private fun WhatToCookScreenContent(
                     .padding(vertical = 20.dp)
                     .fillMaxWidth()
                     .height(56.dp),
-                value = materialText,
-                onValueChange = { text -> materialText = text },
+                value = ingredientsText,
+                onValueChange = { text -> ingredientsText = text },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = MaterialTheme.colors.surface,
                     unfocusedBorderColor = MaterialTheme.colors.surface,
@@ -157,8 +189,8 @@ private fun WhatToCookScreenContent(
                     .padding(vertical = 20.dp)
                     .fillMaxWidth()
                     .height(56.dp),
-                value = timeText,
-                onValueChange = { text -> timeText = text },
+                value = timeLimitText,
+                onValueChange = { text -> timeLimitText = text },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = MaterialTheme.colors.surface,
                     unfocusedBorderColor = MaterialTheme.colors.surface,
@@ -167,7 +199,6 @@ private fun WhatToCookScreenContent(
                 ),
                 shape = MaterialTheme.shapes.medium,
                 placeholder = {
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -188,7 +219,16 @@ private fun WhatToCookScreenContent(
                     }
                 },
                 textStyle = MaterialTheme.typography.subtitle1,
-                maxLines = 2
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Number,
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        keyboardController?.hide()
+                    }
+                ),
+                visualTransformation = VisualTransformation.None,
             )
             Text(
                 modifier = Modifier
@@ -201,15 +241,50 @@ private fun WhatToCookScreenContent(
             CustomRadioButtonGroup {
                 println("Selected option: ${selectedOption.value}")
             }
+            if (showErrorMessage) {
+                errorMessage?.let { messageResId ->
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 5.dp, horizontal = 16.dp),
+                        text = stringResource(id = messageResId),
+                        style = MaterialTheme.typography.subtitle1,
+                        color = MaterialTheme.colors.primary
+                    )
+                }
+            }
             Spacer(modifier = Modifier.weight(1f))
+
+
             CustomButton(
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
                 buttonText = stringResource(id = R.string.search),
             ) {
-                if (materialText.isNotEmpty()) {
-                    onSearch()
+
+                viewModel.performValidation(ingredientsText, timeLimitText.toIntOrNull())
+
+                if (viewModel.areAllDataParamsValid()) {
+                    showErrorMessage = false
+                    viewModel.findWhatToCook(ingredientsText, timeLimitText.toInt())
                 } else {
-                    showErrorMsg(context, msg)
+                    showErrorMessage = true
+                    errorMessage = when {
+                        timeLimitError == null -> {
+                            showErrorMessage = true
+                            R.string.whatToCookTimeLimitError
+                        }
+
+                        ingredientsError != null -> {
+                            showErrorMessage = true
+                            R.string.whatToCookIngredientsError
+                        }
+
+                        else -> {
+                            showErrorMessage = true
+                            null
+                        }
+
+                    }
                 }
             }
         }
