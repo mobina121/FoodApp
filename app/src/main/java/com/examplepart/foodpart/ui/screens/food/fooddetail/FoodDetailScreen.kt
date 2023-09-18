@@ -490,16 +490,16 @@ fun ScreenContent(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(itemsToDisplay) { food ->
-                    FoodItem(
-                        modifier = Modifier,
-                        food
-                    ) {}
-                }
-                item {
-                    ShowMoreButton(onShowMoreCategory)
-
-                }
+//                items(itemsToDisplay) { food ->
+//                    FoodItem(
+//                        modifier = Modifier,
+//                        food
+//                    ) {}
+//                }
+//                item {
+//                    ShowMoreButton(onShowMoreCategory)
+//
+//                }
             }
         }
 

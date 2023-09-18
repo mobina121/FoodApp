@@ -292,10 +292,10 @@ private fun SettingProfile(
             itemsIndexed(foodsList) { index, food ->
                 val startPadding = if (index == 0) 16.dp else 0.dp
                 val endPadding = if (index == foodsList.size - 1) 16.dp else 0.dp
-                FoodItem(
-                    modifier = Modifier.padding(start = startPadding, end = endPadding),
-                    food
-                ) {}
+//                FoodItem(
+//                    modifier = Modifier.padding(start = startPadding, end = endPadding),
+//                    food
+//                ) {}
             }
         }
 

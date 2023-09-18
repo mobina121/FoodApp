@@ -104,20 +104,20 @@ fun CategoriesScreen(navController: NavController) {
                 val selectedSubCategory =
                     selectedSubCategoryIndex?.let { category.subCategories.getOrNull(it) }
                 selectedSubCategory?.let { subCategory ->
-                    if (subCategory.foods.isNotEmpty()) {
-                        FoodsList(
-                            items = subCategory.foods,
-                        ) {
-                            navController.navigate(AppScreens.FoodDetail.createRoute(it))
-                        }
-                    } else {
-                        ShowError(
-                            errorMessage = stringResource(id = R.string.foodCategoriesNotFound),
-                            buttonTitle = stringResource(id = R.string.retry)
-                        ) {
-                            //doRetry
-                        }
-                    }
+//                    if (subCategory.foods.isNotEmpty()) {
+//                        FoodsList(
+//                            items = subCategory.foods,
+//                        ) {
+//                            navController.navigate(AppScreens.FoodDetail.createRoute(it))
+//                        }
+//                    } else {
+//                        ShowError(
+//                            errorMessage = stringResource(id = R.string.foodCategoriesNotFound),
+//                            buttonTitle = stringResource(id = R.string.retry)
+//                        ) {
+//                            //doRetry
+//                        }
+//                    }
                 }
             }
         }

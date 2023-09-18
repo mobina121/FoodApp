@@ -14,6 +14,16 @@ sealed class AppScreens(val route: String) {
     object Profile : AppScreens("profile")
     object Saved : AppScreens("saved")
     object Search : AppScreens("search")
-    object WhatToCookResult : AppScreens("whatToCookResult")
+
+    object WhatToCookResult : AppScreens(
+        "whatToCookResult?ingredients={ingredients}&timeLimit={timeLimit}&difficulty={difficulty}"){
+        fun createRoute(
+            ingredients: String,
+            timeLimit: String,
+            difficulty: String?
+        ): String {
+            return "whatToCookResult?ingredients=$ingredients&timeLimit=$timeLimit&difficulty=$difficulty"
+        }
+    }
     object WhatToCook : AppScreens("whatToCook")
 }

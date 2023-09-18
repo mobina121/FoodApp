@@ -21,13 +21,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.examplepart.foodpart.R
-import com.examplepart.foodpart.datamodel.FoodItemModel
+import com.examplepart.foodpart.database.food.FoodEntity
 
 
 @Composable
 fun FoodItem(
-    modifier: Modifier ,
-    food: FoodItemModel,
+    modifier: Modifier,
+    food: FoodEntity,
     onClick: (id: String) -> Unit
 ) {
     Column(
@@ -75,7 +75,7 @@ fun FoodItem(
                 )
                 Text(
                     modifier = Modifier.padding(2.dp),
-                    text = food.time,
+                    text = food.cookTime.toString(),
                     style = MaterialTheme.typography.caption,
                     color = MaterialTheme.colors.onBackground
                 )

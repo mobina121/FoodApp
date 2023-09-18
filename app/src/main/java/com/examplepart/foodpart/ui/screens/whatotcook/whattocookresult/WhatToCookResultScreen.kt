@@ -16,6 +16,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,20 +25,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
+import com.examplepart.foodpart.core.AppScreens
+import com.examplepart.foodpart.core.Difficulty
+import com.examplepart.foodpart.database.food.FoodEntity
 import com.examplepart.foodpart.datamodel.FoodItemModel
 import com.examplepart.foodpart.datamodel.fakeData
 import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
-import com.examplepart.foodpart.ui.common.ShowError
-import com.examplepart.foodpart.core.AppScreens
+import com.examplepart.foodpart.network.common.Result
 import kotlinx.coroutines.launch
 
 @Composable
-fun WhatToCookResultScreen(navController: NavController) {
-    val foods = fakeData
+fun WhatToCookResultScreen(
+    whatToCookResultViewModel: WhatToCookResultViewModel,
+    navController: NavController
+) {
 
     WhatToCookResultScreenContent(
-        foods,
+        whatToCookResultViewModel,
         onClickStareIcon = {
             navController.navigate(AppScreens.WhatToCook.route)
         },
@@ -48,10 +54,16 @@ fun WhatToCookResultScreen(navController: NavController) {
 
 @Composable
 fun WhatToCookResultScreenContent(
-    foodsList: List<FoodItemModel>,
+    whatToCookResultViewModel: WhatToCookResultViewModel,
     onClickStareIcon: () -> Unit,
     ocClickFood: () -> Unit
 ) {
+    val ingredients = whatToCookResultViewModel.ingredients
+    val timeLimit = whatToCookResultViewModel.timeLimit
+    val difficulty = whatToCookResultViewModel.difficulty
+    val foodsList by whatToCookResultViewModel.foodsList.collectAsState()
+    val foodsResult by whatToCookResultViewModel.foodsResult.collectAsState(initial = Result.Idle)
+
     val scope = rememberCoroutineScope()
     val scrollState = rememberLazyGridState()
 
@@ -99,6 +111,8 @@ fun WhatToCookResultScreenContent(
         }
 
     ) { paddingValues ->
+
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -108,35 +122,44 @@ fun WhatToCookResultScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp, 0.dp, 20.dp, 10.dp),
-                text = "${stringResource(id = R.string.resultFor)}\n${stringResource(id = R.string.extraText)}",
+                text = "${stringResource(id = R.string.resultFor)} $ingredients" + "\n" +" در $timeLimit دقیقه  با درجه سختی $difficulty",
                 style = MaterialTheme.typography.caption,
                 color = MaterialTheme.colors.onBackground
             )
 
-            if (foodsList.isNotEmpty()) {
+//            if (foodsList.) {
                 LazyVerticalGrid(
                     modifier = Modifier.padding(horizontal = 36.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     columns = GridCells.Fixed(2),
                     state = scrollState,
                 ) {
-                    items(foodsList) { food ->
+                    items(foodsList) { foodEntity ->
                         FoodItem(
                             modifier = Modifier,
-                            food = food,
+                            food = foodEntity,
                         ) {
                             ocClickFood()
                         }
+
                     }
+//                    items(foodsList.value) { food ->
+//                        FoodItem(
+//                            modifier = Modifier,
+//                            food = food,
+//                        ) {
+//                            ocClickFood()
+//                        }
+//                    }
                 }
-            } else {
-                ShowError(
-                    errorMessage = stringResource(id = R.string.foodCategoriesNotFound),
-                    buttonTitle = stringResource(id = R.string.retry)
-                ) {
-                    //doRetry
-                }
-            }
+//            } else {
+//                ShowError(
+//                    errorMessage = stringResource(id = R.string.foodCategoriesNotFound),
+//                    buttonTitle = stringResource(id = R.string.retry)
+//                ) {
+//                    //doRetry
+//                }
+//            }
         }
     }
 }

@@ -2,6 +2,7 @@ package com.examplepart.foodpart.ui.screens.whatotcook.whatotcook
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.examplepart.foodpart.core.Difficulty
 import com.examplepart.foodpart.network.common.Result
 import com.examplepart.foodpart.network.common.safeApi
 import com.examplepart.foodpart.network.whattocook.FoodResponse
@@ -20,26 +21,48 @@ import javax.inject.Inject
 class WhatToCookViewModel @Inject constructor(
     private val whatToCookApi: WhatToCookApi
 ) : ViewModel() {
+    private val _ingredients = MutableStateFlow("")
+    val ingredients: StateFlow<String> = _ingredients.asStateFlow()
 
-    private val _foodsList = MutableStateFlow<List<FoodResponse>>(emptyList())
-    val foodsList: StateFlow<List<FoodResponse>> = _foodsList.asStateFlow()
+    private val _timeLimit = MutableStateFlow("")
+    val timeLimit: StateFlow<String> = _timeLimit.asStateFlow()
+
+    private val _difficultyTitle = MutableStateFlow(Difficulty.NO_MATTER)
+    val difficultyTitle: StateFlow<Difficulty> = _difficultyTitle.asStateFlow()
 
 
     private val _ingredientsValidationState = MutableStateFlow<String?>(null)
     val ingredientsValidationState: StateFlow<String?> = _ingredientsValidationState
 
-    private val _timeLimitValidationState = MutableStateFlow<Int?>(null)
-    val timeLimitValidationState: StateFlow<Int?> = _timeLimitValidationState
-
-    private val _whatToCookResult = MutableStateFlow<Result>(Result.Idle)
-    val whatToCookResult: SharedFlow<Result> = _whatToCookResult.asSharedFlow()
+    private val _timeLimitValidationState = MutableStateFlow<String?>(null)
+    private val timeLimitValidationState: StateFlow<String?> = _timeLimitValidationState
 
 
-    fun performValidation(ingredients: String, timeLimit: Int?) {
-        val ingredientsError = validateIngredients(ingredients)
+    fun updateIngredients(ingredients: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _ingredients.emit(ingredients)
+        }
+    }
+
+    fun updateTimeLimit(timeLimit: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _timeLimit.emit(timeLimit)
+        }
+    }
+
+    fun updateDifficulty(difficultyTitle: Difficulty) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _difficultyTitle.emit(difficultyTitle)
+        }
+    }
+
+
+
+    fun performValidation() {
+        val ingredientsError = validateIngredients(_ingredients.value)
         _ingredientsValidationState.value = ingredientsError
 
-        _timeLimitValidationState.value = timeLimit
+        _timeLimitValidationState.value = timeLimit.value
 
     }
 
@@ -48,26 +71,11 @@ class WhatToCookViewModel @Inject constructor(
     }
 
 
-    fun findWhatToCook(ingredients: String, timeLimit: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            safeApi(
-                call = {
-                    whatToCookApi.whatToCook(ingredients = ingredients, timeLimit = timeLimit)
-                },
-                onDataReady = { response ->
-                    _foodsList.value = response.data
-                }
-            ).collect(_whatToCookResult)
-        }
-    }
-
-
-    private fun validateIngredients(ingredientsValidationState: String): String? {
-        return if (ingredientsValidationState.length < 3) {
-            "ingredientsValidationState must be at least 3 characters long"
+    private fun validateIngredients(text: String): String? {
+        return if (text.length < 3) {
+            "text must be at least 3 characters long"
         } else {
             null
         }
     }
-
 }
