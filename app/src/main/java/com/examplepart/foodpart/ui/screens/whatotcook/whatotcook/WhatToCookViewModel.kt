@@ -3,23 +3,16 @@ package com.examplepart.foodpart.ui.screens.whatotcook.whatotcook
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.examplepart.foodpart.core.Difficulty
-import com.examplepart.foodpart.network.common.Result
-import com.examplepart.foodpart.network.common.safeApi
-import com.examplepart.foodpart.network.whattocook.FoodResponse
-import com.examplepart.foodpart.network.whattocook.WhatToCookApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class WhatToCookViewModel @Inject constructor(
-    private val whatToCookApi: WhatToCookApi
 ) : ViewModel() {
     private val _ingredients = MutableStateFlow("")
     val ingredients: StateFlow<String> = _ingredients.asStateFlow()
@@ -55,7 +48,6 @@ class WhatToCookViewModel @Inject constructor(
             _difficultyTitle.emit(difficultyTitle)
         }
     }
-
 
 
     fun performValidation() {

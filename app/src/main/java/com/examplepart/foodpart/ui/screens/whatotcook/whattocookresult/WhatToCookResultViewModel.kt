@@ -1,5 +1,6 @@
 package com.examplepart.foodpart.ui.screens.whatotcook.whattocookresult
 
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,11 +12,9 @@ import com.examplepart.foodpart.network.whattocook.WhatToCookApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,10 +35,22 @@ class WhatToCookResultViewModel @Inject constructor(
     private val _foodsResult = MutableStateFlow<Result>(Result.Idle)
     val foodsResult = _foodsResult.asSharedFlow()
 
+    private val _isFabVisible = MutableStateFlow(false)
+    val isFabVisible: StateFlow<Boolean> = _isFabVisible.asStateFlow()
+
     init {
         findWhatToCook()
     }
 
+    fun toggleFabVisibility(isVisible: Boolean) {
+        _isFabVisible.value = isVisible
+    }
+
+    fun scrollListToTop(scrollState: LazyGridState) {
+        viewModelScope.launch(Dispatchers.Unconfined) {
+            scrollState.animateScrollToItem(0)
+        }
+    }
 
     private fun findWhatToCook() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -48,7 +59,6 @@ class WhatToCookResultViewModel @Inject constructor(
                 Difficulty.EASY.title -> 1
                 Difficulty.NORMAL.title -> 2
                 Difficulty.DIFFICULT.title -> 3
-
                 else -> null
             }
 
@@ -71,5 +81,4 @@ class WhatToCookResultViewModel @Inject constructor(
             ).collect(_foodsResult)
         }
     }
-
 }

@@ -1,6 +1,5 @@
 package com.examplepart.foodpart.ui.screens.whatotcook.whatotcook
 
-import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -251,7 +250,6 @@ private fun WhatToCookScreenContent(
                                 selected = (difficultyTitle.value == option),
                                 onClick = {
                                     whatToCookViewModel.updateDifficulty(option)
-                                    Log.d("difficultyTitle", "${option.title}")
                                 },
                                 role = Role.RadioButton
                             ),

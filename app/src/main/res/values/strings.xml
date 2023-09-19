@@ -12,6 +12,9 @@
     <string name="easy">آسان</string>
     <string name="difficult">سخت</string>
     <string name="normal">متوسط</string>
+    <string name="difficulty">درجه سختی</string>
+    <string name="searchResults">نتایج جستجو یا %1$s در %2$s دقیقه با درجه سختی %3$s</string>
+
     <string name="breakfast">صبحانه</string>
     <string name="lunch">ناهار</string>
     <string name="more">بیشتر از این دسته</string>
