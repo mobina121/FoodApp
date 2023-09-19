@@ -1,5 +1,6 @@
 package com.examplepart.foodpart.ui.screens.whatotcook.whattocookresult
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -58,10 +59,10 @@ fun WhatToCookResultScreen(
     WhatToCookResultScreenContent(
         whatToCookResultViewModel,
         onClickStareIcon = {
-            navController.navigate(AppScreens.WhatToCook.route)
+            navController.navigateUp()
         },
-        ocClickFood = {foodId ->
-            navController.navigate(AppScreens.FoodDetail.createRoute(id = foodId))
+        ocClickFood = {
+            navController.navigate(AppScreens.FoodDetail.createRoute(it))
         },
         doRetry = {
             whatToCookResultViewModel.findWhatToCook()
@@ -201,6 +202,7 @@ fun WhatToCookResultScreenContent(
                                 modifier = Modifier,
                                 food = foodEntity,
                             ) {
+                                Log.d("foodEntity.id", "$foodEntity.id")
                                 ocClickFood(foodEntity.id)
                             }
 

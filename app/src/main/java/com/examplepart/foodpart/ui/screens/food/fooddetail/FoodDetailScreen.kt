@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +22,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -36,6 +36,7 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
@@ -49,6 +50,7 @@ import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Tab
 import androidx.compose.material.TabPosition
+import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -66,6 +68,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -79,16 +82,16 @@ import androidx.navigation.NavController
 import com.examplepart.foodpart.R
 import com.examplepart.foodpart.core.AppScreens
 import com.examplepart.foodpart.datamodel.fakeData
-import com.examplepart.foodpart.datamodel.foodCategories
+import com.examplepart.foodpart.network.common.Result
 import com.examplepart.foodpart.ui.common.CustomChip
 import com.examplepart.foodpart.ui.common.CustomDropdownMenuItem
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.common.PhotoOfFood
+import com.examplepart.foodpart.ui.common.ShowError
 import com.examplepart.foodpart.ui.common.SimpleChip
 import com.examplepart.foodpart.ui.common.SubCategory
 import com.examplepart.foodpart.ui.theme.DarkRed
 import kotlinx.coroutines.launch
-import com.examplepart.foodpart.network.common.Result
 import androidx.compose.material.Text as Text1
 
 
@@ -111,10 +114,10 @@ fun FoodDetailScreen(
             FoodDetailScreenContent(
                 foodDetailViewModel = foodDetailViewModel,
                 navigateFullScreenPhoto = {
-                    navController.navigate(AppScreens.FullscreenImage.route)
+                    navController.navigate(AppScreens.FullscreenImage.createRoute(it))
                 },
                 onClickStartIcon = {
-                    navController.navigate(AppScreens.Categories.route)
+                    navController.navigateUp()
                 },
                 onClickReport = {
                     scope.launch {
@@ -132,7 +135,6 @@ fun FoodDetailScreen(
                 navigateCategories = {
                     navController.navigate(AppScreens.Categories.route)
                 },
-                foodId = ""
             )
         },
         sheetContent = {
@@ -159,13 +161,8 @@ private fun FoodDetailScreenContent(
     navigateCategories: (categoryId: String) -> Unit,
     navigateToSavedScreen: () -> Unit,
     navigateToSignup: () -> Unit,
-    foodId: String
 ) {
 
-    val foodDetail = foodDetailViewModel.foodDetail.collectAsState()
-    val meal = foodDetailViewModel.meal.collectAsState()
-    val difficulty = foodDetailViewModel.difficulty.collectAsState()
-    val foodDetailResult = foodDetailViewModel.foodDetailResult.collectAsState(Result.Idle)
 
     var isDropDownMenuShowing: Boolean by remember {
         mutableStateOf(false)
@@ -177,6 +174,10 @@ private fun FoodDetailScreenContent(
 
     val msg = stringResource(id = R.string.theRecipeHasBeenAddedToFavorites)
     val actionLabel = stringResource(id = R.string.saved)
+
+    val foodDetailResult by foodDetailViewModel.foodDetailResult.collectAsState(Result.Idle)
+
+
 
     Scaffold(
         topBar = {
@@ -278,18 +279,50 @@ private fun FoodDetailScreenContent(
             }
         }
     ) { paddingValues ->
-        ScreenContent(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            showFullScreenPhoto = {
-                navigateFullScreenPhoto(it)
-            },
-            onShowMoreCategory = {
-                navigateCategories(it)
-            },
-            foodId = foodId
-        )
+
+        if (foodDetailResult is Result.Loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+
+                )
+            {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                        .background(Color.White)
+                )
+            }
+        }
+
+        if (foodDetailResult is Result.Error) {
+            ShowError(
+                errorMessage = stringResource(id = R.string.serverMessageError),
+                buttonTitle = stringResource(id = R.string.retry)
+            ) {
+//                doRetry()
+            }
+        }
+
+        if (foodDetailResult is Result.Success) {
+
+            ScreenContent(
+                foodDetailViewModel = foodDetailViewModel,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                showFullScreenPhoto = {
+                    navigateFullScreenPhoto(it)
+                },
+                onShowMoreCategory = {
+                    navigateCategories(it)
+                },
+            )
+        }
+
+
     }
 }
 
@@ -298,14 +331,17 @@ private fun FoodDetailScreenContent(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScreenContent(
+    foodDetailViewModel: FoodDetailViewModel,
     modifier: Modifier,
     showFullScreenPhoto: (foodId: String) -> Unit,
     onShowMoreCategory: (foodCategory: String) -> Unit,
-    foodId: String
 ) {
-    val foodDetailsModel = foodCategories[0].subCategories[0].foods.filter {
-        it.id == foodId
-    }[0]
+    val foodDetail by foodDetailViewModel.foodDetail.collectAsState()
+    val meals by foodDetailViewModel.meals.collectAsState()
+    val difficulty by foodDetailViewModel.difficulty.collectAsState()
+    val similarFoods by foodDetailViewModel.similarFoods.collectAsState()
+    val tabsData by foodDetailViewModel.tabsData.collectAsState()
+
     val itemsToDisplay = fakeData.take(5)
     val pageState = rememberPagerState()
     val tabs = listOf(
@@ -326,7 +362,7 @@ fun ScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         PhotoOfFood(
-            photoId = "R.drawable.food_pic",
+            photoId = foodDetail.image,
             onClickPhoto = {
                 showFullScreenPhoto(it)
             }
@@ -335,16 +371,17 @@ fun ScreenContent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, top = 3.dp, end = 20.dp),
+                .padding(start = 20.dp, top = 8.dp, end = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = foodDetailsModel.name,
-                style = MaterialTheme.typography.h1,
+                text = foodDetail.name,
+                style = if (foodDetail.name.length < 15) MaterialTheme.typography.h1 else MaterialTheme.typography.h2,
                 color = MaterialTheme.colors.onBackground
             )
+
             Row(
                 modifier = Modifier
                     .weight(1f)
@@ -353,24 +390,32 @@ fun ScreenContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text1(
-                    text = "${stringResource(id = R.string.forCount)} ${foodDetailsModel.count}",
+                    text = "${stringResource(id = R.string.forCount)} ${foodDetail.count}",
                     style = MaterialTheme.typography.caption,
                     color = MaterialTheme.colors.onBackground
                 )
-                CustomChip(
-                    icon = {
-                        Image(
-                            painterResource(R.drawable.timer),
-                            modifier = Modifier
-                                .padding(0.dp, 0.dp, 10.dp, 0.dp)
-                                .size(18.dp),
-                            contentDescription = "",
-                            contentScale = ContentScale.FillWidth,
-                        )
-                    },
-                    label = "${foodDetailsModel.readyTime} ${stringResource(id = R.string.time)}",
-                    color = DarkRed,
-                )
+
+
+                if (foodDetail.readyTime != null || foodDetail.cookTime != null) {
+                    val readyTime = foodDetail.readyTime ?: 0
+                    val cookTime = foodDetail.cookTime ?: 0
+                    val totalTime = readyTime.plus(cookTime).toString()
+                    CustomChip(
+                        icon = {
+                            Image(
+                                painterResource(R.drawable.timer),
+                                modifier = Modifier
+                                    .padding(0.dp, 0.dp, 10.dp, 0.dp)
+                                    .size(18.dp),
+                                contentDescription = "",
+                                contentScale = ContentScale.FillWidth,
+                            )
+                        },
+                        label = "$totalTime ${stringResource(id = R.string.time)}",
+                        color = DarkRed,
+                    )
+                }
+
             }
         }
 
@@ -388,14 +433,16 @@ fun ScreenContent(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                foodDetailsModel.meals?.forEach {
+                meals.forEach {
                     SimpleChip(
-                        label = it,
+                        label = it.meal,
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                 }
             }
-            foodDetailsModel.difficulty?.let { SubCategory(label = it) }
+            difficulty?.difficultyLevel?.let {
+                SubCategory(label = difficulty!!.difficultyLevel)
+            }
         }
         val density = LocalDensity.current
         val tabWidths = remember {
@@ -405,26 +452,30 @@ fun ScreenContent(
             }
             tabWidthStateList
         }
-        ScrollableTabRow(
-            modifier = Modifier.padding(vertical = 15.dp, horizontal = 20.dp),
-            selectedTabIndex = pageState.currentPage,
-            edgePadding = 0.dp,
-            backgroundColor = MaterialTheme.colors.background,
-            indicator = {
-                TabRowDefaults.Indicator(
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .height(1.dp)
-                        .customTabIndicatorOffset(
-                            currentTabPosition = it[pageState.currentPage],
-                            tabWidth = tabWidths[pageState.currentPage]
-                        ),
-                    color = MaterialTheme.colors.primary
-                )
-            },
-            divider = {},
-            tabs = {
-                tabs.forEachIndexed { index, tabNane ->
+
+        if (tabsData != null) {
+            TabRow(
+                modifier = Modifier
+                    .padding(vertical = 15.dp, horizontal = 20.dp)
+                    .fillMaxWidth(0.7f)
+                    .align(Alignment.Start),
+                selectedTabIndex = pageState.currentPage,
+                backgroundColor = MaterialTheme.colors.background,
+                indicator = {
+                    TabRowDefaults.Indicator(
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .height(1.dp)
+                            .customTabIndicatorOffset(
+                                currentTabPosition = it[pageState.currentPage],
+                                tabWidth = tabWidths[pageState.currentPage]
+                            ),
+                        color = MaterialTheme.colors.primary
+                    )
+                },
+                divider = {},
+            ) {
+                tabsData?.keys?.forEachIndexed { index, tabName ->
                     Tab(
                         selected = pageState.currentPage == index,
                         onClick = {
@@ -434,7 +485,7 @@ fun ScreenContent(
                     ) {
                         Text(
                             modifier = Modifier.padding(vertical = 10.dp),
-                            text = tabNane,
+                            text = tabName,
                             onTextLayout = { textLayoutResult ->
                                 tabWidths[pageState.currentPage] =
                                     with(density) { textLayoutResult.size.width.toDp() }
@@ -445,50 +496,47 @@ fun ScreenContent(
                     }
                 }
             }
-        )
-        HorizontalPager(
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(MaterialTheme.shapes.medium)
-                .padding(vertical = 10.dp, horizontal = 15.dp),
-            verticalAlignment = Alignment.Top,
-            pageCount = tabs.count(),
-            state = pageState,
-            userScrollEnabled = true,
-            reverseLayout = true
-
-        ) { page ->
-            val tabText = when (page) {
-                0 -> foodDetailsModel.point
-                1 -> foodDetailsModel.point
-                else -> foodDetailsModel.point
-            }
-
-            Column(
+            HorizontalPager(
                 modifier = Modifier
-                    .height(400.dp)
+                    .fillMaxSize()
                     .clip(MaterialTheme.shapes.medium)
-                    .background(MaterialTheme.colors.surface)
-                    .padding(vertical = 20.dp, horizontal = 15.dp)
+                    .padding(vertical = 10.dp, horizontal = 15.dp),
+                verticalAlignment = Alignment.Top,
+                pageCount = tabs.count(),
+                state = pageState,
+                userScrollEnabled = true,
+                reverseLayout = true
+            ) { page ->
+                val tabValue = tabsData?.values?.elementAtOrNull(page)
 
-            ) {
-                LazyColumn(
-                    state = stateLazy,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                Column(
+                    modifier = Modifier
+                        .height(400.dp)
+                        .clip(MaterialTheme.shapes.medium)
+                        .background(MaterialTheme.colors.surface)
+                        .padding(vertical = 20.dp, horizontal = 15.dp)
+
                 ) {
-                    item {
-                        tabText?.let {
-                            Text(
-                                text = it,
-                                style = MaterialTheme.typography.subtitle1,
-                                color = MaterialTheme.colors.onBackground,
-                                lineHeight = 20.sp
-                            )
+                    LazyColumn(
+                        state = stateLazy,
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        item {
+                            tabValue?.let {
+                                Text(
+                                    text = it,
+                                    style = MaterialTheme.typography.subtitle1,
+                                    color = MaterialTheme.colors.onBackground,
+                                    lineHeight = 20.sp
+                                )
+                            }
                         }
                     }
                 }
             }
+
         }
+
         Column(modifier = Modifier.padding(10.dp)) {
             Text(
                 modifier = Modifier.padding(15.dp, 0.dp, 0.dp, 10.dp),
@@ -496,21 +544,19 @@ fun ScreenContent(
                 style = MaterialTheme.typography.h3,
                 color = MaterialTheme.colors.onBackground
             )
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-//                items(itemsToDisplay) { food ->
-//                    FoodItem(
-//                        modifier = Modifier,
-//                        food
-//                    ) {}
+//            LazyRow(
+//                modifier = Modifier.fillMaxWidth(),
+//                horizontalArrangement = Arrangement.spacedBy(16.dp)
+//            ) {
+//                items(similarFoods){foodId ->
+//                    Text(text = )
+//
 //                }
 //                item {
 //                    ShowMoreButton(onShowMoreCategory)
 //
 //                }
-            }
+//            }
         }
 
     }

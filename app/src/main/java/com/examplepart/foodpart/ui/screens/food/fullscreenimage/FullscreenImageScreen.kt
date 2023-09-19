@@ -1,6 +1,5 @@
 package com.examplepart.foodpart.ui.screens.food.fullscreenimage
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,13 +15,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.examplepart.foodpart.R
-import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.core.AppScreens
+import com.examplepart.foodpart.ui.common.FoodPartAppBar
 
 
 @Composable
-fun FullscreenImageScreen(navController: NavController) {
+fun FullscreenImageScreen(
+    fullScreenImageScreenViewModel: FullScreenImageScreenViewModel,
+    navController: NavController
+) {
+
+    val imageId = fullScreenImageScreenViewModel.imageId
+
     Scaffold(
         topBar = {
             FoodPartAppBar(
@@ -34,7 +40,7 @@ fun FullscreenImageScreen(navController: NavController) {
                 showEndIcon = true,
                 startIcon = {
                     IconButton(onClick = {
-                        navController.navigate(AppScreens.FoodDetail.route)
+                        navController.navigateUp()
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_right),
@@ -63,10 +69,11 @@ fun FullscreenImageScreen(navController: NavController) {
                 .padding(paddingValues)
                 .padding(vertical = 64.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.food_pic),
-                contentDescription = "",
-                contentScale = ContentScale.FillBounds,
+            AsyncImage(
+                model = imageId,
+                contentDescription = imageId,
+                error = painterResource(id = R.drawable.logo_dark_1),
+                contentScale = ContentScale.FillWidth,
                 modifier = Modifier.fillMaxSize()
             )
         }

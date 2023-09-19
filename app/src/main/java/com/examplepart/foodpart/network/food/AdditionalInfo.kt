@@ -9,8 +9,8 @@ import com.squareup.moshi.JsonClass
 
 data class AdditionalInfo(
     val difficulty: DifficultyModel,
-    val meals: List<MealModel>,
-    val similarFoods: List<String>,
+    val meals: List<MealModel>?,
+    val similarFoods: List<String>?,
 )
 
 
