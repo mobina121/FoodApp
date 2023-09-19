@@ -161,12 +161,12 @@ private fun SearchScreenContent(
                             state = scrollState,
                         ) {
                             items(foods) { food ->
-                                FoodItem(
-                                    modifier = Modifier,
-                                    food = food,
-                                ) {
-                                    ocClickFood()
-                                }
+//                                FoodItem(
+//                                    modifier = Modifier,
+//                                    food = food,
+//                                ) {
+//                                    ocClickFood()
+//                                }
                             }
                         }
                     }

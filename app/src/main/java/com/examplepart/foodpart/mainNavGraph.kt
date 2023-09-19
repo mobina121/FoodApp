@@ -53,9 +53,9 @@ fun NavGraphBuilder.mainNavGraph(navController: NavController) {
         SearchScreen(navController)
     }
     composable(AppScreens.WhatToCookResult.route) {
-        WhatToCookResultScreen(navController)
+        WhatToCookResultScreen(hiltViewModel(), navController)
     }
     composable(AppScreens.WhatToCook.route) {
-        WhatToCookScreen(navController)
+        WhatToCookScreen(hiltViewModel(), navController)
     }
 }

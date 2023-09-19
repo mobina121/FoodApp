@@ -8,11 +8,11 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.examplepart.foodpart.datamodel.FoodItemModel
+import com.examplepart.foodpart.database.food.FoodEntity
 
 @Composable
 fun FoodsList(
-    items: List<FoodItemModel>,
+    items: List<FoodEntity>,
     onClickFoodItem: (id: String) -> Unit
 ) {
     LazyVerticalGrid(

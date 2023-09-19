@@ -12,6 +12,11 @@
     <string name="easy">آسان</string>
     <string name="difficult">سخت</string>
     <string name="normal">متوسط</string>
+    <string name="difficulty">درجه سختی</string>
+    <string name="searchResults">نتایج جستجو با %1$s\n در %2$s دقیقه با درجه سختی %3$s</string>
+    <string name="cookTime">زمان : %1$s دقیقه</string>
+
+
     <string name="breakfast">صبحانه</string>
     <string name="lunch">ناهار</string>
     <string name="more">بیشتر از این دسته</string>
@@ -56,6 +61,7 @@
     <string name="wrightHereInformal">اینجا بنویس…</string>
     <string name="nothingFound">اوپس… چیزی پیدا نشد!</string>
     <string name="errorMsg">بگو تو خونه چی داری!</string>
+    <string name="serverMessageError">خطا در برقراری ارتباط با سرور</string>
     <string name="onConfirmation">تایید</string>
     <string name="changeUserName">تغییر نام کاربری</string>
     <string name="newUserName">نام کاربری جدید</string>
@@ -72,6 +78,9 @@
     <string name="signupPasswordError">پسورد باید حداقل ۸ کاراکتر بوده و شامل حروف بزرگ و کوچک انگلیسی باشد.</string>
     <string name="signupUsernameError">نام کاربری باید حداقل 4 کاراکتر باشد.</string>
     <string name="signupRepeatPasswordError">تکرار رمز عبور اشتباه است.</string>
+
+    <string name="whatToCookIngredientsError">مقدار "تو خونه چی داری؟" باید بیشتر از 3 کاراکتر باشد </string>
+    <string name="whatToCookTimeLimitError">مقدار "چقدر وقت داری؟" ضروری است.</string>
 
 
     <string name="helpText">کاربر گرامی مواد اولیه ی موجود را در قسمت “تو خونه چی داری ؟” وارد کرده و با علامت “،” از یکدیگر جدا کنید سپس کل زمانی که دارین را به دقیقه در بخش “چقدر وقت داری ؟” وارد کنین. سطح دستور پخت را انتخاب کرده و کلیک جستجو را بزنید تا با توجه به اطلاعات شما غذاهای پیشنهاد را نمایش دهیم.</string>
