@@ -13,7 +13,9 @@
     <string name="difficult">سخت</string>
     <string name="normal">متوسط</string>
     <string name="difficulty">درجه سختی</string>
-    <string name="searchResults">نتایج جستجو یا %1$s در %2$s دقیقه با درجه سختی %3$s</string>
+    <string name="searchResults">نتایج جستجو با %1$s\n در %2$s دقیقه با درجه سختی %3$s</string>
+    <string name="cookTime">زمان : %1$s دقیقه</string>
+
 
     <string name="breakfast">صبحانه</string>
     <string name="lunch">ناهار</string>
@@ -59,6 +61,7 @@
     <string name="wrightHereInformal">اینجا بنویس…</string>
     <string name="nothingFound">اوپس… چیزی پیدا نشد!</string>
     <string name="errorMsg">بگو تو خونه چی داری!</string>
+    <string name="serverMessageError">خطا در برقراری ارتباط با سرور</string>
     <string name="onConfirmation">تایید</string>
     <string name="changeUserName">تغییر نام کاربری</string>
     <string name="newUserName">نام کاربری جدید</string>

@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -77,16 +76,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
+import com.examplepart.foodpart.core.AppScreens
 import com.examplepart.foodpart.datamodel.fakeData
 import com.examplepart.foodpart.datamodel.foodCategories
 import com.examplepart.foodpart.ui.common.CustomChip
 import com.examplepart.foodpart.ui.common.CustomDropdownMenuItem
-import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.common.PhotoOfFood
 import com.examplepart.foodpart.ui.common.SimpleChip
 import com.examplepart.foodpart.ui.common.SubCategory
-import com.examplepart.foodpart.core.AppScreens
 import com.examplepart.foodpart.ui.theme.DarkRed
 import kotlinx.coroutines.launch
 import androidx.compose.material.Text as Text1

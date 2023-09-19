@@ -52,20 +52,28 @@ class WhatToCookViewModel @Inject constructor(
 
     fun performValidation() {
         val ingredientsError = validateIngredients(_ingredients.value)
+        val timeLimitError = validateTimeLimit(_timeLimit.value)
         _ingredientsValidationState.value = ingredientsError
-
-        _timeLimitValidationState.value = timeLimit.value
+        _timeLimitValidationState.value = timeLimitError
 
     }
 
     fun areAllDataParamsValid(): Boolean {
-        return ingredientsValidationState.value == null && timeLimitValidationState.value != null
+        return ingredientsValidationState.value == null && timeLimitValidationState.value == null
     }
 
 
     private fun validateIngredients(text: String): String? {
         return if (text.length < 3) {
             "text must be at least 3 characters long"
+        } else {
+            null
+        }
+    }
+
+    private fun validateTimeLimit(text: String): String? {
+        return if (text.isEmpty()) {
+            "text cant be null"
         } else {
             null
         }

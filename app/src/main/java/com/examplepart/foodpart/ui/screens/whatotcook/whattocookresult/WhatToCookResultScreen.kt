@@ -1,15 +1,23 @@
 package com.examplepart.foodpart.ui.screens.whatotcook.whattocookresult
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material.FloatingActionButton
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LinearProgressIndicator
@@ -17,17 +25,20 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
 import com.examplepart.foodpart.core.AppScreens
@@ -36,6 +47,7 @@ import com.examplepart.foodpart.network.common.Result
 import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.common.ShowError
+import kotlinx.coroutines.launch
 
 @Composable
 fun WhatToCookResultScreen(
@@ -50,7 +62,10 @@ fun WhatToCookResultScreen(
         },
         ocClickFood = {
             navController.navigate(AppScreens.FoodDetail.route)
-        }
+        },
+        doRetry = {
+            whatToCookResultViewModel.findWhatToCook()
+        },
     )
 }
 
@@ -58,16 +73,24 @@ fun WhatToCookResultScreen(
 fun WhatToCookResultScreenContent(
     whatToCookResultViewModel: WhatToCookResultViewModel,
     onClickStareIcon: () -> Unit,
-    ocClickFood: () -> Unit
+    ocClickFood: () -> Unit,
+    doRetry: () -> Unit
 ) {
+
+    val listState = rememberLazyGridState()
+    val showButton by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex > 0
+        }
+    }
+
     val ingredients = whatToCookResultViewModel.ingredients
     val timeLimit = whatToCookResultViewModel.timeLimit
     val foodsList by whatToCookResultViewModel.foodsList.collectAsState()
     val foodsResult by whatToCookResultViewModel.foodsResult.collectAsState(Result.Idle)
-    val isFabVisible by whatToCookResultViewModel.isFabVisible.collectAsState(false)
 
-    var isScrolling by remember { mutableStateOf(false) }
-    val scrollState = rememberLazyGridState()
+    val scope = rememberCoroutineScope()
+
 
     val formattedResult = stringResource(
         R.string.searchResults,
@@ -75,36 +98,6 @@ fun WhatToCookResultScreenContent(
         timeLimit,
         whatToCookResultViewModel.difficulty ?: Difficulty.NO_MATTER
     )
-
-    LaunchedEffect(scrollState) {
-        snapshotFlow { scrollState.isScrollInProgress }
-            .collect { scrolling ->
-                if (scrolling) {
-                    whatToCookResultViewModel.toggleFabVisibility(true)
-                }
-                isScrolling = scrolling
-            }
-    }
-
-    LaunchedEffect(foodsResult) {
-        when (foodsResult) {
-            is Result.Error -> {
-                // Handle error state if needed
-            }
-
-            Result.Idle -> {
-                // Handle idle state if needed
-            }
-
-            Result.Loading -> {
-                // Handle loading state if needed
-            }
-
-            Result.Success -> {
-                // Handle success state if needed
-            }
-        }
-    }
 
     Scaffold(
         topBar = {
@@ -130,68 +123,118 @@ fun WhatToCookResultScreenContent(
             )
         },
         floatingActionButton = {
-            if (isFabVisible && foodsList.isNotEmpty()) {
-                FloatingActionButton(
-                    onClick = {
-                        whatToCookResultViewModel.scrollListToTop(scrollState)
-                    },
-                    modifier = Modifier
-                        .padding(16.dp),
-                    backgroundColor = MaterialTheme.colors.primary,
-                    content = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_arrow_forward),
-                            contentDescription = "FAB Icon",
-                        )
+            AnimatedVisibility(
+                visible = showButton,
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
+                ScrollToTopButton(onClick = {
+                    scope.launch {
+                        listState.animateScrollToItem(0)
                     }
-                )
+                })
             }
         }
 
     ) { paddingValues ->
         if (foodsResult is Result.Loading) {
-            LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth()
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+
+                )
+            {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                        .background(White)
+                )
+            }
         }
-        if (foodsList.isEmpty()) {
+        if (foodsResult is Result.Error) {
             ShowError(
-                errorMessage = stringResource(id = R.string.foodCategoriesNotFound),
+                errorMessage = stringResource(id = R.string.serverMessageError),
                 buttonTitle = stringResource(id = R.string.retry)
             ) {
-                //doRetry
+                doRetry()
             }
         }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-        ) {
-            Text(
+        if (foodsResult is Result.Success) {
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp, 0.dp, 20.dp, 10.dp),
-                text = formattedResult,
-                style = MaterialTheme.typography.caption,
-                color = MaterialTheme.colors.onBackground
-            )
-
-            LazyVerticalGrid(
-                modifier = Modifier.padding(horizontal = 36.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                columns = GridCells.Fixed(2),
-                state = scrollState,
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center
             ) {
-                items(foodsList) { foodEntity ->
-                    FoodItem(
-                        modifier = Modifier,
-                        food = foodEntity,
+                if (foodsList.isEmpty()) {
+                    ShowError(
+                        errorMessage = stringResource(id = R.string.foodCategoriesNotFound),
+                        buttonTitle = stringResource(id = R.string.retry)
                     ) {
-                        ocClickFood()
+                        doRetry()
                     }
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp, 0.dp, 20.dp, 16.dp),
+                        text = formattedResult,
+                        lineHeight = 20.sp,
+                        style = MaterialTheme.typography.caption,
+                        color = MaterialTheme.colors.onBackground
+                    )
 
+                    LazyVerticalGrid(
+                        modifier = Modifier.padding(horizontal = 36.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        columns = GridCells.Fixed(2),
+                        state = listState
+                    ) {
+                        items(foodsList) { foodEntity ->
+                            FoodItem(
+                                modifier = Modifier,
+                                food = foodEntity,
+                            ) {
+                                ocClickFood()
+                            }
+
+                        }
+                    }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun ScrollToTopButton(onClick: () -> Unit) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .padding(bottom = 16.dp, end = 16.dp), Alignment.BottomEnd
+    ) {
+        Button(
+            onClick = {
+                onClick()
+            },
+            modifier = Modifier
+                .shadow(10.dp, shape = CircleShape)
+                .clip(shape = CircleShape)
+                .size(55.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = MaterialTheme.colors.primary,
+            )
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_forward),
+                contentDescription = "FAB Icon",
+            )
         }
     }
 }
