@@ -15,6 +15,7 @@ data class FoodEntity(
     val count: String?,
     val point: String?,
     val difficulty: String?,
+    val location: String?,
     val recipe: String?,
     val ingredients: String?,
     val meals: List<String>?,

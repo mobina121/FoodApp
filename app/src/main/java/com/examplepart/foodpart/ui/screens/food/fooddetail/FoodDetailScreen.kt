@@ -55,6 +55,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -87,12 +88,16 @@ import com.examplepart.foodpart.ui.common.SimpleChip
 import com.examplepart.foodpart.ui.common.SubCategory
 import com.examplepart.foodpart.ui.theme.DarkRed
 import kotlinx.coroutines.launch
+import com.examplepart.foodpart.network.common.Result
 import androidx.compose.material.Text as Text1
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FoodDetailScreen(navController: NavController, id: String) {
+fun FoodDetailScreen(
+    foodDetailViewModel: FoodDetailViewModel,
+    navController: NavController
+) {
 
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
@@ -104,6 +109,7 @@ fun FoodDetailScreen(navController: NavController, id: String) {
         sheetState = bottomSheetState,
         content = {
             FoodDetailScreenContent(
+                foodDetailViewModel = foodDetailViewModel,
                 navigateFullScreenPhoto = {
                     navController.navigate(AppScreens.FullscreenImage.route)
                 },
@@ -126,7 +132,7 @@ fun FoodDetailScreen(navController: NavController, id: String) {
                 navigateCategories = {
                     navController.navigate(AppScreens.Categories.route)
                 },
-                foodId = id
+                foodId = ""
             )
         },
         sheetContent = {
@@ -145,6 +151,7 @@ fun FoodDetailScreen(navController: NavController, id: String) {
 
 @Composable
 private fun FoodDetailScreenContent(
+    foodDetailViewModel: FoodDetailViewModel,
     onClickReport: () -> Unit,
     onClickShare: () -> Unit,
     onClickStartIcon: () -> Unit,
@@ -154,6 +161,11 @@ private fun FoodDetailScreenContent(
     navigateToSignup: () -> Unit,
     foodId: String
 ) {
+
+    val foodDetail = foodDetailViewModel.foodDetail.collectAsState()
+    val meal = foodDetailViewModel.meal.collectAsState()
+    val difficulty = foodDetailViewModel.difficulty.collectAsState()
+    val foodDetailResult = foodDetailViewModel.foodDetailResult.collectAsState(Result.Idle)
 
     var isDropDownMenuShowing: Boolean by remember {
         mutableStateOf(false)

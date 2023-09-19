@@ -1,9 +1,9 @@
 package com.examplepart.foodpart.core
 
 sealed class AppScreens(val route: String) {
-    object FoodDetail : AppScreens("foodDetail/{id}") {
+    object FoodDetail : AppScreens("foodDetail?id={id}") {
         fun createRoute(id: String): String {
-            return "foodDetail/$id"
+            return "foodDetail=$id"
         }
     }
 

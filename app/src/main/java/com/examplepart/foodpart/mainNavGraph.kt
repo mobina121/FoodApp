@@ -19,17 +19,8 @@ import com.examplepart.foodpart.ui.screens.whatotcook.whattocookresult.WhatToCoo
 import com.examplepart.foodpart.ui.screens.whatotcook.whatotcook.WhatToCookScreen
 
 fun NavGraphBuilder.mainNavGraph(navController: NavController) {
-    composable(
-        route = AppScreens.FoodDetail.route,
-        arguments = listOf(
-            navArgument("id") {
-                type = NavType.StringType
-                nullable = false
-            }
-        )
-    ) {
-        val id = it.arguments?.getString("id")!!
-        FoodDetailScreen(navController, id)
+    composable(AppScreens.FoodDetail.route) {
+        FoodDetailScreen(hiltViewModel(),navController)
     }
     composable(AppScreens.FullscreenImage.route) {
         FullscreenImageScreen(navController)

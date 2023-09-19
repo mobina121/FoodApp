@@ -60,8 +60,8 @@ fun WhatToCookResultScreen(
         onClickStareIcon = {
             navController.navigate(AppScreens.WhatToCook.route)
         },
-        ocClickFood = {
-            navController.navigate(AppScreens.FoodDetail.route)
+        ocClickFood = {foodId ->
+            navController.navigate(AppScreens.FoodDetail.createRoute(id = foodId))
         },
         doRetry = {
             whatToCookResultViewModel.findWhatToCook()
@@ -73,7 +73,7 @@ fun WhatToCookResultScreen(
 fun WhatToCookResultScreenContent(
     whatToCookResultViewModel: WhatToCookResultViewModel,
     onClickStareIcon: () -> Unit,
-    ocClickFood: () -> Unit,
+    ocClickFood: (foodId: String) -> Unit,
     doRetry: () -> Unit
 ) {
 
@@ -201,7 +201,7 @@ fun WhatToCookResultScreenContent(
                                 modifier = Modifier,
                                 food = foodEntity,
                             ) {
-                                ocClickFood()
+                                ocClickFood(foodEntity.id)
                             }
 
                         }
