@@ -38,7 +38,7 @@ fun NavGraphBuilder.mainNavGraph(navController: NavController) {
         FoodsByMealResultScreen(hiltViewModel(),navController)
     }
     composable(AppScreens.Categories.route) {
-        CategoriesScreen(navController)
+        CategoriesScreen(navController, hiltViewModel())
     }
     composable(AppScreens.Profile.route) {
         ProfileScreen(navController)

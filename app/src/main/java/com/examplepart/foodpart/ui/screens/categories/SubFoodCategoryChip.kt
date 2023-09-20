@@ -16,15 +16,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.examplepart.foodpart.datamodel.SubFoodCategoryModel
+import com.examplepart.foodpart.database.categories.CategoryEntity
 import com.examplepart.foodpart.ui.theme.DarkRed
 import com.examplepart.foodpart.ui.theme.Transparent
 
 
 @Composable
 fun SubFoodCategoryChip(
-    modifier: Modifier ,
-    subFoodCategoryModel: SubFoodCategoryModel,
+    modifier: Modifier,
+    subCategoryEntity: CategoryEntity,
     isSelected: Boolean,
     onClicked: () -> Unit
 ) {
@@ -56,7 +56,7 @@ fun SubFoodCategoryChip(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = subFoodCategoryModel.subCategoryName,
+                text = subCategoryEntity.name,
                 style = if (isSelected)
                     MaterialTheme.typography.subtitle1.copy(color = MaterialTheme.colors.primary)
                 else MaterialTheme.typography.subtitle1,

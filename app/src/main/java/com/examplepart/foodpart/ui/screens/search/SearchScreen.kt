@@ -34,7 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
 import com.examplepart.foodpart.core.AppScreens
-import com.examplepart.foodpart.datamodel.fakeData
+import com.examplepart.foodpart.database.food.FoodEntity
+import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
 
 @Composable
@@ -55,7 +56,7 @@ private fun SearchScreenContent(
 ) {
     var searchText by remember { mutableStateOf("") }
     val scrollState = rememberLazyGridState()
-    val foods = fakeData
+    val foods = listOf<FoodEntity>()
     var isFound by remember { mutableStateOf(true) }
 
     Scaffold(
@@ -160,12 +161,12 @@ private fun SearchScreenContent(
                             state = scrollState,
                         ) {
                             items(foods) { food ->
-//                                FoodItem(
-//                                    modifier = Modifier,
-//                                    food = food,
-//                                ) {
-//                                    ocClickFood()
-//                                }
+                                FoodItem(
+                                    modifier = Modifier,
+                                    food = food,
+                                ) {
+                                    ocClickFood()
+                                }
                             }
                         }
                     }
