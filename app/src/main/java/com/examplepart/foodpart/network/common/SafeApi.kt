@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.isActive
 import retrofit2.Response
+import java.io.IOException
 
 suspend fun <T> safeApi(
     call: suspend () -> Response<T>,
@@ -30,8 +31,10 @@ suspend fun <T> safeApi(
             } else {
                 emit(Result.Error("whoops: got ${response.code()} code!"))
             }
-        } catch (t: Throwable) {
-            emit(Result.Error("whoops: ${t.message}"))
+        } catch (e: IOException) {
+            emit(Result.Error("Internet"))
+        } catch (e: Exception) {
+            emit(Result.Error("Report"))
         }
     }.cancellable()
 }

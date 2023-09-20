@@ -49,16 +49,15 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
-import com.examplepart.foodpart.datamodel.FoodItemModel
-import com.examplepart.foodpart.datamodel.fakeData
+import com.examplepart.foodpart.core.AppScreens
+import com.examplepart.foodpart.database.food.FoodEntity
 import com.examplepart.foodpart.ui.common.CustomButton
 import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
-import com.examplepart.foodpart.core.AppScreens
 
 @Composable
 fun ProfileScreen(navController: NavController) {
-    val favoriteFoods = fakeData
+    val favoriteFoods = listOf<FoodEntity>()
     ProfileScreenContent(
         favoriteFoods,
         isUserLSignUp = true,
@@ -74,7 +73,7 @@ fun ProfileScreen(navController: NavController) {
 
 @Composable
 private fun ProfileScreenContent(
-    foodsList: List<FoodItemModel>,
+    foodsList: List<FoodEntity>,
     isUserLSignUp: Boolean,
     goSingUp: () -> Unit,
     loggingOut: () -> Unit
@@ -263,7 +262,7 @@ fun CustomAlertDialog(
 @SuppressLint("UnrememberedMutableState")
 @Composable
 private fun SettingProfile(
-    foodsList: List<FoodItemModel>,
+    foodsList: List<FoodEntity>,
     onConfirmation: () -> Unit
 ) {
     val scrollState = rememberScrollState()

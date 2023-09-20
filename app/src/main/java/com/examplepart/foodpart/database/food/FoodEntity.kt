@@ -17,6 +17,6 @@ data class FoodEntity(
     val difficulty: String?,
     val recipe: String?,
     val ingredients: String?,
-    val meals: List<String>?,
-    val similarFoods: List<String>?
+    val meals: List<String>? = null,
+    val similarFoods: List<String>? = null
 )

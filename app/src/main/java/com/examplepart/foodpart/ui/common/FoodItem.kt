@@ -20,14 +20,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.examplepart.foodpart.R
-import com.examplepart.foodpart.datamodel.FoodItemModel
+import com.examplepart.foodpart.database.food.FoodEntity
 
 
 @Composable
 fun FoodItem(
-    modifier: Modifier ,
-    food: FoodItemModel,
+    modifier: Modifier,
+    food: FoodEntity,
     onClick: (id: String) -> Unit
 ) {
     Column(
@@ -45,9 +46,10 @@ fun FoodItem(
             shape = RoundedCornerShape(16.dp),
             elevation = 2.dp
         ) {
-            Image(
-                painterResource(R.drawable.pic_food), //food.imageUrl
-                contentDescription = "",
+            AsyncImage(
+                model = food.image,
+                contentDescription = food.name,
+                error = painterResource(id = R.drawable.logo_dark_1),
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier.fillMaxSize()
             )
@@ -68,22 +70,25 @@ fun FoodItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = stringResource(id = R.string.zaman),
-                    style = MaterialTheme.typography.caption,
-                    color = MaterialTheme.colors.onBackground
-                )
-                Text(
-                    modifier = Modifier.padding(2.dp),
-                    text = food.time,
-                    style = MaterialTheme.typography.caption,
-                    color = MaterialTheme.colors.onBackground
-                )
-                Text(
-                    text = stringResource(id = R.string.time),
-                    style = MaterialTheme.typography.caption,
-                    color = MaterialTheme.colors.onBackground
-                )
+                if (food.readyTime != null || food.cookTime != null) {
+                    Text(
+                        text = stringResource(id = R.string.zaman),
+                        style = MaterialTheme.typography.caption,
+                        color = MaterialTheme.colors.onBackground
+                    )
+                    Text(
+                        modifier = Modifier.padding(2.dp),
+                        text = ((food.readyTime ?: "0".toInt()) + (food.cookTime
+                            ?: "0".toInt())).toString(),
+                        style = MaterialTheme.typography.caption,
+                        color = MaterialTheme.colors.onBackground
+                    )
+                    Text(
+                        text = stringResource(id = R.string.time),
+                        style = MaterialTheme.typography.caption,
+                        color = MaterialTheme.colors.onBackground
+                    )
+                }
             }
         }
     }

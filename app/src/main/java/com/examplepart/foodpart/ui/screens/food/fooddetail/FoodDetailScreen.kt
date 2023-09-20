@@ -77,7 +77,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
-import com.examplepart.foodpart.datamodel.fakeData
+import com.examplepart.foodpart.core.AppScreens
+import com.examplepart.foodpart.database.food.FoodEntity
 import com.examplepart.foodpart.datamodel.foodCategories
 import com.examplepart.foodpart.ui.common.CustomChip
 import com.examplepart.foodpart.ui.common.CustomDropdownMenuItem
@@ -86,7 +87,6 @@ import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.common.PhotoOfFood
 import com.examplepart.foodpart.ui.common.SimpleChip
 import com.examplepart.foodpart.ui.common.SubCategory
-import com.examplepart.foodpart.core.AppScreens
 import com.examplepart.foodpart.ui.theme.DarkRed
 import kotlinx.coroutines.launch
 import androidx.compose.material.Text as Text1
@@ -296,7 +296,7 @@ fun ScreenContent(
     val foodDetailsModel = foodCategories[0].subCategories[0].foods.filter {
         it.id == foodId
     }[0]
-    val itemsToDisplay = fakeData.take(5)
+    val itemsToDisplay = listOf<FoodEntity>()
     val pageState = rememberPagerState()
     val tabs = listOf(
         stringResource(id = R.string.rawMaterial),
