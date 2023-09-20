@@ -36,7 +36,6 @@ class FoodDetailViewModel @Inject constructor(
         count = null,
         point = null,
         difficulty = null,
-        location = null,
         recipe = null,
         ingredients = null,
         meals = null,

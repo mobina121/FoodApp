@@ -31,7 +31,6 @@ data class FoodResponse(
         count = count,
         point = point,
         difficulty = difficulty,
-        location = location,
         recipe = recipe,
         ingredients = ingredients,
         meals = meals,

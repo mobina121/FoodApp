@@ -49,11 +49,13 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
-import com.examplepart.foodpart.core.AppScreens
 import com.examplepart.foodpart.datamodel.FoodItemModel
 import com.examplepart.foodpart.datamodel.fakeData
 import com.examplepart.foodpart.ui.common.CustomButton
+import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
+import com.examplepart.foodpart.core.AppScreens
+import com.examplepart.foodpart.database.food.FoodEntity
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -291,10 +293,10 @@ private fun SettingProfile(
             itemsIndexed(foodsList) { index, food ->
                 val startPadding = if (index == 0) 16.dp else 0.dp
                 val endPadding = if (index == foodsList.size - 1) 16.dp else 0.dp
-//                FoodItem(
-//                    modifier = Modifier.padding(start = startPadding, end = endPadding),
-//                    food
-//                ) {}
+                FoodItem(
+                    modifier = Modifier.padding(start = startPadding, end = endPadding),
+                    FoodEntity("","","","",10,10,"","10","","","")
+                ) {}
             }
         }
 
