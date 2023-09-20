@@ -10,12 +10,19 @@ interface FoodDetailApi {
     @GET("v1/food/{id}")
     suspend fun getFoodDetail(
         @Path("id") foodId: String,
-        ): Response<FoodDetailResponse>
+    ): Response<FoodDetailResponse>
 
 
     @GET("v1/food")
     suspend fun getFoodsByIds(
         @Query("ids") ids: String
-    ): Response<List<FoodResponse>>
+    ): Response<SimilarFoodsResponse>
+
+    @GET("v1/food")
+    suspend fun getFoodsByCategory(
+        @Query("category") category: String,
+        @Query("page") page: Int?,
+        @Query("per_page") perPage: Int?
+    ): Response<FoodsByCategoryResponse>
 
 }

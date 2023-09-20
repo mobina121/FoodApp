@@ -1,11 +1,9 @@
 package com.examplepart.foodpart.ui.screens.food.fooddetail
 
 import android.util.Log
-import androidx.annotation.StringRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.examplepart.foodpart.database.food.DifficultyEntity
 import com.examplepart.foodpart.database.food.FoodEntity
 import com.examplepart.foodpart.database.food.MealEntity
 import com.examplepart.foodpart.network.common.Result
@@ -45,27 +43,35 @@ class FoodDetailViewModel @Inject constructor(
         similarFoods = null
     )
 
-
-    private val difficultyEntity = DifficultyEntity("", "")
-
-    private val _foodDetail = MutableStateFlow<FoodEntity>(foodEntity)
+    private val _foodDetail = MutableStateFlow(foodEntity)
     val foodDetail: StateFlow<FoodEntity> = _foodDetail.asStateFlow()
 
-    private val _meals = MutableStateFlow<List<MealEntity>>(emptyList())
-    val meals: StateFlow<List<MealEntity>> = _meals.asStateFlow()
+    private val _meals = MutableStateFlow<List<String>>(emptyList())
+    val meals: StateFlow<List<String>> = _meals.asStateFlow()
 
-    private val _difficulty = MutableStateFlow<DifficultyEntity>(difficultyEntity)
-    val difficulty: StateFlow<DifficultyEntity?> = _difficulty.asStateFlow()
+    private val _difficultyLevel = MutableStateFlow("")
+    val difficultyLevel: StateFlow<String?> = _difficultyLevel.asStateFlow()
 
-    private val _similarFoods = MutableStateFlow<List<String>?>(emptyList())
-    val similarFoods: StateFlow<List<String>?> = _similarFoods.asStateFlow()
+    private val _similarFoodsIds = MutableStateFlow<List<String>?>(emptyList())
+    val similarFoodsIds: StateFlow<List<String>?> = _similarFoodsIds.asStateFlow()
+
+    private val _similarFoods = MutableStateFlow<List<FoodEntity>>(emptyList())
+    val similarFoods = _similarFoods.asStateFlow()
+
+    private val _foodIds = MutableStateFlow("")
+    val foodIds: StateFlow<String> = _foodIds.asStateFlow()
+
+    private val _similarFoodsResult = MutableStateFlow<Result>(Result.Idle)
+    val similarFoodsResult = _similarFoodsResult.asSharedFlow()
 
     private val _foodDetailResult = MutableStateFlow<Result>(Result.Idle)
     val foodDetailResult = _foodDetailResult.asSharedFlow()
 
-    private val _tabsData = MutableStateFlow<Map<String, String>?>(null)
-    val tabsData: StateFlow<Map<String, String>?> = _tabsData.asStateFlow()
+    private val _tabsData = MutableStateFlow<Map<String, String>>(emptyMap())
+    val tabsData: StateFlow<Map<String, String>> = _tabsData.asStateFlow()
 
+    private val _currentPage = MutableStateFlow(0)
+    val currentPage: StateFlow<Int> = _currentPage.asStateFlow()
 
     init {
         fetchFoodDetail()
@@ -81,33 +87,67 @@ class FoodDetailViewModel @Inject constructor(
                     _foodDetail.value = response.foodInfo.toFoodEntity()
 
                     val tabsData = mutableMapOf<String, String>()
-                    if (_foodDetail.value.point != null) {
-                        tabsData["اطلاعات بیشتر"] = _foodDetail.value.point.toString()
+
+                    _foodDetail.value.ingredients?.let {
+                        tabsData["مواد اولیه"] = it
                     }
-                    if (_foodDetail.value.recipe != null) {
-                        tabsData["طرز تهیه"] = _foodDetail.value.recipe.toString()
+                    _foodDetail.value.recipe?.let {
+                        tabsData["طرز تهیه"] = it
                     }
-                    if (_foodDetail.value.ingredients != null) {
-                        tabsData["مواد اولیه"] = _foodDetail.value.ingredients.toString()
+                    _foodDetail.value.point?.let {
+                        tabsData["اطلاعات بیشتر"] = it
                     }
 
-
-
-
-                    _tabsData.value = tabsData
-
-                    val meals = response.additionalInfo.meals?.map {
-                        it.toMealEntity()
+                    tabsData.let {
+                        _tabsData.value = tabsData
                     }
+
+                    _currentPage.value = 0
+
+                    val meals = response.additionalInfo.meals?.let { it ->
+                        it.map { it ->
+                            it.meal
+                        }
+                    }
+
                     if (meals != null) {
                         _meals.value = meals
                     }
 
-                    _difficulty.value = response.additionalInfo.difficulty.toDifficultyEntity()
+                    _similarFoodsIds.value = response.additionalInfo.similarFoods
+
+                    _difficultyLevel.value =
+                        if (response.additionalInfo.difficulty.difficultyId == response.foodInfo.difficulty)
+                            response.additionalInfo.difficulty.difficultyLevel else ""
+
+                    if (_foodDetailResult.value is Result.Success) {
+                        fetchFoodsByIds()
+                    }
+
 
                 }
             ).collect(_foodDetailResult)
         }
+    }
+
+    fun fetchFoodsByIds() {
+        viewModelScope.launch(Dispatchers.IO) {
+            safeApi(
+                call = { foodDetailApi.getFoodsByIds(_similarFoodsIds.value.toString()) },
+                onDataReady = { response ->
+                    val result = response.similarFoods.map {
+                        it.toFoodEntity()
+                    }
+                    _similarFoods.value = result
+                }
+
+            ).collect(_similarFoodsResult)
+        }
+    }
+
+
+    fun onTabSelected(index: Int) {
+        _currentPage.value = index
     }
 }
 

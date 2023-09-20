@@ -13,6 +13,15 @@ sealed class AppScreens(val route: String) {
         }
 
     }
+
+    object FoodsByCategoryResult : AppScreens("foodsByCategoryResult?categoryId={categoryId}"){
+        fun createRoute(categoryId: String): String {
+            return "foodsByCategoryResult?categoryId=$categoryId"
+        }
+
+    }
+
+
     object Login : AppScreens("login")
     object Signup : AppScreens("signup")
     object Categories : AppScreens("categories")

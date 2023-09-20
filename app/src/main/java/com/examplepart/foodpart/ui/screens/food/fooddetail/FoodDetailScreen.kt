@@ -1,6 +1,7 @@
 package com.examplepart.foodpart.ui.screens.food.fooddetail
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -22,6 +23,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -43,7 +46,6 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
-import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Snackbar
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHost
@@ -57,6 +59,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -85,12 +88,14 @@ import com.examplepart.foodpart.datamodel.fakeData
 import com.examplepart.foodpart.network.common.Result
 import com.examplepart.foodpart.ui.common.CustomChip
 import com.examplepart.foodpart.ui.common.CustomDropdownMenuItem
+import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
 import com.examplepart.foodpart.ui.common.PhotoOfFood
 import com.examplepart.foodpart.ui.common.ShowError
 import com.examplepart.foodpart.ui.common.SimpleChip
 import com.examplepart.foodpart.ui.common.SubCategory
 import com.examplepart.foodpart.ui.theme.DarkRed
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import androidx.compose.material.Text as Text1
 
@@ -107,6 +112,24 @@ fun FoodDetailScreen(
     )
 
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        foodDetailViewModel.foodDetailResult.collectLatest { result ->
+            when (result) {
+                is Result.Error -> {
+
+                }
+
+                Result.Idle,
+                Result.Loading -> {
+                }
+
+                Result.Success -> {
+                    foodDetailViewModel.fetchFoodsByIds()
+                }
+            }
+        }
+    }
 
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
@@ -133,9 +156,15 @@ fun FoodDetailScreen(
                     navController.navigate(AppScreens.Signup.route)
                 },
                 navigateCategories = {
-                    navController.navigate(AppScreens.Categories.route)
+                    navController.navigate(
+                        AppScreens.FoodsByCategoryResult.createRoute(
+                            foodDetailViewModel.foodDetail.value.categoryId
+                        )
+                    )
                 },
-            )
+
+
+                )
         },
         sheetContent = {
             Report(
@@ -158,7 +187,7 @@ private fun FoodDetailScreenContent(
     onClickShare: () -> Unit,
     onClickStartIcon: () -> Unit,
     navigateFullScreenPhoto: (photoId: String) -> Unit,
-    navigateCategories: (categoryId: String) -> Unit,
+    navigateCategories: () -> Unit,
     navigateToSavedScreen: () -> Unit,
     navigateToSignup: () -> Unit,
 ) {
@@ -317,7 +346,7 @@ private fun FoodDetailScreenContent(
                     navigateFullScreenPhoto(it)
                 },
                 onShowMoreCategory = {
-                    navigateCategories(it)
+                    navigateCategories()
                 },
             )
         }
@@ -334,13 +363,14 @@ fun ScreenContent(
     foodDetailViewModel: FoodDetailViewModel,
     modifier: Modifier,
     showFullScreenPhoto: (foodId: String) -> Unit,
-    onShowMoreCategory: (foodCategory: String) -> Unit,
+    onShowMoreCategory: () -> Unit,
 ) {
     val foodDetail by foodDetailViewModel.foodDetail.collectAsState()
     val meals by foodDetailViewModel.meals.collectAsState()
-    val difficulty by foodDetailViewModel.difficulty.collectAsState()
+    val difficulty by foodDetailViewModel.difficultyLevel.collectAsState()
     val similarFoods by foodDetailViewModel.similarFoods.collectAsState()
     val tabsData by foodDetailViewModel.tabsData.collectAsState()
+    val currentPage by foodDetailViewModel.currentPage.collectAsState()
 
     val itemsToDisplay = fakeData.take(5)
     val pageState = rememberPagerState()
@@ -350,9 +380,7 @@ fun ScreenContent(
         stringResource(id = R.string.moreInformation)
     )
 
-
     val stateLazy = rememberLazyListState()
-    val scope = rememberCoroutineScope()
 
     Column(
         modifier = modifier
@@ -389,13 +417,13 @@ fun ScreenContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text1(
-                    text = "${stringResource(id = R.string.forCount)} ${foodDetail.count}",
-                    style = MaterialTheme.typography.caption,
-                    color = MaterialTheme.colors.onBackground
-                )
-
-
+                if (foodDetail.count != null) {
+                    Text1(
+                        text = "${stringResource(id = R.string.forCount)} ${foodDetail.count}",
+                        style = MaterialTheme.typography.caption,
+                        color = MaterialTheme.colors.onBackground
+                    )
+                }
                 if (foodDetail.readyTime != null || foodDetail.cookTime != null) {
                     val readyTime = foodDetail.readyTime ?: 0
                     val cookTime = foodDetail.cookTime ?: 0
@@ -435,13 +463,13 @@ fun ScreenContent(
             ) {
                 meals.forEach {
                     SimpleChip(
-                        label = it.meal,
+                        label = it,
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                 }
             }
-            difficulty?.difficultyLevel?.let {
-                SubCategory(label = difficulty!!.difficultyLevel)
+            difficulty?.let {
+                SubCategory(label = it)
             }
         }
         val density = LocalDensity.current
@@ -453,13 +481,13 @@ fun ScreenContent(
             tabWidthStateList
         }
 
-        if (tabsData != null) {
+        if (tabsData.isNotEmpty() && currentPage in 0 until tabsData.size) {
             TabRow(
                 modifier = Modifier
                     .padding(vertical = 15.dp, horizontal = 20.dp)
                     .fillMaxWidth(0.7f)
                     .align(Alignment.Start),
-                selectedTabIndex = pageState.currentPage,
+                selectedTabIndex = currentPage,
                 backgroundColor = MaterialTheme.colors.background,
                 indicator = {
                     TabRowDefaults.Indicator(
@@ -475,13 +503,14 @@ fun ScreenContent(
                 },
                 divider = {},
             ) {
-                tabsData?.keys?.forEachIndexed { index, tabName ->
+                tabsData.keys.forEachIndexed { index, tabName ->
                     Tab(
-                        selected = pageState.currentPage == index,
+                        selected = currentPage == index,
+                        selectedContentColor = MaterialTheme.colors.primary,
                         onClick = {
-                            scope.launch { pageState.animateScrollToPage(index) }
-                        },
-                        selectedContentColor = MaterialTheme.colors.primary
+//                            scope.launch { pageState.animateScrollToPage(index) }
+                            foodDetailViewModel.onTabSelected(index)
+                        }
                     ) {
                         Text(
                             modifier = Modifier.padding(vertical = 10.dp),
@@ -498,7 +527,7 @@ fun ScreenContent(
             }
             HorizontalPager(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .clip(MaterialTheme.shapes.medium)
                     .padding(vertical = 10.dp, horizontal = 15.dp),
                 verticalAlignment = Alignment.Top,
@@ -507,11 +536,11 @@ fun ScreenContent(
                 userScrollEnabled = true,
                 reverseLayout = true
             ) { page ->
-                val tabValue = tabsData?.values?.elementAtOrNull(page)
-
+                val tabValue = tabsData.values.elementAt(page)
                 Column(
                     modifier = Modifier
                         .height(400.dp)
+                        .fillMaxWidth()
                         .clip(MaterialTheme.shapes.medium)
                         .background(MaterialTheme.colors.surface)
                         .padding(vertical = 20.dp, horizontal = 15.dp)
@@ -522,19 +551,16 @@ fun ScreenContent(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         item {
-                            tabValue?.let {
-                                Text(
-                                    text = it,
-                                    style = MaterialTheme.typography.subtitle1,
-                                    color = MaterialTheme.colors.onBackground,
-                                    lineHeight = 20.sp
-                                )
-                            }
+                            Text(
+                                text = tabValue,
+                                style = MaterialTheme.typography.subtitle1,
+                                color = MaterialTheme.colors.onBackground,
+                                lineHeight = 20.sp
+                            )
                         }
                     }
                 }
             }
-
         }
 
         Column(modifier = Modifier.padding(10.dp)) {
@@ -544,33 +570,42 @@ fun ScreenContent(
                 style = MaterialTheme.typography.h3,
                 color = MaterialTheme.colors.onBackground
             )
-//            LazyRow(
-//                modifier = Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.spacedBy(16.dp)
-//            ) {
-//                items(similarFoods){foodId ->
-//                    Text(text = )
-//
-//                }
-//                item {
-//                    ShowMoreButton(onShowMoreCategory)
-//
-//                }
-//            }
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(similarFoods) { food ->
+                    FoodItem(
+                        modifier = Modifier,
+                        food = food,
+                    ) {
+
+                    }
+
+                }
+                item {
+                    ShowMoreButton() {
+                        onShowMoreCategory()
+                    }
+
+                }
+            }
         }
 
     }
 }
 
 @Composable
-private fun ShowMoreButton(onShowMoreCategory: (foodCategory: String) -> Unit) {
+private fun ShowMoreButton(
+    onShowMoreCategory: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 10.dp, horizontal = 5.dp)
             .clip(MaterialTheme.shapes.medium)
             .clickable {
-                onShowMoreCategory("")
+                onShowMoreCategory()
             }
             .size(width = 136.dp, height = 80.dp),
         shape = RoundedCornerShape(16.dp),
