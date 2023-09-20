@@ -291,11 +291,7 @@ private fun WhatToCookScreenContent(
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
                 buttonText = stringResource(id = R.string.search),
             ) {
-
-
                 whatToCookViewModel.performValidation()
-
-
                 if (whatToCookViewModel.areAllDataParamsValid()) {
                     showErrorMessage = false
                     onSearchClicked(ingredients.value, timeLimit.value, difficultyTitle.value.title)

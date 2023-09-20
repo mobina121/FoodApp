@@ -84,7 +84,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
 import com.examplepart.foodpart.core.AppScreens
-import com.examplepart.foodpart.datamodel.fakeData
 import com.examplepart.foodpart.network.common.Result
 import com.examplepart.foodpart.ui.common.CustomChip
 import com.examplepart.foodpart.ui.common.CustomDropdownMenuItem
@@ -116,9 +115,7 @@ fun FoodDetailScreen(
     LaunchedEffect(Unit) {
         foodDetailViewModel.foodDetailResult.collectLatest { result ->
             when (result) {
-                is Result.Error -> {
-
-                }
+                is Result.Error -> {}
 
                 Result.Idle,
                 Result.Loading -> {
@@ -130,6 +127,7 @@ fun FoodDetailScreen(
             }
         }
     }
+
 
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
@@ -162,13 +160,19 @@ fun FoodDetailScreen(
                         )
                     )
                 },
+                navigateFoodByMeelResult = {
+                    navController.navigate(
+                        AppScreens.FoodsByMealResult.createRoute(it)
+                    )
+                },
 
 
                 )
         },
         sheetContent = {
             Report(
-                bottomSheetState = bottomSheetState,
+                foodDetailViewModel = foodDetailViewModel,
+                bottomSheetState = bottomSheetState
             )
         },
         sheetShape = MaterialTheme.shapes.large.copy(
@@ -187,16 +191,16 @@ private fun FoodDetailScreenContent(
     onClickShare: () -> Unit,
     onClickStartIcon: () -> Unit,
     navigateFullScreenPhoto: (photoId: String) -> Unit,
+    navigateFoodByMeelResult: (mealId: String) -> Unit,
     navigateCategories: () -> Unit,
     navigateToSavedScreen: () -> Unit,
     navigateToSignup: () -> Unit,
 ) {
 
-
     var isDropDownMenuShowing: Boolean by remember {
         mutableStateOf(false)
     }
-    var isLogin by remember { mutableStateOf(false) }
+    var isLogin by remember { mutableStateOf(true) }
 
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
@@ -205,6 +209,35 @@ private fun FoodDetailScreenContent(
     val actionLabel = stringResource(id = R.string.saved)
 
     val foodDetailResult by foodDetailViewModel.foodDetailResult.collectAsState(Result.Idle)
+
+    LaunchedEffect(Unit) {
+        foodDetailViewModel.reportResult.collectLatest { result ->
+            when (result) {
+                is Result.Error -> {}
+
+                Result.Idle,
+                Result.Loading -> {
+                }
+
+                Result.Success -> {
+                    Log.d("REPORT RESULT", "${foodDetailViewModel.reportResult}")
+                    scope.launch {
+                        val snackbarResult =
+                            scaffoldState.snackbarHostState.showSnackbar(
+                                message = foodDetailViewModel.reportAnswer.value,
+                                duration = SnackbarDuration.Long
+                            )
+
+                        when (snackbarResult) {
+                            SnackbarResult.Dismissed -> {}
+                            else -> {}
+                        }
+                    }
+
+                }
+            }
+        }
+    }
 
 
 
@@ -331,7 +364,7 @@ private fun FoodDetailScreenContent(
                 errorMessage = stringResource(id = R.string.serverMessageError),
                 buttonTitle = stringResource(id = R.string.retry)
             ) {
-//                doRetry()
+                //doRetry()
             }
         }
 
@@ -348,6 +381,10 @@ private fun FoodDetailScreenContent(
                 onShowMoreCategory = {
                     navigateCategories()
                 },
+                onClickMeal = {
+                    val mealId = foodDetailViewModel.findMealIdByMeal(it)
+                    navigateFoodByMeelResult(mealId)
+                }
             )
         }
 
@@ -364,6 +401,7 @@ fun ScreenContent(
     modifier: Modifier,
     showFullScreenPhoto: (foodId: String) -> Unit,
     onShowMoreCategory: () -> Unit,
+    onClickMeal: (meal: String) -> Unit,
 ) {
     val foodDetail by foodDetailViewModel.foodDetail.collectAsState()
     val meals by foodDetailViewModel.meals.collectAsState()
@@ -372,13 +410,7 @@ fun ScreenContent(
     val tabsData by foodDetailViewModel.tabsData.collectAsState()
     val currentPage by foodDetailViewModel.currentPage.collectAsState()
 
-    val itemsToDisplay = fakeData.take(5)
     val pageState = rememberPagerState()
-    val tabs = listOf(
-        stringResource(id = R.string.rawMaterial),
-        stringResource(id = R.string.howToPrepare),
-        stringResource(id = R.string.moreInformation)
-    )
 
     val stateLazy = rememberLazyListState()
 
@@ -455,18 +487,22 @@ fun ScreenContent(
             verticalAlignment = Alignment.CenterVertically
 
         ) {
-            Row(
+            LazyRow(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                meals.forEach {
+                items(meals) { meal ->
                     SimpleChip(
-                        label = it,
-                    )
+                        label = meal,
+                    ) {
+                        onClickMeal(meal)
+                    }
                     Spacer(modifier = Modifier.width(10.dp))
+
                 }
+
             }
             difficulty?.let {
                 SubCategory(label = it)
@@ -475,7 +511,7 @@ fun ScreenContent(
         val density = LocalDensity.current
         val tabWidths = remember {
             val tabWidthStateList = mutableStateListOf<Dp>()
-            repeat(tabs.size) {
+            repeat(tabsData.size) {
                 tabWidthStateList.add(0.dp)
             }
             tabWidthStateList
@@ -508,7 +544,6 @@ fun ScreenContent(
                         selected = currentPage == index,
                         selectedContentColor = MaterialTheme.colors.primary,
                         onClick = {
-//                            scope.launch { pageState.animateScrollToPage(index) }
                             foodDetailViewModel.onTabSelected(index)
                         }
                     ) {
@@ -531,7 +566,7 @@ fun ScreenContent(
                     .clip(MaterialTheme.shapes.medium)
                     .padding(vertical = 10.dp, horizontal = 15.dp),
                 verticalAlignment = Alignment.Top,
-                pageCount = tabs.count(),
+                pageCount = tabsData.count(),
                 state = pageState,
                 userScrollEnabled = true,
                 reverseLayout = true
@@ -584,7 +619,7 @@ fun ScreenContent(
 
                 }
                 item {
-                    ShowMoreButton() {
+                    ShowMoreButton {
                         onShowMoreCategory()
                     }
 
@@ -637,8 +672,11 @@ private fun ShowMoreButton(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Report(bottomSheetState: ModalBottomSheetState) {
-    var reportText by remember { mutableStateOf("") }
+fun Report(
+    foodDetailViewModel: FoodDetailViewModel,
+    bottomSheetState: ModalBottomSheetState
+) {
+    val description = foodDetailViewModel.descriptionReport.collectAsState()
     val scope = rememberCoroutineScope()
 
     Column(
@@ -660,8 +698,10 @@ fun Report(bottomSheetState: ModalBottomSheetState) {
                 .padding(vertical = 20.dp)
                 .fillMaxWidth()
                 .height(88.dp),
-            value = reportText,
-            onValueChange = { text -> reportText = text },
+            value = description.value,
+            onValueChange = {
+                foodDetailViewModel.updateDescriptionReport(it)
+            },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 backgroundColor = MaterialTheme.colors.surface,
                 unfocusedBorderColor = MaterialTheme.colors.surface,
@@ -689,7 +729,9 @@ fun Report(bottomSheetState: ModalBottomSheetState) {
         ) {
             Button(
                 onClick = {
+                    foodDetailViewModel.sendReportFood()
                     scope.launch {
+
                         bottomSheetState.hide()
                     }
                 },

@@ -10,6 +10,7 @@ import com.examplepart.foodpart.ui.screens.authentication.registeruser.SignupScr
 import com.examplepart.foodpart.ui.screens.categories.CategoriesScreen
 import com.examplepart.foodpart.ui.screens.food.fooddetail.FoodDetailScreen
 import com.examplepart.foodpart.ui.screens.food.foodsbycategoryresult.FoodsByCategoryResultScreen
+import com.examplepart.foodpart.ui.screens.food.foodsbymealresult.FoodsByMealResultScreen
 import com.examplepart.foodpart.ui.screens.food.fullscreenimage.FullscreenImageScreen
 import com.examplepart.foodpart.ui.screens.profile.archive.SavedScreen
 import com.examplepart.foodpart.ui.screens.profile.userprofile.ProfileScreen
@@ -33,6 +34,9 @@ fun NavGraphBuilder.mainNavGraph(navController: NavController) {
     composable(AppScreens.FoodsByCategoryResult.route) {
         FoodsByCategoryResultScreen(hiltViewModel(),navController)
     }
+    composable(AppScreens.FoodsByMealResult.route) {
+        FoodsByMealResultScreen(hiltViewModel(),navController)
+    }
     composable(AppScreens.Categories.route) {
         CategoriesScreen(navController)
     }
@@ -40,7 +44,7 @@ fun NavGraphBuilder.mainNavGraph(navController: NavController) {
         ProfileScreen(navController)
     }
     composable(AppScreens.Saved.route) {
-        SavedScreen()
+        SavedScreen(hiltViewModel(), navController)
     }
     composable(AppScreens.Search.route) {
         SearchScreen(navController)

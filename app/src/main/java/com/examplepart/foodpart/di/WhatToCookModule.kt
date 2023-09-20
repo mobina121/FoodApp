@@ -1,6 +1,5 @@
 package com.examplepart.foodpart.di
 
-import com.examplepart.foodpart.network.user.UserApi
 import com.examplepart.foodpart.network.whattocook.WhatToCookApi
 import dagger.Module
 import dagger.Provides

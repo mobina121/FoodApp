@@ -1,14 +1,14 @@
 package com.examplepart.foodpart.ui.screens.food.fooddetail
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.examplepart.foodpart.database.food.FoodEntity
-import com.examplepart.foodpart.database.food.MealEntity
 import com.examplepart.foodpart.network.common.Result
 import com.examplepart.foodpart.network.common.safeApi
 import com.examplepart.foodpart.network.food.FoodDetailApi
+import com.examplepart.foodpart.network.food.MealModel
+import com.examplepart.foodpart.network.food.SendReportFoodModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,16 +53,11 @@ class FoodDetailViewModel @Inject constructor(
     val difficultyLevel: StateFlow<String?> = _difficultyLevel.asStateFlow()
 
     private val _similarFoodsIds = MutableStateFlow<List<String>?>(emptyList())
-    val similarFoodsIds: StateFlow<List<String>?> = _similarFoodsIds.asStateFlow()
 
     private val _similarFoods = MutableStateFlow<List<FoodEntity>>(emptyList())
     val similarFoods = _similarFoods.asStateFlow()
 
-    private val _foodIds = MutableStateFlow("")
-    val foodIds: StateFlow<String> = _foodIds.asStateFlow()
-
     private val _similarFoodsResult = MutableStateFlow<Result>(Result.Idle)
-    val similarFoodsResult = _similarFoodsResult.asSharedFlow()
 
     private val _foodDetailResult = MutableStateFlow<Result>(Result.Idle)
     val foodDetailResult = _foodDetailResult.asSharedFlow()
@@ -72,6 +67,19 @@ class FoodDetailViewModel @Inject constructor(
 
     private val _currentPage = MutableStateFlow(0)
     val currentPage: StateFlow<Int> = _currentPage.asStateFlow()
+
+    private val _descriptionReport = MutableStateFlow("")
+    val descriptionReport: StateFlow<String> = _descriptionReport.asStateFlow()
+
+    private val _reportAnswer = MutableStateFlow("")
+    val reportAnswer: StateFlow<String> = _reportAnswer.asStateFlow()
+
+    private val _reportResult = MutableStateFlow<Result>(Result.Idle)
+    val reportResult = _reportResult.asSharedFlow()
+
+    private val _allMeals = MutableStateFlow<List<MealModel>>(emptyList())
+
+    private val _mealId = MutableStateFlow("")
 
     init {
         fetchFoodDetail()
@@ -104,8 +112,13 @@ class FoodDetailViewModel @Inject constructor(
 
                     _currentPage.value = 0
 
+                    if (response.additionalInfo.meals != null) {
+                        _allMeals.value = response.additionalInfo.meals
+                    }
+
+
                     val meals = response.additionalInfo.meals?.let { it ->
-                        it.map { it ->
+                        it.map {
                             it.meal
                         }
                     }
@@ -143,6 +156,39 @@ class FoodDetailViewModel @Inject constructor(
 
             ).collect(_similarFoodsResult)
         }
+    }
+
+    fun sendReportFood() {
+        viewModelScope.launch(Dispatchers.IO) {
+            safeApi(
+                call = {
+                    foodDetailApi.sendReportFood(
+                        _foodDetail.value.id,
+                        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJleHAiOjE2OTY0MzgxNTksImlkIjoieDk3a2FmaXBpc2R5ZDJxIiwidHlwZSI6ImF1dGhSZWNvcmQifQ.ckL46J-XjVA2RDAPqJ-Z-9RqbSoXlAoo8mYfOTPjc_c",
+                        SendReportFoodModel(_descriptionReport.value)
+                    )
+                },
+                onDataReady = { response ->
+                    _reportAnswer.value = response
+
+                }
+            ).collect(_reportResult)
+        }
+
+    }
+
+    fun updateDescriptionReport(description: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _descriptionReport.emit(description)
+        }
+    }
+
+    fun findMealIdByMeal(meal: String): String {
+        viewModelScope.launch(Dispatchers.IO) {
+            val foundMeal = _allMeals.value.find { it.meal == meal }
+            _mealId.value = foundMeal?.mealId ?: "Meal not found"
+        }
+        return _mealId.value
     }
 
 

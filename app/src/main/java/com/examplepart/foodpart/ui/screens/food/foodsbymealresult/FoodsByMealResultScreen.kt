@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.screens.food.foodsbycategoryresult
+package com.examplepart.foodpart.ui.screens.food.foodsbymealresult
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
@@ -47,13 +47,13 @@ import com.examplepart.foodpart.ui.common.ShowError
 import kotlinx.coroutines.launch
 
 @Composable
-fun FoodsByCategoryResultScreen(
-    foodsByCategoryResulViewModel: FoodsByCategoryResulViewModel,
+fun FoodsByMealResultScreen(
+    foodsByMealResulViewModel: FoodsByMealResultViewModel,
     navController: NavController
 ) {
 
-    FoodsByCategoryResultContent(
-        foodsByCategoryResulViewModel,
+    FoodsByMealResultContent(
+        foodsByMealResulViewModel,
         onClickStartIcon = {
             navController.navigateUp()
         },
@@ -61,14 +61,14 @@ fun FoodsByCategoryResultScreen(
             navController.navigate(AppScreens.FoodDetail.createRoute(it))
         },
         doRetry = {
-            foodsByCategoryResulViewModel.fetchFoodsByCategory()
+            foodsByMealResulViewModel.fetchFoodsByMeal()
         },
     )
 }
 
 @Composable
-fun FoodsByCategoryResultContent(
-    foodsByCategoryResulViewModel: FoodsByCategoryResulViewModel,
+fun FoodsByMealResultContent(
+    foodsByMealResultViewModel: FoodsByMealResultViewModel,
     onClickStartIcon: () -> Unit,
     ocClickFood: (foodId: String) -> Unit,
     doRetry: () -> Unit
@@ -81,8 +81,8 @@ fun FoodsByCategoryResultContent(
         }
     }
 
-    val foodsList by foodsByCategoryResulViewModel.foodsList.collectAsState()
-    val foodsResult by foodsByCategoryResulViewModel.foodsResult.collectAsState(Result.Idle)
+    val foodsList by foodsByMealResultViewModel.foodsList.collectAsState()
+    val foodsResult by foodsByMealResultViewModel.foodsResult.collectAsState(Result.Idle)
 
     val scope = rememberCoroutineScope()
 
@@ -92,7 +92,7 @@ fun FoodsByCategoryResultContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp, 16.dp, 16.dp, 0.dp),
-                title = stringResource(id = R.string.more),
+                title = stringResource(id = R.string.moreMeal),
                 showStartIcon = true,
                 showEndIcon = false,
                 startIcon = {

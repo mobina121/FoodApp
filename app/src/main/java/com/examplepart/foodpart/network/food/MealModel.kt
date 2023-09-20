@@ -1,6 +1,5 @@
 package com.examplepart.foodpart.network.food
 
-import com.examplepart.foodpart.database.food.DifficultyEntity
 import com.examplepart.foodpart.database.food.MealEntity
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -11,8 +10,7 @@ data class MealModel(
     val mealId: String,
     @Json(name = "name")
     val meal: String,
-)
-{
+) {
     fun toMealEntity() = MealEntity(
         mealId = mealId,
         meal = meal

@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.screens.food.foodsbycategoryresult
+package com.examplepart.foodpart.ui.screens.food.foodsbymealresult
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -16,12 +16,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class FoodsByCategoryResulViewModel @Inject constructor(
+class FoodsByMealResultViewModel @Inject constructor(
     private val foodDetailApi: FoodDetailApi,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val categoryId: String = savedStateHandle.get<String>("categoryId").orEmpty()
+    private val mealId: String = savedStateHandle.get<String>("mealId").orEmpty()
 
     private val _foodsList = MutableStateFlow<List<FoodEntity>>(emptyList())
     val foodsList = _foodsList.asStateFlow()
@@ -29,16 +29,17 @@ class FoodsByCategoryResulViewModel @Inject constructor(
     private val _foodsResult = MutableStateFlow<Result>(Result.Idle)
     val foodsResult = _foodsResult.asSharedFlow()
 
+
     init {
-        fetchFoodsByCategory()
+        fetchFoodsByMeal()
     }
 
-    fun fetchFoodsByCategory() {
+    fun fetchFoodsByMeal() {
         viewModelScope.launch(Dispatchers.IO) {
             safeApi(
-                call = { foodDetailApi.getFoodsByCategory(categoryId, null, null) },
+                call = { foodDetailApi.getFoodsByMeal(mealId) },
                 onDataReady = { response ->
-                    val result = response.foods.map {
+                    val result = response.similarFoods.map {
                         it.toFoodEntity()
                     }
                     _foodsList.value = result

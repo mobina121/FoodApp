@@ -58,7 +58,7 @@ fun WhatToCookResultScreen(
 
     WhatToCookResultScreenContent(
         whatToCookResultViewModel,
-        onClickStareIcon = {
+        onClickStartIcon = {
             navController.navigateUp()
         },
         ocClickFood = {
@@ -73,7 +73,7 @@ fun WhatToCookResultScreen(
 @Composable
 fun WhatToCookResultScreenContent(
     whatToCookResultViewModel: WhatToCookResultViewModel,
-    onClickStareIcon: () -> Unit,
+    onClickStartIcon: () -> Unit,
     ocClickFood: (foodId: String) -> Unit,
     doRetry: () -> Unit
 ) {
@@ -112,7 +112,7 @@ fun WhatToCookResultScreenContent(
                 startIcon = {
 
                     IconButton(onClick = {
-                        onClickStareIcon()
+                        onClickStartIcon()
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_right),
