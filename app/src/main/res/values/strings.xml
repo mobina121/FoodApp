@@ -5,7 +5,7 @@
     <string name="report">گزارش</string>
     <string name="send">ارسال</string>
     <string name="save">ذخیره</string>
-    <string name="abgoosht">آبگوشت</string>
+    <string name="favorites">علاقه مندی ها</string>
     <string name="forFourPerson">برای 4 نفر</string>
     <string name="zaman">زمان :</string>
     <string name="time">دقیقه</string>
@@ -20,6 +20,7 @@
     <string name="breakfast">صبحانه</string>
     <string name="lunch">ناهار</string>
     <string name="more">بیشتر از این دسته</string>
+    <string name="moreMeal">بیشتر از این وعده غدایی</string>
     <string name="showMore">بیشتر</string>
     <string name="signup">ثبت نام</string>
     <string name="welcome">خوش آمدید</string>

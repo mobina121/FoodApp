@@ -1,5 +1,7 @@
 package com.examplepart.foodpart.di
 
+import com.examplepart.foodpart.network.food.FoodDetailApi
+import com.examplepart.foodpart.network.user.UserApi
 import com.examplepart.foodpart.network.whattocook.WhatToCookApi
 import dagger.Module
 import dagger.Provides
@@ -9,10 +11,10 @@ import retrofit2.Retrofit
 
 @Module
 @InstallIn(SingletonComponent::class)
-object WhatToCookModule {
+object FoodDetailModule {
 
     @Provides
-    fun provideWhatToCookApi(retrofit: Retrofit): WhatToCookApi {
-        return retrofit.create(WhatToCookApi::class.java)
+    fun provideFoodDetailApi(retrofit: Retrofit): FoodDetailApi {
+        return retrofit.create(FoodDetailApi::class.java)
     }
 }

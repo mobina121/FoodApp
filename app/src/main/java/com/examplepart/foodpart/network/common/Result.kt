@@ -6,3 +6,6 @@ sealed class Result {
     data class Error(val message: String) : Result()
     object Success : Result()
 }
+
+
+

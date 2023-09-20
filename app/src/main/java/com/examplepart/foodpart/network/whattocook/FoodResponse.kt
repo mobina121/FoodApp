@@ -6,7 +6,6 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 
 data class FoodResponse(
-
     val id: String,
     val categoryId: String,
     val name: String,
@@ -16,6 +15,7 @@ data class FoodResponse(
     val count: String?,
     val point: String?,
     val difficulty: String?,
+    val location: String?,
     val recipe: String?,
     val ingredients: String?,
     val meals: List<String>?,
@@ -31,6 +31,7 @@ data class FoodResponse(
         count = count,
         point = point,
         difficulty = difficulty,
+        location = location,
         recipe = recipe,
         ingredients = ingredients,
         meals = meals,

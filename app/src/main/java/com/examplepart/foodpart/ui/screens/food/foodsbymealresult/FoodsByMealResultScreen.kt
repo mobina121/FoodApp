@@ -1,4 +1,4 @@
-package com.examplepart.foodpart.ui.screens.whatotcook.whattocookresult
+package com.examplepart.foodpart.ui.screens.food.foodsbymealresult
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,7 +23,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -39,11 +37,9 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.examplepart.foodpart.R
 import com.examplepart.foodpart.core.AppScreens
-import com.examplepart.foodpart.core.Difficulty
 import com.examplepart.foodpart.network.common.Result
 import com.examplepart.foodpart.ui.common.FoodItem
 import com.examplepart.foodpart.ui.common.FoodPartAppBar
@@ -51,13 +47,13 @@ import com.examplepart.foodpart.ui.common.ShowError
 import kotlinx.coroutines.launch
 
 @Composable
-fun WhatToCookResultScreen(
-    whatToCookResultViewModel: WhatToCookResultViewModel,
+fun FoodsByMealResultScreen(
+    foodsByMealResulViewModel: FoodsByMealResultViewModel,
     navController: NavController
 ) {
 
-    WhatToCookResultScreenContent(
-        whatToCookResultViewModel,
+    FoodsByMealResultContent(
+        foodsByMealResulViewModel,
         onClickStartIcon = {
             navController.navigateUp()
         },
@@ -65,14 +61,14 @@ fun WhatToCookResultScreen(
             navController.navigate(AppScreens.FoodDetail.createRoute(it))
         },
         doRetry = {
-            whatToCookResultViewModel.findWhatToCook()
+            foodsByMealResulViewModel.fetchFoodsByMeal()
         },
     )
 }
 
 @Composable
-fun WhatToCookResultScreenContent(
-    whatToCookResultViewModel: WhatToCookResultViewModel,
+fun FoodsByMealResultContent(
+    foodsByMealResultViewModel: FoodsByMealResultViewModel,
     onClickStartIcon: () -> Unit,
     ocClickFood: (foodId: String) -> Unit,
     doRetry: () -> Unit
@@ -85,20 +81,10 @@ fun WhatToCookResultScreenContent(
         }
     }
 
-    val ingredients = whatToCookResultViewModel.ingredients
-    val timeLimit = whatToCookResultViewModel.timeLimit
-    val foodsList by whatToCookResultViewModel.foodsList.collectAsState()
-    val foodsResult by whatToCookResultViewModel.foodsResult.collectAsState(Result.Idle)
+    val foodsList by foodsByMealResultViewModel.foodsList.collectAsState()
+    val foodsResult by foodsByMealResultViewModel.foodsResult.collectAsState(Result.Idle)
 
     val scope = rememberCoroutineScope()
-
-
-    val formattedResult = stringResource(
-        R.string.searchResults,
-        ingredients,
-        timeLimit,
-        whatToCookResultViewModel.difficulty ?: Difficulty.NO_MATTER
-    )
 
     Scaffold(
         topBar = {
@@ -106,7 +92,7 @@ fun WhatToCookResultScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp, 16.dp, 16.dp, 0.dp),
-                title = stringResource(id = R.string.whatToCook),
+                title = stringResource(id = R.string.moreMeal),
                 showStartIcon = true,
                 showEndIcon = false,
                 startIcon = {
@@ -177,35 +163,20 @@ fun WhatToCookResultScreenContent(
                         doRetry()
                     }
                 }
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
+
+                LazyVerticalGrid(
+                    modifier = Modifier.padding(horizontal = 36.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    columns = GridCells.Fixed(2),
+                    state = listState
                 ) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp, 0.dp, 20.dp, 16.dp),
-                        text = formattedResult,
-                        lineHeight = 20.sp,
-                        style = MaterialTheme.typography.caption,
-                        color = MaterialTheme.colors.onBackground
-                    )
-
-                    LazyVerticalGrid(
-                        modifier = Modifier.padding(horizontal = 36.dp),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        columns = GridCells.Fixed(2),
-                        state = listState
-                    ) {
-                        items(foodsList) { foodEntity ->
-                            FoodItem(
-                                modifier = Modifier,
-                                food = foodEntity,
-                            ) {
-                                Log.d("foodEntity.id", "$foodEntity.id")
-                                ocClickFood(foodEntity.id)
-                            }
-
+                    items(foodsList) { foodEntity ->
+                        FoodItem(
+                            modifier = Modifier,
+                            food = foodEntity,
+                        ) {
+                            Log.d("foodEntity.id", "$foodEntity.id")
+                            ocClickFood(foodEntity.id)
                         }
                     }
                 }

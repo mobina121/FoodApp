@@ -1,6 +1,5 @@
 package com.examplepart.foodpart.ui.common
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,6 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.examplepart.foodpart.R
 
 
@@ -21,10 +21,11 @@ fun PhotoOfFood(
     onClickPhoto: (photoId: String) -> Unit
 
 ) {
-    Image(
-        painter = painterResource(R.drawable.pic_food), //photo Id
-        contentDescription = "",
-        contentScale = ContentScale.FillWidth,
+    AsyncImage(
+        model = photoId,
+        contentDescription = photoId,
+        error = painterResource(id = R.drawable.logo_dark_1),
+        contentScale = ContentScale.Crop,
         modifier = Modifier
             .fillMaxWidth()
             .height(244.dp)
